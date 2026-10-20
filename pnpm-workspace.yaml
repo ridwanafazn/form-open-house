@@ -1,0 +1,5 @@
+allowBuilds:
+  esbuild: true
+  workerd: true
+  '@cloudflare/workerd-linux-64': true
+  '@cloudflare/workerd-windows-64': true

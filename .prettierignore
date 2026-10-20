@@ -1,0 +1,8 @@
+# Astro perlu prettier-plugin-astro (di luar daftar izin TRD). Sementara tidak di-format prettier.
+src/**/*.astro
+docs/
+node_modules/
+dist/
+.astro/
+.wrangler/
+pnpm-lock.yaml
