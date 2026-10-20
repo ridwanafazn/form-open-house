@@ -6,4 +6,6 @@ T01 | 2026-10-20 | `pnpm build` dan `pnpm lint` lolos. Halaman kosong tampil di 
 
 T02 | 2026-10-20 | Pencarian teks untuk `gradient`, `box-shadow`, `blur`, dan `backdrop-filter` di seluruh `src` kosong. `pnpm build` dan `pnpm lint` lolos. Font Caveat Brush dan Public Sans ter-host sendiri (tanpa CDN eksternal), favicon dari `public/images/logo.png`, `Base.astro` ber-meta CONTENT.md, dan komponen tombol, chip, isian dibuat.
 
+T03 | 2026-10-20 | Uji unit `placeholders.test.ts` lolos (6/6). `pnpm build` sukses dengan `prebuild` yang menjalankan `check-placeholders.mjs`. Dengan `FAIL_ON_PLACEHOLDER=true`, build gagal ketika masih ada `[ISI:`. Tersisa 1 placeholder di `event.ts` (`waJoinUrl`, tercatat di QUESTIONS Q01).
+
 

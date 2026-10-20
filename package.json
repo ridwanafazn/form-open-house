@@ -9,6 +9,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "prebuild": "node scripts/check-placeholders.mjs",
+    "check:placeholders": "node scripts/check-placeholders.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "lint": "eslint .",
