@@ -32,5 +32,23 @@ const finalDescription = pageDescription ?? description;
   </head>
   <body>
     <slot />
+    <script is:inline>
+      // Tangkap parameter UTM/fbclid dari URL dan simpan di sessionStorage
+      // saat halaman pertama dimuat. Tidak menimpa nilai yang sudah tersimpan.
+      (function capture() {
+        try {
+          var keys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid'];
+          var params = new URLSearchParams(window.location.search);
+          for (var i = 0; i < keys.length; i += 1) {
+            var key = keys[i];
+            if (window.sessionStorage.getItem(key)) continue;
+            var val = params.get(key);
+            if (val) window.sessionStorage.setItem(key, val);
+          }
+        } catch (e) {
+          /* storage tidak tersedia; abaikan */
+        }
+      })();
+    </script>
   </body>
 </html>

@@ -1,0 +1,76 @@
+---
+import Base from '../layouts/Base.astro';
+import ThankYouSummary from '../components/ThankYouSummary';
+import AddCalendar from '../components/AddCalendar';
+import { eventConfig } from '../config/event';
+import { content } from '../config/content';
+import PaperPlane from '../components/doodles/PaperPlane.astro';
+
+const isGroup = eventConfig.waJoinKind === 'group';
+const waNote = isGroup
+  ? content.thankyou.nextSteps.waGroupNote
+  : content.thankyou.nextSteps.waChannelNote;
+const waJoinHref = eventConfig.waJoinUrl || '#';
+const chatAdmisi = `https://wa.me/${eventConfig.admissionWhatsApp}?text=${encodeURIComponent(
+  'Assalamualaikum. Saya ingin bertanya tentang Open House SMKIT As Syifa.',
+)}`;
+---
+
+<Base title="Terima kasih">
+  <main class="container">
+    <section class="ty" aria-labelledby="ty-title">
+      <div class="ty__doodle" aria-hidden="true">
+        <PaperPlane size="72" />
+      </div>
+      <h1 id="ty-title">{content.thankyou.title}</h1>
+      <ThankYouSummary client:idle />
+      <p class="ty__note">{content.thankyou.note}</p>
+
+      <div class="ty__actions">
+        <a class="button button--primary" href={waJoinHref} rel="noopener" target="_blank">
+          {content.thankyou.nextSteps.joinWa}
+        </a>
+        <p class="ty__wa-note">{waNote}</p>
+      </div>
+
+      <div class="ty__actions">
+        <AddCalendar client:idle />
+        <a class="button button--secondary" href={chatAdmisi} rel="noopener" target="_blank">
+          {content.thankyou.nextSteps.chatAdmisi}
+        </a>
+        <a class="button button--secondary" href={eventConfig.pmbPortalUrl} rel="noopener" target="_blank">
+          {content.thankyou.nextSteps.pmbLink}
+        </a>
+      </div>
+    </section>
+  </main>
+</Base>
+
+<style>
+  .ty {
+    max-width: 640px;
+    margin-inline: auto;
+    padding-block: var(--space-16);
+    text-align: left;
+  }
+  .ty__doodle {
+    margin-bottom: var(--space-4);
+  }
+  .ty__note {
+    color: var(--ink-soft);
+    margin-block: var(--space-4);
+  }
+  .ty__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    align-items: center;
+    margin-block: var(--space-4);
+  }
+  .ty__wa-note {
+    flex-basis: 100%;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+</style>
