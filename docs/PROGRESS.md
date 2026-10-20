@@ -12,4 +12,6 @@ T04 | 2026-10-20 | 8 sketsa awal dibuat (Dome, OpenBook, Laptop, Bezier, PaperPl
 
 T05 | 2026-10-20 | `src/components/Hero.astro` dibuat (judul muncul per kata dengan CSS, sketsa Dome, OpenBook, Laptop, Bezier, tombol menuju `#form`) dan dipasang di `index.astro`. Tombol menempel di bawah layar HP memakai `IntersectionObserver` (hilang saat hero atau form terlihat). `pnpm build` (2 halaman) dan `pnpm lint` lolos.
 
+T06 | 2026-10-20 | `src/lib/phone.ts` (normalisasi + validasi nomor 62 8 diikuti 8-11 digit) dan `src/lib/validate.ts` (`validateRegistration` mengembalikan `{ ok, errors, value }`) dibuat. `pnpm test` lolos 27/27, termasuk 13 contoh nomor dan satu uji per aturan kolom.
+
 
