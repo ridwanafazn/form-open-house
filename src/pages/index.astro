@@ -1,7 +1,10 @@
 ---
 import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero.astro';
+import RegisterForm from '../components/RegisterForm';
 import { content } from '../config/content';
+
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
 ---
 
 <Base>
@@ -9,10 +12,10 @@ import { content } from '../config/content';
     <Hero />
 
     <section class="section" id="form" aria-labelledby="form-title">
-      <div class="container">
+      <div class="container form-wrap">
         <h2 id="form-title">{content.home.form.heading}</h2>
-        <p>{content.home.form.tagline}</p>
-        <p class="placeholder-note">Form dua langkah dikerjakan di T07.</p>
+        <p class="form-tagline">{content.home.form.tagline}</p>
+        <RegisterForm client:visible turnstileSiteKey={turnstileSiteKey} />
       </div>
     </section>
   </main>
@@ -51,6 +54,15 @@ import { content } from '../config/content';
   .placeholder-note {
     color: var(--ink-soft);
     margin-top: var(--space-4);
+  }
+
+  .form-tagline {
+    color: var(--ink-soft);
+    margin-block: 0 var(--space-6);
+  }
+
+  .form-wrap {
+    max-width: 640px;
   }
 
   .sticky-cta {

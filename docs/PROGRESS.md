@@ -14,4 +14,6 @@ T05 | 2026-10-20 | `src/components/Hero.astro` dibuat (judul muncul per kata den
 
 T06 | 2026-10-20 | `src/lib/phone.ts` (normalisasi + validasi nomor 62 8 diikuti 8-11 digit) dan `src/lib/validate.ts` (`validateRegistration` mengembalikan `{ ok, errors, value }`) dibuat. `pnpm test` lolos 27/27, termasuk 13 contoh nomor dan satu uji per aturan kolom.
 
+T07 | 2026-10-20 | `src/components/RegisterForm.tsx` (form dua langkah React dengan LazyMotion, chip jurusan, stepper jumlah hadir, jebakan bot `website`, Turnstile, ambil UTM dari sessionStorage, dan simpan ringkasan) dipasang di `index.astro` dengan `client:visible`. Diverifikasi di browser viewport HP: langkah 1 tampil, tombol Lanjut memindah ke langkah 2 dengan tombol Kirim pendaftaran. `src/lib/utm.ts` dibuat sebagai dasar T09. `pnpm build` (2 halaman) dan `pnpm lint` lolos; `pnpm test` 27/27.
+
 
