@@ -1,58 +1,87 @@
 ---
 import Base from '../layouts/Base.astro';
-import Button from '../components/ui/Button.astro';
-import Chip from '../components/ui/Chip.astro';
-import Field from '../components/ui/Field.astro';
+import Hero from '../components/Hero.astro';
+import { content } from '../config/content';
 ---
 
 <Base>
-  <main class="container">
-    <section class="demo">
-      <h1>Open House SMKIT As Syifa</h1>
-      <p class="lead">Datang, lihat langsung, dan coba sendiri.</p>
+  <main>
+    <Hero />
 
-      <h2>Kerangka tampilan T02</h2>
-      <p>
-        Halaman sementara untuk memeriksa token, font, kertas berkotak, tombol, chip, dan isian.
-        Isi lengkap dikerjakan di tugas berikutnya.
-      </p>
-
-      <div class="row">
-        <Button href="#form">Tombol utama</Button>
-        <Button variant="secondary" href="#form">Tombol kedua</Button>
+    <section class="section" id="form" aria-labelledby="form-title">
+      <div class="container">
+        <h2 id="form-title">{content.home.form.heading}</h2>
+        <p>{content.home.form.tagline}</p>
+        <p class="placeholder-note">Form dua langkah dikerjakan di T07.</p>
       </div>
-
-      <div class="row">
-        <Chip selected>RPL</Chip>
-        <Chip>DKV</Chip>
-        <Chip>Belum tahu</Chip>
-      </div>
-
-      <Field
-        id="demo-nama"
-        name="demo-nama"
-        label="Nama anak"
-        placeholder="Nama calon siswa"
-        helperText="Nama calon siswa"
-      />
     </section>
   </main>
+
+  <a class="sticky-cta" href="#form">{content.home.hero.cta}</a>
 </Base>
 
+<script>
+  // Tombol menempel di bagian bawah layar HP setelah hero lewat,
+  // dan hilang saat form terlihat.
+  const cta = document.querySelector('.sticky-cta');
+  const hero = document.getElementById('hero');
+  const form = document.getElementById('form');
+  if (cta && hero && form) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        const heroIn = entries.find((e) => e.target === hero)?.isIntersecting;
+        const formIn = entries.find((e) => e.target === form)?.isIntersecting;
+        if (formIn || heroIn) {
+          cta.classList.add('is-hidden');
+        } else {
+          cta.classList.remove('is-hidden');
+        }
+      },
+      { threshold: 0 },
+    );
+    io.observe(hero);
+    io.observe(form);
+  }
+</script>
+
 <style>
-  .demo {
+  .section {
     padding-block: var(--space-12);
   }
-
-  .lead {
-    font-size: 1.2rem;
-    margin-block: var(--space-2) var(--space-12);
+  .placeholder-note {
+    color: var(--ink-soft);
+    margin-top: var(--space-4);
   }
 
-  .row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-3);
-    margin-block: var(--space-6);
+  .sticky-cta {
+    position: fixed;
+    left: var(--space-4);
+    right: var(--space-4);
+    bottom: var(--space-4);
+    z-index: 20;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-3);
+    border: var(--line) solid var(--ink);
+    border-radius: var(--radius);
+    background: var(--teal);
+    color: var(--paper);
+    text-decoration: none;
+    font-weight: 600;
+    min-height: 48px;
+    transition: transform 0.06s ease;
+  }
+  .sticky-cta:active {
+    transform: translateY(2px);
+  }
+  .sticky-cta.is-hidden {
+    visibility: hidden;
+  }
+
+  @media (max-width: 719px) {
+    .sticky-cta {
+      display: flex;
+    }
   }
 </style>

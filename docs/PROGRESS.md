@@ -10,4 +10,6 @@ T03 | 2026-10-20 | Uji unit `placeholders.test.ts` lolos (6/6). `pnpm build` suk
 
 T04 | 2026-10-20 | 8 sketsa awal dibuat (Dome, OpenBook, Laptop, Bezier, PaperPlane, Check, Tape, Underline); tiap berkas di bawah 2 KB dan tanpa atribut `filter` atau `gradient`. Halaman pratinjau `src/pages/doodles.astro` tampil dan ikut di-build (2 halaman). Nama memakai `doodles`, bukan `_doodles`, karena Astro mengabaikan berkas berawalan garis bawah (tercatat di QUESTIONS Q03).
 
+T05 | 2026-10-20 | `src/components/Hero.astro` dibuat (judul muncul per kata dengan CSS, sketsa Dome, OpenBook, Laptop, Bezier, tombol menuju `#form`) dan dipasang di `index.astro`. Tombol menempel di bawah layar HP memakai `IntersectionObserver` (hilang saat hero atau form terlihat). `pnpm build` (2 halaman) dan `pnpm lint` lolos.
+
 
