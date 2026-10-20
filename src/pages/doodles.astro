@@ -1,0 +1,47 @@
+---
+import Base from '../layouts/Base.astro';
+import Dome from '../components/doodles/Dome.astro';
+import OpenBook from '../components/doodles/OpenBook.astro';
+import Laptop from '../components/doodles/Laptop.astro';
+import Bezier from '../components/doodles/Bezier.astro';
+import PaperPlane from '../components/doodles/PaperPlane.astro';
+import Check from '../components/doodles/Check.astro';
+import Tape from '../components/doodles/Tape.astro';
+import Underline from '../components/doodles/Underline.astro';
+---
+
+<Base title="Sketsa">
+  <main class="container">
+    <h1>Sketsa</h1>
+    <p>Halaman sementara untuk memeriksa sketsa doff.</p>
+    <div class="grid">
+      <div><Dome size="96" /><span>Dome</span></div>
+      <div><OpenBook size="96" /><span>OpenBook</span></div>
+      <div><Laptop size="96" /><span>Laptop</span></div>
+      <div><Bezier size="96" /><span>Bezier</span></div>
+      <div><PaperPlane size="96" /><span>PaperPlane</span></div>
+      <div><Check size="96" /><span>Check</span></div>
+      <div><Tape size="96" /><span>Tape</span></div>
+      <div><Underline size="96" /><span>Underline</span></div>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: var(--space-4);
+    margin-block: var(--space-8);
+  }
+  .grid > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    border: var(--line) solid var(--ink);
+    border-radius: var(--radius);
+    background: var(--paper);
+  }
+</style>

@@ -10,5 +10,10 @@ Agent menulis di sini setiap kali memakai nilai bawaan, menemukan hal yang tidak
 
 Prettier bawaan tidak punya parser untuk `.astro`; biasanya ditangani `prettier-plugin-astro`. Plugin itu tidak ada dalam daftar izin di `docs/TRD.md`. Sesuai AGENTS.md butir 6, saya tidak menambah paket itu dan mengecualikan `src/**/*.astro` dari prettier lewat `.prettierignore`. Pemilik proyek boleh mengizinkan plugin ini jika ingin .astro ikut terformat.
 
+## Q03 halaman pratinjau sketsa memakai nama `doodles.astro`, bukan `_doodles.astro` (2026-10-20)
+
+T04 meminta halaman sementara bernama `src/pages/_doodles.astro`, tetapi Astro mengabaikan berkas di `src/pages` yang diawali garis bawah, sehingga halaman itu tidak ikut di-build. Agar pratinjau sketsa benar-benar tampil, berkas saya beri nama `src/pages/doodles.astro` (tanpa garis bawah). Halaman ini dihapus di tugas berikutnya setelah sketsa terpasang di hero.
+
+
 
 
