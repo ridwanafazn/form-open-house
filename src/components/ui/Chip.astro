@@ -1,0 +1,56 @@
+---
+// Chip persegi kecil dengan garis tepi. Terpilih berisi teal-pale dengan garis teal-dark.
+interface Props {
+  selected?: boolean;
+  class?: string;
+  value?: string | number;
+  type?: 'button' | 'radio';
+  name?: string;
+  'aria-label'?: string;
+}
+
+const {
+  selected = false,
+  class: className = '',
+  value,
+  name,
+  'aria-label': ariaLabel,
+} = Astro.props;
+
+const classes = ['chip', selected ? 'chip--selected' : '', className].filter(Boolean).join(' ');
+---
+
+<button type="button" class={classes} value={value} name={name} aria-label={ariaLabel} aria-pressed={selected}>
+  <slot />
+</button>
+
+<style>
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: var(--space-2) var(--space-4);
+    border: var(--line) solid var(--ink);
+    border-radius: 4px;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.2;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: transform 0.06s ease;
+  }
+
+  .chip--selected {
+    background: var(--teal-pale);
+    border-color: var(--teal-dark);
+    color: var(--teal-dark);
+  }
+
+  .chip:active {
+    transform: translateY(2px);
+  }
+</style>

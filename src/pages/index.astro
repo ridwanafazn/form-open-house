@@ -1,12 +1,58 @@
 ---
-// Halaman kosong untuk T01. Isi lengkap dikerjakan di tugas berikutnya.
+import Base from '../layouts/Base.astro';
+import Button from '../components/ui/Button.astro';
+import Chip from '../components/ui/Chip.astro';
+import Field from '../components/ui/Field.astro';
 ---
-<!doctype html>
-<html lang="id">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Open House SMKIT As Syifa Boarding School</title>
-  </head>
-  <body></body>
-</html>
+
+<Base>
+  <main class="container">
+    <section class="demo">
+      <h1>Open House SMKIT As Syifa</h1>
+      <p class="lead">Datang, lihat langsung, dan coba sendiri.</p>
+
+      <h2>Kerangka tampilan T02</h2>
+      <p>
+        Halaman sementara untuk memeriksa token, font, kertas berkotak, tombol, chip, dan isian.
+        Isi lengkap dikerjakan di tugas berikutnya.
+      </p>
+
+      <div class="row">
+        <Button href="#form">Tombol utama</Button>
+        <Button variant="secondary" href="#form">Tombol kedua</Button>
+      </div>
+
+      <div class="row">
+        <Chip selected>RPL</Chip>
+        <Chip>DKV</Chip>
+        <Chip>Belum tahu</Chip>
+      </div>
+
+      <Field
+        id="demo-nama"
+        name="demo-nama"
+        label="Nama anak"
+        placeholder="Nama calon siswa"
+        helperText="Nama calon siswa"
+      />
+    </section>
+  </main>
+</Base>
+
+<style>
+  .demo {
+    padding-block: var(--space-12);
+  }
+
+  .lead {
+    font-size: 1.2rem;
+    margin-block: var(--space-2) var(--space-12);
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-block: var(--space-6);
+  }
+</style>

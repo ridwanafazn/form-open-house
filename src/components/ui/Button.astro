@@ -1,0 +1,78 @@
+---
+// Tombol doff: padat satu warna dengan garis tepi. Saat ditekan bergeser 2px ke bawah.
+interface Props {
+  href?: string;
+  htmlType?: 'button' | 'submit' | 'reset';
+  variant?: 'primary' | 'secondary';
+  class?: string;
+  'aria-label'?: string;
+  disabled?: boolean;
+}
+
+const {
+  href,
+  htmlType = 'button',
+  variant = 'primary',
+  class: className = '',
+  'aria-label': ariaLabel,
+  disabled = false,
+} = Astro.props;
+
+const classes = ['button', `button--${variant}`, className].filter(Boolean).join(' ');
+const hrefAttr = href ?? '#';
+const typeAttr = htmlType;
+const disabledAttr = disabled ? 'disabled' : undefined;
+---
+
+{
+  href ? (
+    <a href={hrefAttr} class={classes} aria-label={ariaLabel}>
+      <slot />
+    </a>
+  ) : (
+    <button type={typeAttr} class={classes} aria-label={ariaLabel} disabled={disabledAttr}>
+      <slot />
+    </button>
+  )
+}
+
+<style>
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-6);
+    border: var(--line) solid var(--ink);
+    border-radius: var(--radius);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.2;
+    text-decoration: none;
+    cursor: pointer;
+    min-height: 44px;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: transform 0.06s ease;
+  }
+
+  .button--primary {
+    background: var(--teal);
+    color: var(--paper);
+  }
+
+  .button--secondary {
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .button:active {
+    transform: translateY(2px);
+  }
+
+  .button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+</style>

@@ -1,0 +1,36 @@
+---
+import '@fontsource/caveat-brush/latin-400.css';
+import '@fontsource-variable/public-sans/wght.css';
+import '../styles/global.css';
+
+// Meta dari docs/CONTENT.md bagian "Teks meta".
+const title = 'Open House SMKIT As Syifa Boarding School';
+const description =
+  'Datang, lihat langsung, dan coba sendiri. Daftar hadir open house SMKIT As Syifa Boarding School, Jalancagak, Subang.';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title: pageTitle, description: pageDescription } = Astro.props;
+const finalTitle = pageTitle ? `${pageTitle} - Open House SMKIT As Syifa` : title;
+const finalDescription = pageDescription ?? description;
+---
+
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{finalTitle}</title>
+    <meta name="description" content={finalDescription} />
+    <link rel="icon" type="image/png" href="/images/logo.png" />
+    <meta name="og:title" content={title} />
+    <meta name="og:description" content={finalDescription} />
+    <meta name="og:type" content="website" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
