@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero.astro';
 import RegisterForm from '../components/RegisterForm';
 import { content } from '../config/content';
+import { eventConfig } from '../config/event';
 
 const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
 ---
@@ -10,6 +11,30 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
 <Base>
   <main>
     <Hero />
+
+    <section class="section" id="incentiv" aria-labelledby="incentiv-title">
+      <div class="container">
+        <h2 id="incentiv-title">{content.home.incentive.heading}</h2>
+        <p>{content.home.incentive.text}</p>
+        <p class="note">{content.home.incentive.note}</p>
+      </div>
+    </section>
+
+    <section class="section" id="event-info" aria-labelledby="event-info-title">
+      <div class="container">
+        <h2 id="event-info-title">{eventConfig.name}</h2>
+        <ul class="info-list">
+          <li><strong>Hari dan tanggal</strong> {eventConfig.dateText}</li>
+          <li><strong>Jam</strong> {eventConfig.startTime} sampai {eventConfig.endTime} WIB</li>
+          <li><strong>Tempat</strong> {eventConfig.locationName}</li>
+          <li><strong>Alamat</strong> {eventConfig.locationAddress}</li>
+        </ul>
+        <div class="info-actions">
+          <a class="button button--primary" href={eventConfig.mapsUrl} rel="noopener" target="_blank">{content.home.eventInfo.openMap}</a>
+        </div>
+        <p class="note">{content.home.eventInfo.scheduleNote}</p>
+      </div>
+    </section>
 
     <section class="section" id="form" aria-labelledby="form-title">
       <div class="container form-wrap">
@@ -63,6 +88,32 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
 
   .form-wrap {
     max-width: 640px;
+  }
+
+  .note {
+    color: var(--ink-soft);
+    margin-top: var(--space-4);
+  }
+
+  .info-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--space-4);
+  }
+  .info-list li {
+    padding-block: var(--space-2);
+    border-bottom: 1px solid var(--paper-grid);
+  }
+  .info-list strong {
+    display: inline-block;
+    min-width: 140px;
+    color: var(--teal-dark);
+  }
+  .info-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-block: var(--space-4);
   }
 
   .sticky-cta {

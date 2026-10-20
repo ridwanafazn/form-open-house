@@ -1,44 +1,26 @@
 ---
 import { eventConfig } from '../config/event';
 import { content } from '../config/content';
-import Dome from './doodles/Dome.astro';
-import OpenBook from './doodles/OpenBook.astro';
-import Laptop from './doodles/Laptop.astro';
-import Bezier from './doodles/Bezier.astro';
 
 const words = content.home.hero.title.split(' ');
 ---
 
 <section class="hero" id="hero">
-  <div class="hero__inner">
-    <div class="hero__text">
-      <h1 class="hero__title">
-        {words.map((word, i) => (
-          <span class="hero__word" style={`--i:${i}`}>{word}</span>
-        ))}
-      </h1>
-      <p class="hero__tagline">{content.home.hero.tagline}</p>
-      <p class="hero__info">{eventConfig.dateText}, {eventConfig.startTime} sampai {eventConfig.endTime} WIB, Jalancagak, Subang. Gratis.</p>
-      <a class="button button--primary hero__cta" href="#form">{content.home.hero.cta}</a>
-    </div>
-
-    <div class="hero__doodles" aria-hidden="true">
-      <Dome size="96" />
-      <OpenBook size="96" />
-      <Laptop size="64" />
-      <Bezier size="64" />
-    </div>
+  <div class="container hero__inner">
+    <h1 class="hero__title">
+      {words.map((word, i) => (
+        <span class="hero__word" style={`--i:${i}`}>{word}</span>
+      ))}
+    </h1>
+    <p class="hero__tagline">{content.home.hero.tagline}</p>
+    <p class="hero__info">{eventConfig.dateText}, {eventConfig.startTime} sampai {eventConfig.endTime} WIB, Jalancagak, Subang. Gratis.</p>
+    <a class="button button--primary hero__cta" href="#form">{content.home.hero.cta}</a>
   </div>
 </section>
 
 <style>
   .hero {
-    padding-block: var(--space-12);
-  }
-  .hero__inner {
-    display: grid;
-    gap: var(--space-8);
-    align-items: center;
+    padding-block: var(--space-12) var(--space-8);
   }
   .hero__title {
     font-family: var(--font-heading);
@@ -68,21 +50,6 @@ const words = content.home.hero.title.split(' ');
   .hero__info {
     color: var(--ink-soft);
     margin-block: 0 var(--space-6);
-  }
-  .hero__doodles {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-6);
-    justify-content: center;
-  }
-
-  @media (min-width: 720px) {
-    .hero__inner {
-      grid-template-columns: 1fr auto;
-    }
-    .hero__doodles {
-      max-width: 300px;
-    }
   }
 
   @media (prefers-reduced-motion: reduce) {

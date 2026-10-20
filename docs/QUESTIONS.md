@@ -14,6 +14,10 @@ Prettier bawaan tidak punya parser untuk `.astro`; biasanya ditangani `prettier-
 
 T04 meminta halaman sementara bernama `src/pages/_doodles.astro`, tetapi Astro mengabaikan berkas di `src/pages` yang diawali garis bawah, sehingga halaman itu tidak ikut di-build. Agar pratinjau sketsa benar-benar tampil, berkas saya beri nama `src/pages/doodles.astro` (tanpa garis bawah). Halaman ini dihapus di tugas berikutnya setelah sketsa terpasang di hero.
 
+## Q04 font body diganti ke Plus Jakarta Sans (2026-10-20)
+
+Atas permintaan langsung pemilik proyek, `@fontsource-variable/plus-jakarta-sans` dipakai sebagai font isi menggantikan `@fontsource-variable/public-sans`. Paket ini di luar daftar izin di `docs/TRD.md`, tetapi karena pemilik memintanya, saya pakai dan menegakkan pengecualian ini di sini. Font judul tetap Caveat Brush. `@fontsource-variable/public-sans` sudah dihapus dari dependensi. Cek performa T02 (font self-hosted, tanpa CDN) tetap dipenuhi.
+
 
 
 

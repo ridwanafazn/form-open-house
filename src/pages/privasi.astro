@@ -1,0 +1,59 @@
+---
+import Base from '../layouts/Base.astro';
+import { content } from '../config/content';
+import { eventConfig } from '../config/event';
+
+const p = content.privacy;
+const deleteWa = `https://wa.me/${eventConfig.admissionWhatsApp}?text=${encodeURIComponent(
+  'Saya ingin meminta penghapusan data pendaftaran open house saya.',
+)}`;
+---
+
+<Base title="Kebijakan privasi">
+  <main class="container">
+    <section class="privacy">
+      <h1>Kebijakan privasi</h1>
+      <p class="lead">Kebijakan yang berlaku untuk pendaftaran open house {p.collector}.</p>
+
+      <h2>Siapa yang mengumpulkan</h2>
+      <p>{p.collector}.</p>
+
+      <h2>Data yang dikumpulkan</h2>
+      <p>{p.dataCollected}.</p>
+
+      <h2>Tujuan</h2>
+      <p>{p.purpose}.</p>
+
+      <h2>Siapa yang bisa melihat</h2>
+      <p>{p.viewers}.</p>
+
+      <h2>Lama penyimpanan</h2>
+      <p>{p.storageDuration}.</p>
+
+      <h2>Cara meminta penghapusan data</h2>
+      <p>Untuk meminta penghapusan data pendaftaran, hubungi admisi lewat WhatsApp di nomor <a href={deleteWa} rel="noopener" target="_blank">0811-2222-3934</a>.</p>
+
+      <h2>Pembagian data</h2>
+      <p>{p.noSharing}</p>
+    </section>
+  </main>
+</Base>
+
+<style>
+  .privacy {
+    max-width: 720px;
+    margin-inline: auto;
+    padding-block: var(--space-12);
+  }
+  .lead {
+    color: var(--ink-soft);
+    margin-block: 0 var(--space-8);
+  }
+  .privacy h2 {
+    margin-top: var(--space-8);
+    font-size: 1.4rem;
+  }
+  .privacy p {
+    margin-top: var(--space-2);
+  }
+</style>

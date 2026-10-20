@@ -28,7 +28,7 @@
 
   /* Tipografi */
   --font-heading: 'Caveat Brush', 'Chalkboard SE', 'Comic Sans MS', cursive;
-  --font-body: 'Public Sans Variable', 'Public Sans', system-ui, sans-serif;
+  --font-body: 'Plus Jakarta Sans Variable', system-ui, sans-serif;
 
   /* Lebar isi */
   --max-width: 1120px;

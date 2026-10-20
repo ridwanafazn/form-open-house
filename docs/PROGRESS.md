@@ -16,4 +16,18 @@ T06 | 2026-10-20 | `src/lib/phone.ts` (normalisasi + validasi nomor 62 8 diikuti
 
 T07 | 2026-10-20 | `src/components/RegisterForm.tsx` (form dua langkah React dengan LazyMotion, chip jurusan, stepper jumlah hadir, jebakan bot `website`, Turnstile, ambil UTM dari sessionStorage, dan simpan ringkasan) dipasang di `index.astro` dengan `client:visible`. Diverifikasi di browser viewport HP: langkah 1 tampil, tombol Lanjut memindah ke langkah 2 dengan tombol Kirim pendaftaran. `src/lib/utm.ts` dibuat sebagai dasar T09. `pnpm build` (2 halaman) dan `pnpm lint` lolos; `pnpm test` 27/27.
 
+T08 | 2026-10-20 | `supabase/migrations/0001_init.sql` dibuat, identik byte-demi-byte dengan blok SQL di `docs/ERD.md`. `supabase/README.md` berisi langkah manusia (buat proyek, jalankan SQL, matikan pendaftaran Auth, undang admin, tambah ke tabel admins, tiga uji kebijakan). Tidak ada kunci rahasia ter-commit (`.env` tidak ter-stage).
+
+T09 | 2026-10-20 | `utm.ts` lengkap dengan uji unit (5 uji: baca URL, ambil tersimpan, simpan baru, tidak menimpa, gabungan). Skrip `is:inline` di `Base.astro` menangkap UTM/fbclid ke sessionStorage saat halaman dimuat. Diverifikasi di browser: `/?utm_source=instagram&utm_campaign=tes` tersimpan dan bertahan setelah navigasi ke `/terima-kasih`. `pnpm test` lolos.
+
+T10 | 2026-10-20 | `src/pages/api/register.ts` (route tipis, `prerender=false`) meneruskan ke `src/lib/submitRegistration.ts` yang memuat 9 langkah TRD (batas 10 KB, jebakan bot, cek REGISTRATION_OPEN, validasi, Turnstile, tulis Supabase dengan service role key, konflik 409 jadi sukses, gagal server 500 tanpa rincian, sukses). Uji unit 10 kasus dengan fetch tiruan; `pnpm test` 45/45.
+
+T11 | 2026-10-20 | `src/lib/calendar.ts` (bangun `.ics` di browser) + uji unit. Halaman `terima-kasih.astro` dengan island ringkasan sessionStorage, tombol gabung WhatsApp sesuai `waJoinKind`, kalender (klien), chat admisi, dan tautan PMB. `pnpm build` sukses (3 halaman: index, doodles, terima-kasih); `pnpm test` 45/45; `pnpm lint` lolos.
+
+T15 | 2026-10-20 | Bagian insentif dan info acara ditambahkan di `index.astro` (judul insentif, isi, catatan kecil; dan info hari/tanggal, jam, tempat, alamat, tombol Buka peta, catatan susunan acara). Hero dirampingkan ke flat: judul, kalimat pendukung, info, tombol — hiasan sketsa berlebih dihapus. `pnpm build` sukses, `pnpm lint` dan `pnpm test` 45/45 lolos. Cek doff (gradient, box-shadow, backdrop-filter) bersih.
+
+T13 | 2026-10-20 | Halaman `/privasi` dibuat dari `docs/CONTENT.md`, `public/_headers` memuat header keamanan dan CSP sesuai TRD, `public/robots.txt` memblokir `/admin`. `pnpm build` sukses (halaman privasi ikut di-build), `pnpm lint` dan `pnpm test` 45/45 lolos. Uji manual form dan Turnstile dengan CSP aktif pada pratinjau belum bisa dituntaskan penuh sampai halaman admin (T12) dan pengaturan kunci Turnstile riil selesai.
+
+Font isi | 2026-10-20 | Font body diganti ke Plus Jakarta Sans (`@fontsource-variable/plus-jakarta-sans`) atas permintaan pemilik; `@fontsource-variable/public-sans` dihapus. Tercatat di QUESTIONS Q04. Font self-hosted tanpa CDN tetap.
+
 
