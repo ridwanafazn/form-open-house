@@ -47,9 +47,27 @@ export default function RegisterForm({ turnstileSiteKey }: Props) {
   const set = <K extends keyof Fields>(key: K, value: Fields[K]) =>
     setFields((f) => ({ ...f, [key]: value }));
 
-  // Muat Turnstile saat langkah dua tampil.
+  // Muat Turnstile saat langkah dua tampil, render ulang setiap kali masuk langkah 2.
   useEffect(() => {
     if (step !== 2) return;
+
+    function renderWidget() {
+      const win = window as unknown as {
+        turnstile?: { render: (el: HTMLElement, opts: object) => void };
+      };
+      if (!turnstileRoot.current || !win.turnstile) return;
+      // Kosongkan terlebih dulu agar tidak duplikat saat kembali ke langkah 2
+      turnstileRoot.current.innerHTML = '';
+      try {
+        win.turnstile.render(turnstileRoot.current, {
+          sitekey: turnstileSiteKey,
+          callback: setToken,
+        });
+      } catch {
+        /* abaikan */
+      }
+    }
+
     const doc = document;
     if (!doc.getElementById('cf-turnstile-src')) {
       const s = doc.createElement('script');
@@ -57,26 +75,16 @@ export default function RegisterForm({ turnstileSiteKey }: Props) {
       s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
       s.async = true;
       s.defer = true;
+      s.onload = renderWidget;
       doc.head.appendChild(s);
-    }
-    if (turnstileRoot.current && !turnstileRoot.current.hasChildNodes()) {
-      const win = window as unknown as {
-        turnstile?: { render: (el: HTMLElement, opts: object) => void };
-      };
-      if (win.turnstile) {
-        try {
-          win.turnstile.render(turnstileRoot.current, {
-            sitekey: turnstileSiteKey,
-            callback: setToken,
-          });
-        } catch {
-          /* ulangi saat skrip selesai dimuat */
-        }
-      }
+    } else {
+      renderWidget();
     }
   }, [step, turnstileSiteKey]);
 
-  const progressDone = useMemo(() => (step === 2 ? 1 : step === 1 ? 1 : 0), [step]);
+  // progress: langkah 1 aktif, langkah 2 aktif saat step=2 dan sudah selesai saat kirim
+  const step1Done = step === 2;
+  const step2Done = false; // hanya true setelah berhasil kirim (navigasi keluar)
 
   function goToTwo() {
     const { ok, errors: errs } = validatePartial();
@@ -203,10 +211,8 @@ export default function RegisterForm({ turnstileSiteKey }: Props) {
     <LazyMotion features={domAnimation}>
       <form className="form" onSubmit={onSubmit} noValidate>
         <ol className="progress">
-          <li className={progressDone >= 1 ? 'done' : ''}>{content.home.form.progress[0]}</li>
-          <li className={progressDone >= 1 && step === 2 ? 'done' : ''}>
-            {content.home.form.progress[1]}
-          </li>
+          <li className={step1Done ? 'done' : 'active'}>{content.home.form.progress[0]}</li>
+          <li className={step === 2 ? 'active' : ''}>{content.home.form.progress[1]}</li>
         </ol>
 
         <AnimatePresence mode="wait">
@@ -279,23 +285,20 @@ export default function RegisterForm({ turnstileSiteKey }: Props) {
               <fieldset className="field">
                 <legend>{stepTwo[3].label}</legend>
                 <div className="chips">
-                  {content.form.majors
-                    ? Object.entries({
-                        rpl: 'RPL',
-                        dkv: 'DKV',
-                        belum_tahu: 'Belum tahu',
-                      }).map(([val, label]) => (
-                        <button
-                          key={val}
-                          type="button"
-                          aria-pressed={fields.interest_major === val}
-                          className={fields.interest_major === val ? 'chip chip--on' : 'chip'}
-                          onClick={() => set('interest_major', fields.interest_major === val ? '' : val)}
-                        >
-                          {label}
-                        </button>
-                      ))
-                    : null}
+                  {stepTwo[3].options?.map((label) => {
+                    const val = label.toLowerCase().replace(/\s+/g, '_');
+                    return (
+                      <button
+                        key={val}
+                        type="button"
+                        aria-pressed={fields.interest_major === val}
+                        className={fields.interest_major === val ? 'chip chip--on' : 'chip'}
+                        onClick={() => set('interest_major', fields.interest_major === val ? '' : val)}
+                      >
+                        {label}
+                      </button>
+                    );
+                  })}
                 </div>
                 <p className="hint">{stepTwo[3].helper}</p>
               </fieldset>
@@ -330,6 +333,7 @@ export default function RegisterForm({ turnstileSiteKey }: Props) {
         .form { display: flex; flex-direction: column; gap: var(--space-6); }
         .progress { display: flex; gap: var(--space-6); list-style: none; padding: 0; margin: 0; }
         .progress li { color: var(--ink-soft); }
+        .progress li.active { color: var(--ink); font-weight: 600; }
         .progress li.done { color: var(--teal-dark); }
         .field { display: flex; flex-direction: column; gap: var(--space-1); }
         .field label { font-style: italic; }

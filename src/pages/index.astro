@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero.astro';
 import StorySection from '../components/StorySection';
+import AddCalendar from '../components/AddCalendar';
 import RegisterForm from '../components/RegisterForm';
 import { content } from '../config/content';
 import { eventConfig } from '../config/event';
@@ -16,6 +17,19 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
     <section class="section" id="story" aria-labelledby="story-title">
       <div class="container">
         <h2 id="story-title">Apa yang bisa dilihat dan dicoba</h2>
+        <!-- Konten statis: tampil langsung tanpa JS -->
+        <div class="story-list story-list--static" id="story-static">
+          {content.home.story.map((scene, i) => (
+            <div class={`story-scene${i % 2 !== 0 ? ' story-scene--flip' : ''}`}>
+              <div class="story-scene__num">{String(i + 1).padStart(2, '0')}</div>
+              <div class="story-scene__body">
+                <h3 class="story-scene__heading">{scene.heading}</h3>
+                <p class="story-scene__text">{scene.text}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <!-- Island animasi: menggantikan konten statis saat JS aktif -->
         <StorySection client:visible />
       </div>
     </section>
@@ -39,6 +53,7 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
         </ul>
         <div class="info-actions">
           <a class="button button--primary" href={eventConfig.mapsUrl} rel="noopener" target="_blank">{content.home.eventInfo.openMap}</a>
+          <AddCalendar client:visible />
         </div>
         <p class="note">{content.home.eventInfo.scheduleNote}</p>
       </div>
@@ -51,6 +66,21 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
         <RegisterForm client:visible turnstileSiteKey={turnstileSiteKey} />
       </div>
     </section>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>{content.home.footer.text}</p>
+        <a
+          class="button button--secondary"
+          href={`https://wa.me/${eventConfig.admissionWhatsApp}?text=${encodeURIComponent('Assalamualaikum. Saya ingin bertanya tentang Open House SMKIT As Syifa.')}`}
+          rel="noopener"
+          target="_blank"
+        >{content.home.footer.cta}</a>
+        <p class="footer-legal">
+          <a href="/privasi">Kebijakan privasi</a>
+        </p>
+      </div>
+    </footer>
   </main>
 
   <a class="sticky-cta" href="#form">{content.home.hero.cta}</a>
@@ -185,6 +215,20 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
     margin-block: var(--space-4);
   }
 
+  .site-footer {
+    padding-block: var(--space-12);
+    border-top: 2px solid var(--paper-grid);
+    margin-top: var(--space-8);
+  }
+  .site-footer p {
+    margin-bottom: var(--space-4);
+    color: var(--ink-soft);
+  }
+  .footer-legal {
+    margin-top: var(--space-6) !important;
+    font-size: 0.875rem;
+  }
+
   .sticky-cta {
     position: fixed;
     left: var(--space-4);
@@ -208,7 +252,7 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
     transform: translateY(2px);
   }
   .sticky-cta.is-hidden {
-    visibility: hidden;
+    display: none;
   }
 
   @media (max-width: 719px) {

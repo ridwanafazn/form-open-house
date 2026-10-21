@@ -10,13 +10,14 @@ const isGroup = eventConfig.waJoinKind === 'group';
 const waNote = isGroup
   ? content.thankyou.nextSteps.waGroupNote
   : content.thankyou.nextSteps.waChannelNote;
-const waJoinHref = eventConfig.waJoinUrl || '#';
+const waJoinHref = eventConfig.waJoinUrl?.startsWith('http') ? eventConfig.waJoinUrl : null;
 const chatAdmisi = `https://wa.me/${eventConfig.admissionWhatsApp}?text=${encodeURIComponent(
   'Assalamualaikum. Saya ingin bertanya tentang Open House SMKIT As Syifa.',
 )}`;
 ---
 
-<Base title="Terima kasih">
+<Base title="Terima kasih" description="Pendaftaran open house berhasil dikirim.">
+  <meta slot="head" name="robots" content="noindex" />
   <main class="container">
     <section class="ty" aria-labelledby="ty-title">
       <div class="ty__doodle" aria-hidden="true">
@@ -27,10 +28,14 @@ const chatAdmisi = `https://wa.me/${eventConfig.admissionWhatsApp}?text=${encode
       <p class="ty__note">{content.thankyou.note}</p>
 
       <div class="ty__actions">
-        <a class="button button--primary" href={waJoinHref} rel="noopener" target="_blank">
-          {content.thankyou.nextSteps.joinWa}
-        </a>
-        <p class="ty__wa-note">{waNote}</p>
+        {waJoinHref && (
+          <>
+            <a class="button button--primary" href={waJoinHref} rel="noopener" target="_blank">
+              {content.thankyou.nextSteps.joinWa}
+            </a>
+            <p class="ty__wa-note">{waNote}</p>
+          </>
+        )}
       </div>
 
       <div class="ty__actions">

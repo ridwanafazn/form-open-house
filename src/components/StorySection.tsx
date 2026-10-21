@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import {
   LazyMotion,
   domAnimation,
@@ -13,6 +13,12 @@ const stories = content.home.story;
 
 export default function StorySection() {
   const prefersReduced = useReducedMotion();
+
+  // Sembunyikan fallback statis saat island ini mount
+  useEffect(() => {
+    const el = document.getElementById('story-static');
+    if (el) el.style.display = 'none';
+  }, []);
 
   return (
     <LazyMotion features={domAnimation}>
