@@ -31,6 +31,7 @@ const finalDescription = pageDescription ?? description;
     <meta name="og:title" content={title} />
     <meta name="og:description" content={finalDescription} />
     <meta name="og:type" content="website" />
+    <slot name="head" />
   </head>
   <body>
     <slot />

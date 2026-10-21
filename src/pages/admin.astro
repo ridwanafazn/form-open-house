@@ -1,0 +1,9 @@
+---
+import Base from '../layouts/Base.astro';
+import AdminApp from '../components/AdminApp';
+---
+
+<Base title="Admin" description="Halaman admin open house.">
+  <meta slot="head" name="robots" content="noindex" />
+  <AdminApp client:only="react" />
+</Base>

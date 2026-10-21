@@ -24,12 +24,12 @@ T10 | 2026-10-20 | `src/pages/api/register.ts` (route tipis, `prerender=false`) 
 
 T11 | 2026-10-20 | `src/lib/calendar.ts` (bangun `.ics` di browser) + uji unit. Halaman `terima-kasih.astro` dengan island ringkasan sessionStorage, tombol gabung WhatsApp sesuai `waJoinKind`, kalender (klien), chat admisi, dan tautan PMB. `pnpm build` sukses (3 halaman: index, doodles, terima-kasih); `pnpm test` 45/45; `pnpm lint` lolos.
 
-T15 | 2026-10-20 | Bagian insentif dan info acara ditambahkan di `index.astro` (judul insentif, isi, catatan kecil; dan info hari/tanggal, jam, tempat, alamat, tombol Buka peta, catatan susunan acara). Hero dirampingkan ke flat: judul, kalimat pendukung, info, tombol — hiasan sketsa berlebih dihapus. `pnpm build` sukses, `pnpm lint` dan `pnpm test` 45/45 lolos. Cek doff (gradient, box-shadow, backdrop-filter) bersih.
+T12 | 2026-10-21 | `src/lib/csv.ts` (buildCsv, escapeCell, downloadCsv, proteksi formula injection) + uji unit 20 kasus (65/65 total). `src/pages/admin.astro` (noindex, client:only). `src/components/AdminApp.tsx` (login, cek admins, ringkasan, daftar+filter+cari, detail, ubah status/catatan/PJ, Chat WhatsApp, ekspor CSV). Bundel halaman utama tidak memuat Supabase (verifikasi lewat grep pada dist). `pnpm build`, `pnpm lint`, `pnpm test` 65/65 lolos.
 
 T13 | 2026-10-20 | Halaman `/privasi` dibuat dari `docs/CONTENT.md`, `public/_headers` memuat header keamanan dan CSP sesuai TRD, `public/robots.txt` memblokir `/admin`. `pnpm build` sukses (halaman privasi ikut di-build), `pnpm lint` dan `pnpm test` 45/45 lolos. Uji manual form dan Turnstile dengan CSP aktif pada pratinjau belum bisa dituntaskan penuh sampai halaman admin (T12) dan pengaturan kunci Turnstile riil selesai.
+
+T15 | 2026-10-20 | Bagian insentif dan info acara ditambahkan di `index.astro` (judul insentif, isi, catatan kecil; dan info hari/tanggal, jam, tempat, alamat, tombol Buka peta, catatan susunan acara). Hero dirampingkan ke flat: judul, kalimat pendukung, info, tombol — hiasan sketsa berlebih dihapus. `pnpm build` sukses, `pnpm lint` dan `pnpm test` 45/45 lolos. Cek doff (gradient, box-shadow, backdrop-filter) bersih.
 
 Font isi | 2026-10-20 | Font body diganti ke Plus Jakarta Sans (`@fontsource-variable/plus-jakarta-sans`) atas permintaan pemilik; `@fontsource-variable/public-sans` dihapus. Tercatat di QUESTIONS Q04. Font self-hosted tanpa CDN tetap.
 
 Font heading+body | 2026-10-21 | Caveat Brush dihapus. Pasangan final: Plus Jakarta Sans Variable (heading, w700) × Lora (body, serif). `@fontsource/caveat-brush` dihapus, `@fontsource/lora` ditambahkan. Cek bersih: tidak ada `caveat` di `src/`. `pnpm build`, `pnpm lint`, `pnpm test` 45/45 lolos. `_headers` dibersihkan dari baris `*/` yang memicu warning build. Tercatat di QUESTIONS Q05.
-
-
