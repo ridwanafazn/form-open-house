@@ -2,7 +2,9 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: 'tests/e2e',
-  fullyParallel: true,
+  fullyParallel: false,
+  workers: 1,
+  timeout: 45000,
   retries: 0,
   reporter: 'list',
   use: {
@@ -12,11 +14,11 @@ export default defineConfig({
   projects: [
     {
       name: 'mobile',
-      use: { ...devices['iPhone 12'] },
+      use: { ...devices['Pixel 5'] },
     },
   ],
   webServer: {
-    command: 'pnpm dev',
+    command: 'pnpm preview',
     url: 'http://localhost:4321',
     reuseExistingServer: true,
   },

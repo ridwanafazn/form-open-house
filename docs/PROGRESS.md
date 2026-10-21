@@ -34,4 +34,5 @@ T15 | 2026-10-20 | Bagian insentif dan info acara ditambahkan di `index.astro` (
 
 Font isi | 2026-10-20 | Font body diganti ke Plus Jakarta Sans (`@fontsource-variable/plus-jakarta-sans`) atas permintaan pemilik; `@fontsource-variable/public-sans` dihapus. Tercatat di QUESTIONS Q04. Font self-hosted tanpa CDN tetap.
 
-Font heading+body | 2026-10-21 | Caveat Brush dihapus. Pasangan final: Plus Jakarta Sans Variable (heading, w700) × Lora (body, serif). `@fontsource/caveat-brush` dihapus, `@fontsource/lora` ditambahkan. Cek bersih: tidak ada `caveat` di `src/`. `pnpm build`, `pnpm lint`, `pnpm test` 45/45 lolos. `_headers` dibersihkan dari baris `*/` yang memicu warning build. Tercatat di QUESTIONS Q05.
+T18 | 2026-10-21 | Uji akhir dan serah terima tuntas. `pnpm lint` bersih tanpa error. `pnpm test` lolos 65/65 unit test. `pnpm test:e2e` lolos 8/8 skenario E2E Playwright Chromium Mobile (validasi form 2 langkah, retensi input tombol kembali, penolakan input invalid, error consent, error server, thank-you page no-summary, progress bar). Audit Lighthouse Mobile pada preview: Performance 100, Accessibility 100, Best Practices 100, SEO 91, LCP 1.4s (< 2.5s anggaran), FCP 1.4s, CLS 0.018, TBT 0ms. Dokumen `docs/LAUNCH.md` checklist tayang telah dibuat.
+
