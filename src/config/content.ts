@@ -47,9 +47,21 @@ export const content = {
     },
 
     eventInfo: {
-      scheduleNote: 'Susunan acara lengkap akan kami kabarkan lewat WhatsApp.',
-      openMap: 'Buka peta',
+      openMap: 'Buka Google Maps',
       addCalendar: 'Tambah ke kalender',
+    },
+
+    rundown: {
+      heading: 'Susunan Acara',
+      tagline: 'Jadwal kegiatan open house dari pagi hingga selesai.',
+      items: [
+        { time: '08:00 - 08:30', title: 'Registrasi & Penyambutan', desc: 'Registrasi ulang kehadiran peserta dan pembagian panduan open house.' },
+        { time: '08:30 - 09:30', title: 'Pemaparan Sekolah & Jurusan', desc: 'Pengenalan kurikulum boarding school serta keunggulan jurusan RPL dan DKV di aula.' },
+        { time: '09:30 - 11:30', title: 'Tur Kampus & Praktik Lab', desc: 'Kunjungan langsung ke ruang kelas, laboratorium komputer/desain, dan asrama santri.' },
+        { time: '11:30 - 13:00', title: 'Ishoma (Istirahat, Salat, Makan)', desc: 'Salat berjamaah di masjid kampus dan istirahat siang bersama.' },
+        { time: '13:00 - 14:30', title: 'Konsultasi PMB & Pendaftaran', desc: 'Konsultasi langsung dengan tim admisi dan guru, serta layanan pendaftaran seleksi berinsentif.' },
+        { time: '14:30 - 15:00', title: 'Ramah Tamah & Penutupan', desc: 'Sesi penutupan open house dan pembagian cinderamata.' },
+      ],
     },
 
     form: {

@@ -7,7 +7,9 @@ import RegisterForm from '../components/RegisterForm';
 import { content } from '../config/content';
 import { eventConfig } from '../config/event';
 
-const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
+// Kunci uji resmi Cloudflare Turnstile yang selalu lolos otomatis (mode pass)
+const CLOUDFLARE_TEST_SITE_KEY = '1x00000000000000000000AA';
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || CLOUDFLARE_TEST_SITE_KEY;
 ---
 
 <Base>
@@ -55,7 +57,36 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
           <a class="button button--primary" href={eventConfig.mapsUrl} rel="noopener" target="_blank">{content.home.eventInfo.openMap}</a>
           <AddCalendar client:visible />
         </div>
-        <p class="note">{content.home.eventInfo.scheduleNote}</p>
+        <div class="map-preview">
+          <iframe
+            src={eventConfig.mapsEmbedUrl}
+            width="100%"
+            height="320"
+            style="border:0;"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Peta Lokasi SMKIT As Syifa Subang"
+          ></iframe>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="rundown" aria-labelledby="rundown-title">
+      <div class="container">
+        <h2 id="rundown-title">{content.home.rundown.heading}</h2>
+        <p class="rundown-tagline">{content.home.rundown.tagline}</p>
+        <div class="rundown-list">
+          {content.home.rundown.items.map((item) => (
+            <div class="rundown-item">
+              <div class="rundown-time">{item.time}</div>
+              <div class="rundown-content">
+                <h3 class="rundown-item-title">{item.title}</h3>
+                <p class="rundown-item-desc">{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
 
@@ -213,6 +244,63 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
     flex-wrap: wrap;
     gap: var(--space-3);
     margin-block: var(--space-4);
+  }
+
+  .map-preview {
+    margin-top: var(--space-6);
+    border: 1px solid var(--paper-grid);
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--paper-card);
+  }
+
+  .map-preview iframe {
+    display: block;
+  }
+
+  .rundown-tagline {
+    color: var(--ink-soft);
+    margin-block: 0 var(--space-6);
+  }
+
+  .rundown-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .rundown-item {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    background: var(--paper-card);
+    border: 1px solid var(--paper-grid);
+    border-radius: 4px;
+  }
+
+  .rundown-time {
+    font-weight: 700;
+    color: var(--teal-dark);
+    font-size: var(--text-sm);
+  }
+
+  .rundown-item-title {
+    margin: 0 0 var(--space-1);
+    font-size: var(--text-base);
+  }
+
+  .rundown-item-desc {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--ink-soft);
+  }
+
+  @media (max-width: 640px) {
+    .rundown-item {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+    }
   }
 
   .site-footer {
