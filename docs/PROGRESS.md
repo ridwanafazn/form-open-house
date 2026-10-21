@@ -28,6 +28,8 @@ T12 | 2026-10-21 | `src/lib/csv.ts` (buildCsv, escapeCell, downloadCsv, proteksi
 
 T13 | 2026-10-20 | Halaman `/privasi` dibuat dari `docs/CONTENT.md`, `public/_headers` memuat header keamanan dan CSP sesuai TRD, `public/robots.txt` memblokir `/admin`. `pnpm build` sukses (halaman privasi ikut di-build), `pnpm lint` dan `pnpm test` 45/45 lolos. Uji manual form dan Turnstile dengan CSP aktif pada pratinjau belum bisa dituntaskan penuh sampai halaman admin (T12) dan pengaturan kunci Turnstile riil selesai.
 
+T14 | 2026-10-21 | `src/components/StorySection.tsx` dibuat dengan 4 adegan dari `content.home.story`. Adegan 1 dan 2 memakai `useScroll`+`useTransform` (parallax nomor dan teks saat scroll). Adegan 3 dan 4 memakai `whileInView` fade+geser masuk. Semua dibungkus `LazyMotion`/`domAnimation`. `prefers-reduced-motion` dihormati lewat `useReducedMotion()`. Dipasang di `index.astro` dengan `client:visible` antara hero dan insentif. `pnpm build`, `pnpm lint`, `pnpm test` 65/65 lolos. Cek doff bersih.
+
 T15 | 2026-10-20 | Bagian insentif dan info acara ditambahkan di `index.astro` (judul insentif, isi, catatan kecil; dan info hari/tanggal, jam, tempat, alamat, tombol Buka peta, catatan susunan acara). Hero dirampingkan ke flat: judul, kalimat pendukung, info, tombol — hiasan sketsa berlebih dihapus. `pnpm build` sukses, `pnpm lint` dan `pnpm test` 45/45 lolos. Cek doff (gradient, box-shadow, backdrop-filter) bersih.
 
 Font isi | 2026-10-20 | Font body diganti ke Plus Jakarta Sans (`@fontsource-variable/plus-jakarta-sans`) atas permintaan pemilik; `@fontsource-variable/public-sans` dihapus. Tercatat di QUESTIONS Q04. Font self-hosted tanpa CDN tetap.
