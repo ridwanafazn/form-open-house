@@ -5,34 +5,32 @@ const root = process.cwd();
 const serverDir = resolve(root, 'dist/server');
 const clientDir = resolve(root, 'dist/client');
 
+// Bersihkan folder cache .wrangler bila ada dari build lokal
+const wranglerCacheDir = resolve(root, '.wrangler');
+if (existsSync(wranglerCacheDir)) {
+  rmSync(wranglerCacheDir, { recursive: true, force: true });
+}
+
 if (existsSync(serverDir)) {
-  // Salin SEMUA file dan folder dari dist/server/ ke dist/client/
-  // agar seluruh modul (entry.mjs, virtual_astro_middleware.mjs, chunks, dll)
-  // tersedia utuh bagi bundler Wrangler / Cloudflare Pages.
+  // Salin SEMUA file dan folder modul server dari dist/server/ ke dist/client/
+  // agar virtual_astro_middleware.mjs, chunks, dsb. dapat diakses oleh _worker.js
   const entries = readdirSync(serverDir);
   for (const entry of entries) {
-    if (entry === 'wrangler.json') continue; // Hindari konflik config Wrangler
+    if (entry === 'wrangler.json') continue; // wrangler.toml di root sudah menjadi sumber utama
     const src = resolve(serverDir, entry);
     const dest = resolve(clientDir, entry);
     cpSync(src, dest, { recursive: true });
   }
 
-  // File entry server utama harus bernama _worker.js di Cloudflare Pages
+  // Buat _worker.js di dist/client/ dari entry.mjs
   const entryMjs = resolve(clientDir, 'entry.mjs');
   if (existsSync(entryMjs)) {
     cpSync(entryMjs, resolve(clientDir, '_worker.js'));
     console.log('[build-pages] Generated dist/client/_worker.js');
   }
 
-  // Hapus dist/server/wrangler.json jika ada di root output agar Cloudflare Pages
-  // tidak membatalkan Pages build karena membaca format Workers lama
-  const distServerWrangler = resolve(serverDir, 'wrangler.json');
-  if (existsSync(distServerWrangler)) {
-    rmSync(distServerWrangler, { force: true });
-  }
-
-  // Salin seluruh isi dist/client ke root dist agar apapun pengaturan
-  // Cloudflare Pages ("dist" atau "dist/client"), semuanya PASTI berhasil!
+  // Salin seluruh isi dist/client ke root dist agar Cloudflare Pages
+  // yang membaca "dist" maupun "dist/client" keduanya sukses
   cpSync(clientDir, resolve(root, 'dist'), { recursive: true });
-  console.log('[build-pages] Synchronized all files across dist/ and dist/client/');
+  console.log('[build-pages] Synchronized all assets to dist/');
 }
