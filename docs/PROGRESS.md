@@ -30,4 +30,6 @@ T13 | 2026-10-20 | Halaman `/privasi` dibuat dari `docs/CONTENT.md`, `public/_he
 
 Font isi | 2026-10-20 | Font body diganti ke Plus Jakarta Sans (`@fontsource-variable/plus-jakarta-sans`) atas permintaan pemilik; `@fontsource-variable/public-sans` dihapus. Tercatat di QUESTIONS Q04. Font self-hosted tanpa CDN tetap.
 
+Font heading+body | 2026-10-21 | Caveat Brush dihapus. Pasangan final: Plus Jakarta Sans Variable (heading, w700) × Lora (body, serif). `@fontsource/caveat-brush` dihapus, `@fontsource/lora` ditambahkan. Cek bersih: tidak ada `caveat` di `src/`. `pnpm build`, `pnpm lint`, `pnpm test` 45/45 lolos. `_headers` dibersihkan dari baris `*/` yang memicu warning build. Tercatat di QUESTIONS Q05.
+
 

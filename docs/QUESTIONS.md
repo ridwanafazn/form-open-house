@@ -18,6 +18,10 @@ T04 meminta halaman sementara bernama `src/pages/_doodles.astro`, tetapi Astro m
 
 Atas permintaan langsung pemilik proyek, `@fontsource-variable/plus-jakarta-sans` dipakai sebagai font isi menggantikan `@fontsource-variable/public-sans`. Paket ini di luar daftar izin di `docs/TRD.md`, tetapi karena pemilik memintanya, saya pakai dan menegakkan pengecualian ini di sini. Font judul tetap Caveat Brush. `@fontsource-variable/public-sans` sudah dihapus dari dependensi. Cek performa T02 (font self-hosted, tanpa CDN) tetap dipenuhi.
 
+## Q05 pasangan font diubah ke Plus Jakarta Sans (heading) × Lora (body) (2026-10-21)
+
+Atas keputusan final pemilik proyek: Caveat Brush dihapus, `@fontsource/lora` ditambahkan. Peran: `--font-heading` → Plus Jakarta Sans Variable (sans-serif, tegas, w700), `--font-body` → Lora (serif, mudah dibaca untuk paragraf). Bobot heading diubah dari 400 ke 700 agar Plus Jakarta Sans tampak proporsional. Font self-hosted tanpa CDN tetap terpenuhi. Keputusan sketsa: semua doodle dihapus dari tampilan kecuali PaperPlane di halaman terima kasih.
+
 
 
 

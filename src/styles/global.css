@@ -27,8 +27,8 @@
   --space-16: 64px;
 
   /* Tipografi */
-  --font-heading: 'Caveat Brush', 'Chalkboard SE', 'Comic Sans MS', cursive;
-  --font-body: 'Plus Jakarta Sans Variable', system-ui, sans-serif;
+  --font-heading: 'Plus Jakarta Sans Variable', system-ui, sans-serif;
+  --font-body: 'Lora', Georgia, serif;
 
   /* Lebar isi */
   --max-width: 1120px;
@@ -94,8 +94,8 @@ h1,
 h2,
 h3 {
   font-family: var(--font-heading);
-  font-weight: 400;
-  line-height: 1.1;
+  font-weight: 700;
+  line-height: 1.15;
   margin: 0;
 }
 
