@@ -68,6 +68,7 @@ export async function submitRegistration(
   };
 
   if (!env.supabaseUrl || !env.supabaseServiceRoleKey) {
+    console.error('[submitRegistration] Missing Supabase URL or Service Role Key');
     return { kind: 'error', status: 500, code: 'server' };
   }
 
@@ -83,12 +84,17 @@ export async function submitRegistration(
       },
       body: JSON.stringify(payload),
     });
-  } catch {
+  } catch (err) {
+    console.error('[submitRegistration] Supabase fetch failed:', err);
     return { kind: 'error', status: 500, code: 'server' };
   }
 
   if (writeRes.status === 409) return { kind: 'conflict', status: 200 };
-  if (!writeRes.ok) return { kind: 'error', status: 500, code: 'server' };
+  if (!writeRes.ok) {
+    const errBody = await writeRes.text().catch(() => '');
+    console.error('[submitRegistration] Supabase responded with error:', writeRes.status, errBody);
+    return { kind: 'error', status: 500, code: 'server' };
+  }
 
   return { kind: 'ok', status: 200 };
 }
