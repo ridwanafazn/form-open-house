@@ -1,4 +1,4 @@
-import { cpSync, existsSync, readdirSync } from 'fs';
+import { cpSync, existsSync, readdirSync, rmSync } from 'fs';
 import { resolve } from 'path';
 
 const root = process.cwd();
@@ -25,6 +25,14 @@ if (existsSync(serverDir)) {
   if (existsSync(entryMjs)) {
     cpSync(entryMjs, resolve(clientDir, '_worker.js'));
     console.log('[build-pages] Generated dist/client/_worker.js');
+  }
+
+  // Cloudflare Pages membaca konfigurasi Pages dari wrangler.toml root.
+  // Jangan biarkan konfigurasi worker internal adaptor ikut dibaca sebagai
+  // konfigurasi deployment kedua oleh Pages.
+  const generatedWrangler = resolve(serverDir, 'wrangler.json');
+  if (existsSync(generatedWrangler)) {
+    rmSync(generatedWrangler, { force: true });
   }
 
   // Salin seluruh isi dist/client ke root dist agar Cloudflare Pages
