@@ -17,11 +17,15 @@ const { adminMode = false } = Astro.props;
     <img class="floating-nav__logo" src="/images/logo.png" alt="Logo SMKIT As Syifa" width="34" height="34" />
     <span class="floating-nav__brand-text">{adminMode ? 'Admin Open House' : 'Open House'}</span>
   </a>
-  <div class="floating-nav__links">
+  <button class="floating-nav__toggle" type="button" aria-expanded="false" aria-controls="floating-nav-links">
+    <span class="floating-nav__toggle-lines" aria-hidden="true"><span></span><span></span><span></span></span>
+    <span class="floating-nav__toggle-label">Menu</span>
+  </button>
+  <div class="floating-nav__links" id="floating-nav-links">
     {adminMode ? (
       <>
-        <a href="/admin">Dashboard</a>
-        <a href="/admin#scan">Scan presensi</a>
+        <a href="#dashboard">Dashboard</a>
+        <a href="#scan">Scan presensi</a>
         <a href="/">Lihat situs</a>
       </>
     ) : (
@@ -36,6 +40,32 @@ const { adminMode = false } = Astro.props;
     )}
   </div>
 </nav>
+
+<script>
+  const nav = document.querySelector('.floating-nav');
+  const toggle = nav?.querySelector('.floating-nav__toggle');
+  const links = nav?.querySelector('.floating-nav__links');
+
+  if (nav && toggle && links) {
+    const closeMenu = () => {
+      nav.classList.remove('floating-nav--open');
+      toggle.setAttribute('aria-expanded', 'false');
+    };
+
+    toggle.addEventListener('click', () => {
+      const open = nav.classList.toggle('floating-nav--open');
+      toggle.setAttribute('aria-expanded', String(open));
+    });
+
+    links.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', closeMenu);
+    });
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 760) closeMenu();
+    });
+  }
+</script>
 
 <style>
   .floating-nav {
@@ -82,6 +112,34 @@ const { adminMode = false } = Astro.props;
   .floating-nav__brand-text {
     white-space: nowrap;
     font-size: 0.9rem;
+  }
+
+  .floating-nav__toggle {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border: 1px solid var(--paper-grid);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--ink);
+    font-family: var(--font-heading);
+    font-size: 0.76rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .floating-nav__toggle-lines {
+    display: grid;
+    gap: 3px;
+  }
+
+  .floating-nav__toggle-lines span {
+    display: block;
+    width: 16px;
+    height: 2px;
+    background: currentColor;
+    transition: transform 180ms ease, opacity 180ms ease;
   }
 
   .floating-nav__links {
@@ -145,21 +203,61 @@ const { adminMode = false } = Astro.props;
       top: 10px;
       width: calc(100% - 20px);
       gap: 8px;
-      padding-left: 10px;
+      padding: 8px 10px;
     }
 
     .floating-nav__brand-text {
       display: none;
     }
 
+    .floating-nav__toggle {
+      display: inline-flex;
+      margin-left: auto;
+    }
+
     .floating-nav__links {
-      width: 100%;
-      justify-content: flex-start;
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      left: 0;
+      display: grid;
+      gap: 4px;
+      max-height: 0;
+      padding: 0 8px;
+      overflow: hidden;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      background: var(--paper);
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: max-height 220ms ease, opacity 180ms ease, transform 220ms ease, padding 220ms ease, border-color 220ms ease;
+      pointer-events: none;
+    }
+
+    .floating-nav--open .floating-nav__links {
+      max-height: 360px;
+      padding-block: 8px;
+      border-color: var(--paper-grid);
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
     }
 
     .floating-nav__links a {
-      padding-inline: 8px;
-      font-size: 0.73rem;
+      padding: 10px;
+      font-size: 0.8rem;
+    }
+
+    .floating-nav--open .floating-nav__toggle-lines span:nth-child(1) {
+      transform: translateY(5px) rotate(45deg);
+    }
+
+    .floating-nav--open .floating-nav__toggle-lines span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .floating-nav--open .floating-nav__toggle-lines span:nth-child(3) {
+      transform: translateY(-5px) rotate(-45deg);
     }
   }
 </style>

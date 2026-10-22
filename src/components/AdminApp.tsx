@@ -246,6 +246,15 @@ function ListScreen({
     fetchRegistrations();
   }, []);
 
+  useEffect(() => {
+    const syncHash = () => {
+      setActiveTab(window.location.hash === '#scan' ? 'scan' : 'list');
+    };
+    window.addEventListener('hashchange', syncHash);
+    syncHash();
+    return () => window.removeEventListener('hashchange', syncHash);
+  }, []);
+
   const assignees = Array.from(new Set(rows.map((r) => r.assigned_to).filter(Boolean))) as string[];
 
   const filtered = rows.filter((r) => {
@@ -328,7 +337,7 @@ function ListScreen({
   }
 
   return (
-    <div className="admin-wrap">
+    <div className="admin-wrap" id="dashboard">
       <header className="admin-header">
         <div className="admin-header__brand">
           <h1>Admin Open House</h1>
@@ -336,14 +345,20 @@ function ListScreen({
             <button
               type="button"
               className={`admin-tab ${activeTab === 'list' ? 'admin-tab--active' : ''}`}
-              onClick={() => setActiveTab('list')}
+              onClick={() => {
+                setActiveTab('list');
+                window.history.replaceState(null, '', '#dashboard');
+              }}
             >
               Daftar peserta: {rows.length}
             </button>
             <button
               type="button"
               className={`admin-tab admin-tab--scan ${activeTab === 'scan' ? 'admin-tab--active' : ''}`}
-              onClick={() => setActiveTab('scan')}
+              onClick={() => {
+                setActiveTab('scan');
+                window.history.replaceState(null, '', '#scan');
+              }}
             >
               Scan Presensi QR
             </button>
@@ -831,7 +846,7 @@ function ScannerTab({
     .slice(0, 5);
 
   return (
-    <section className="admin-scanner-tab">
+    <section className="admin-scanner-tab" id="scan">
       <div className="admin-scanner-grid">
         {/* Kolom Kamera & Input */}
         <div className="admin-scanner-card">
@@ -1415,6 +1430,134 @@ const adminStyles = `
     flex-direction: column;
     align-items: flex-end;
     gap: 4px;
+  }
+
+  @media (max-width: 719px) {
+    .admin-wrap {
+      padding: 12px;
+    }
+
+    .admin-header {
+      align-items: stretch;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .admin-header__brand {
+      align-items: stretch;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .admin-header h1 {
+      font-size: 1.25rem;
+    }
+
+    .admin-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      width: 100%;
+    }
+
+    .admin-tab {
+      min-height: 42px;
+      padding-inline: 8px;
+      font-size: 0.76rem;
+    }
+
+    .admin-header > .admin-btn {
+      width: 100%;
+    }
+
+    .admin-summary {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      padding: 12px;
+    }
+
+    .admin-stat {
+      min-width: 0;
+      padding: 10px;
+      border: 1px solid #e3dccb;
+      border-radius: 6px;
+      background: #fffdf8;
+    }
+
+    .admin-stat--sources {
+      grid-column: 1 / -1;
+    }
+
+    .admin-stat__num {
+      font-size: 1.65rem;
+    }
+
+    .admin-toolbar {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    .admin-search,
+    .admin-select,
+    .admin-toolbar .admin-btn {
+      width: 100%;
+      min-height: 44px;
+    }
+
+    .admin-table-wrap {
+      margin-inline: -12px;
+      padding-inline: 12px;
+    }
+
+    .admin-table {
+      min-width: 720px;
+    }
+
+    .admin-detail {
+      gap: 16px;
+    }
+
+    .admin-dl {
+      grid-template-columns: 1fr;
+      gap: 4px;
+      padding: 14px;
+      border: 1px solid #e3dccb;
+      border-radius: 6px;
+      background: #f9f6ef;
+    }
+
+    .admin-dl dd {
+      margin-bottom: 8px;
+    }
+
+    .admin-edit__section,
+    .admin-manual-input-wrap {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .admin-edit__actions .admin-btn,
+    .admin-manual-input-wrap .admin-btn {
+      width: 100%;
+    }
+
+    .admin-scanner-card {
+      padding: 14px;
+    }
+
+    .admin-reader-box--active {
+      min-height: 240px;
+    }
+
+    .admin-recent-item {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .admin-recent-time {
+      align-items: flex-start;
+    }
   }
   .admin-empty-note {
     font-size: 0.85rem;
