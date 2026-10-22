@@ -21,6 +21,8 @@ Tidak dipakai: pustaka komponen, pustaka ikon, pustaka validasi, pustaka tanggal
 
 Hosting: Cloudflare Pages. Halaman publik dibuat statis. Hanya `src/pages/api/register.ts` yang dijalankan di server, dengan `export const prerender = false`. Baca dokumentasi terbaru Astro dan adaptor Cloudflare untuk cara membaca variabel lingkungan di server.
 
+Deployment memakai `wrangler.toml` bertipe Pages di root (`name = "form-open-house"`, `compatibility_date = "2024-09-23"`, `compatibility_flags = ["nodejs_compat"]`, `pages_build_output_dir = "dist"`). Flag `nodejs_compat` wajib ada karena bundel Server Function memuat impor modul bawaan Node; tanpa flag itu, tahap `pages functions build` gagal dengan `Could not resolve "fs"`. Karena file ini menjadi sumber utama konfigurasi Pages, hanya kunci yang didukung Pages yang boleh ditulis di dalamnya (`keep_vars` dan kunci khusus Workers ditolak). Adaptor Cloudflare dijalankan dengan `prerenderEnvironment: 'node'` agar konfigurasi Pages tidak diproses ulang sebagai konfigurasi worker saat build lokal.
+
 ## Rute
 
 1. `/` halaman utama dan form.
