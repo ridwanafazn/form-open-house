@@ -1,4 +1,5 @@
 import type { APIRoute } from 'astro';
+import { env as workerEnv } from 'cloudflare:workers';
 import QRCode from 'qrcode';
 
 export const prerender = false;
@@ -16,19 +17,18 @@ function escapeXml(value: string): string {
   });
 }
 
-export const GET: APIRoute = async ({ url, locals }) => {
+export const GET: APIRoute = async ({ url }) => {
   const code = url.searchParams.get('code')?.trim() ?? '';
   if (!/^OH-[2-9A-HJ-NP-Z]{6}$/.test(code)) {
     return new Response('Kode tiket tidak valid', { status: 400 });
   }
 
   // Runtime-dulu (binding Cloudflare / secret dashboard), fallback import.meta.env
-  // (build-time, dev lokal) — sama seperti ticket.ts.
-  const runtimeEnv = (locals as { runtime?: { env?: Record<string, string> } }).runtime?.env;
-  const supabaseUrl =
-    runtimeEnv?.SUPABASE_URL || (import.meta.env.SUPABASE_URL as string | undefined);
+  // (build-time, dev lokal). locals.runtime.env melempar exception di Astro 6+.
+  const runtimeEnv = (workerEnv ?? {}) as Record<string, string | undefined>;
+  const supabaseUrl = runtimeEnv.SUPABASE_URL || (import.meta.env.SUPABASE_URL as string | undefined);
   const serviceRoleKey =
-    runtimeEnv?.SUPABASE_SERVICE_ROLE_KEY ||
+    runtimeEnv.SUPABASE_SERVICE_ROLE_KEY ||
     (import.meta.env.SUPABASE_SERVICE_ROLE_KEY as string | undefined);
   if (!supabaseUrl || !serviceRoleKey) {
     return new Response('Server tidak siap', { status: 500 });

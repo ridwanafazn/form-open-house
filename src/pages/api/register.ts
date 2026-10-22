@@ -1,9 +1,10 @@
 import type { APIRoute } from 'astro';
+import { env as workerEnv } from 'cloudflare:workers';
 import { bodyTooLarge, submitRegistration } from '../../lib/submitRegistration';
 
 export const prerender = false;
 
-export const POST: APIRoute = async ({ request, locals }) => {
+export const POST: APIRoute = async ({ request }) => {
   // 1. Tolak jika isi lebih dari 10 KB.
   const contentLength = Number(request.headers.get('content-length') ?? '0');
   if (bodyTooLarge(contentLength)) {
@@ -17,13 +18,14 @@ export const POST: APIRoute = async ({ request, locals }) => {
     return Response.json({ ok: false }, { status: 400 });
   }
 
-  // Env dibaca runtime-dulu (binding Cloudflare / secret dashboard) lalu
-  // import.meta.env (build-time, untuk dev lokal). import.meta.env di-replace
-  // Vite saat build sehingga secret dashboard tidak pernah sampai lewat
-  // import.meta.env; karena itu dibaca dari locals.runtime.env.
-  const runtimeEnv = (locals as { runtime?: { env?: Record<string, string> } }).runtime?.env;
+  // Env dibaca runtime-dulu dari binding Cloudflare (`cloudflare:workers`),
+  // lalu fallback import.meta.env (build-time, untuk dev lokal). Di Astro 6+,
+  // `locals.runtime.env` sudah DILARANG dan melempar exception; walau dulu
+  // dibaca lewat import.meta.env, secret dashboard tidak pernah sampai karena
+  // import.meta.env di-replace Vite saat build.
+  const runtimeEnv = (workerEnv ?? {}) as Record<string, string | undefined>;
   const publicSiteUrl =
-    runtimeEnv?.PUBLIC_SITE_URL || (import.meta.env.PUBLIC_SITE_URL as string | undefined) || '';
+    runtimeEnv.PUBLIC_SITE_URL || (import.meta.env.PUBLIC_SITE_URL as string | undefined) || '';
   const requestHost = (() => {
     try {
       return new URL(request.url).hostname;
@@ -37,7 +39,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
   // Hanya dipakai bila permintaan datang dari localhost, tidak untuk domain publik.
   const CLOUDFLARE_TEST_SECRET_KEY = '1x0000000000000000000000000000000AA';
   let turnstileSecret =
-    runtimeEnv?.TURNSTILE_SECRET_KEY ||
+    runtimeEnv.TURNSTILE_SECRET_KEY ||
     (import.meta.env.TURNSTILE_SECRET_KEY as string | undefined) ||
     '';
   // Kunci uji tidak boleh dipakai di domain publik: form harus ditolak dengan
@@ -48,15 +50,15 @@ export const POST: APIRoute = async ({ request, locals }) => {
   const env = {
     turnstileSecret,
     registrationOpen:
-      (runtimeEnv?.REGISTRATION_OPEN ?? import.meta.env.REGISTRATION_OPEN) !== 'false',
+      (runtimeEnv.REGISTRATION_OPEN ?? import.meta.env.REGISTRATION_OPEN) !== 'false',
     supabaseUrl:
-      runtimeEnv?.SUPABASE_URL || (import.meta.env.SUPABASE_URL as string | undefined) || '',
+      runtimeEnv.SUPABASE_URL || (import.meta.env.SUPABASE_URL as string | undefined) || '',
     supabaseServiceRoleKey:
-      runtimeEnv?.SUPABASE_SERVICE_ROLE_KEY ||
+      runtimeEnv.SUPABASE_SERVICE_ROLE_KEY ||
       (import.meta.env.SUPABASE_SERVICE_ROLE_KEY as string | undefined) ||
       '',
     fonnteApiToken:
-      runtimeEnv?.FONNTE_API_TOKEN || (import.meta.env.FONNTE_API_TOKEN as string | undefined) || '',
+      runtimeEnv.FONNTE_API_TOKEN || (import.meta.env.FONNTE_API_TOKEN as string | undefined) || '',
     publicSiteUrl,
   };
 

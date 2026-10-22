@@ -1,16 +1,20 @@
 import type { APIRoute } from 'astro';
+import { env as workerEnv } from 'cloudflare:workers';
 
 export const prerender = false;
 
-export const GET: APIRoute = async ({ url, locals }) => {
+export const GET: APIRoute = async ({ url }) => {
   const code = url.searchParams.get('code')?.trim() ?? '';
   if (!/^OH-[2-9A-HJ-NP-Z]{6}$/.test(code)) {
     return Response.json({ ok: false, error: 'ticket_invalid' }, { status: 400 });
   }
 
-  const runtimeEnv = (locals as { runtime?: { env?: Record<string, string> } }).runtime?.env;
-  const supabaseUrl = runtimeEnv?.SUPABASE_URL || import.meta.env.SUPABASE_URL;
-  const serviceRoleKey = runtimeEnv?.SUPABASE_SERVICE_ROLE_KEY || import.meta.env.SUPABASE_SERVICE_ROLE_KEY;
+  // Runtime-dulu (binding Cloudflare / secret dashboard) lalu fallback
+  // import.meta.env (build-time, dev lokal). locals.runtime.env melempar
+  // exception di Astro 6+, jadi binding dibaca dari `cloudflare:workers`.
+  const runtimeEnv = (workerEnv ?? {}) as Record<string, string | undefined>;
+  const supabaseUrl = runtimeEnv.SUPABASE_URL || import.meta.env.SUPABASE_URL;
+  const serviceRoleKey = runtimeEnv.SUPABASE_SERVICE_ROLE_KEY || import.meta.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !serviceRoleKey) {
     return Response.json({ ok: false, error: 'server' }, { status: 500 });
