@@ -1,19 +1,13 @@
-import { cpSync, existsSync, readdirSync, rmSync } from 'fs';
+import { cpSync, existsSync, readdirSync, readFileSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 
 const root = process.cwd();
 const serverDir = resolve(root, 'dist/server');
 const clientDir = resolve(root, 'dist/client');
 
-// Bersihkan folder cache .wrangler bila ada dari build lokal
-const wranglerCacheDir = resolve(root, '.wrangler');
-if (existsSync(wranglerCacheDir)) {
-  try {
-    rmSync(wranglerCacheDir, { recursive: true, force: true });
-  } catch {
-    // Abaikan jika .wrangler sedang di-lock oleh proses miniflare/dev lokal di Windows
-  }
-}
+// Catatan: folder .wrangler TIDAK dihapus di sini. Build Cloudflare Vite plugin
+// menulis .wrangler/deploy/config.json yang dipakai `astro preview` dan miniflare.
+// Folder cache itu sudah dibersihkan oleh script prebuild sebelum build berikutnya.
 
 if (existsSync(serverDir)) {
   // Salin SEMUA file dan folder modul server dari dist/server/ ke dist/client/
@@ -31,6 +25,19 @@ if (existsSync(serverDir)) {
   if (existsSync(entryMjs)) {
     cpSync(entryMjs, resolve(clientDir, '_worker.js'));
     console.log('[build-pages] Generated dist/client/_worker.js');
+  }
+
+  // Wrangler menolak binding ASSETS bila config dibaca sebagai proyek Pages
+  // (karena pages_build_output_dir di wrangler.toml root). Config ini hanya
+  // dipakai untuk preview/miniflare lokal, jadi penanda Pages dilepas di sini.
+  const serverWrangler = resolve(serverDir, 'wrangler.json');
+  if (existsSync(serverWrangler)) {
+    const raw = JSON.parse(readFileSync(serverWrangler, 'utf8'));
+    delete raw.pages_build_output_dir;
+    delete raw.topLevelName;
+    delete raw.userConfigPath;
+    writeFileSync(serverWrangler, JSON.stringify(raw));
+    console.log('[build-pages] Prepared dist/server/wrangler.json for local preview');
   }
 
   // Salin seluruh isi dist/client ke root dist agar Cloudflare Pages
