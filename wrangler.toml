@@ -1,7 +1,9 @@
-# Konfigurasi Cloudflare Pages untuk Astro + @astrojs/cloudflare.
-# File ini menjadi sumber tunggal compatibility settings saat diketahui Cloudflare Pages,
-# sehingga flag nodejs_compat selalu aktif meskipun pengaturan dashboard berubah.
+# Konfigurasi Cloudflare Workers untuk Astro + @astrojs/cloudflare.
+# Adaptor membaca file ini saat build untuk compatibility settings (nodejs_compat)
+# dan menghasilkan konfigurasi deploy lengkap di dist/server/wrangler.json
+# (main = worker entry, assets binding). JANGAN tambahkan pages_build_output_dir:
+# file ini tipe Workers, bukan Pages, dan kombinasi main+pages_build_output_dir
+# ditolak wrangler.
 name = "smkit-assyifa-ohs"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
-pages_build_output_dir = "dist"

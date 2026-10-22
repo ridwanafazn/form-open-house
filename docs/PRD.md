@@ -87,4 +87,4 @@ Tidak masuk: object storage Cloudinary (QR di-generate di browser sebagai teks/S
 2. Tautan WhatsApp setelah daftar bisa berupa grup atau saluran, diatur di konfigurasi. Jika grup, halaman terima kasih menampilkan peringatan bahwa nomor terlihat oleh anggota lain.
 3. Jumlah yang hadir dipilih 1 sampai 10, bawaan 2.
 4. Tanggal acara, alamat, nomor admisi, dan tautan WhatsApp ditulis sebagai teks pengganti di konfigurasi sampai diisi pemilik proyek.
-5. Hosting di Cloudflare Pages dengan alamat pages.dev. Pindah ke subdomain sekolah dilakukan belakangan tanpa mengubah kode.
+5. Hosting di Cloudflare Workers dengan alamat workers.dev melalui alur git-connected Workers Builds. Pindah ke subdomain sekolah dilakukan belakangan tanpa mengubah kode.

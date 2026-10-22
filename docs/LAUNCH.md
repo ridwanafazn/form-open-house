@@ -1,6 +1,6 @@
 # Panduan Tayang (Launch Checklist) — Form Open House SMKIT As Syifa
 
-Dokumen ini berisi daftar periksa manual yang harus diselesaikan oleh tim panitia / pemilik proyek sebelum situs diluncurkan ke publik di Cloudflare Pages.
+Dokumen ini berisi daftar periksa manual yang harus diselesaikan oleh tim panitia / pemilik proyek sebelum situs diluncurkan ke publik di Cloudflare Workers.
 
 ---
 
@@ -32,13 +32,13 @@ FAIL_ON_PLACEHOLDER=true pnpm build
 
 ---
 
-## 3. Akun dan Variabel Lingkungan di Cloudflare Pages
+## 3. Akun dan Variabel Lingkungan di Cloudflare
 
-Atur environment variables berikut pada dashboard Cloudflare Pages (**Settings > Environment variables**):
+Atur environment variables berikut pada dashboard Cloudflare (**Settings > Variables and Secrets**):
 
 | Nama Variabel | Tipe | Contoh / Keterangan |
 |---|---|---|
-| `PUBLIC_SITE_URL` | Plain text | URL produksi (mis. `https://openhouse.smkit-assyifa.sch.id` atau `https://*.pages.dev`) |
+| `PUBLIC_SITE_URL` | Plain text | URL produksi (mis. `https://openhouse.smkit-assyifa.sch.id` atau `https://*.workers.dev`) |
 | `PUBLIC_TURNSTILE_SITE_KEY` | Plain text | Site key Cloudflare Turnstile resmi domain Anda |
 | `TURNSTILE_SECRET_KEY` | Secret | Secret key Cloudflare Turnstile |
 | `PUBLIC_SUPABASE_URL` | Plain text | URL endpoint proyek Supabase |

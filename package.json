@@ -10,7 +10,7 @@
   "packageManager": "pnpm@10.11.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && node scripts/build-pages.mjs",
+    "build": "astro build",
     "prebuild": "node -e \"try { fs.rmSync('.wrangler', { recursive: true, force: true }); } catch {}\" && node scripts/check-placeholders.mjs",
     "check:placeholders": "node scripts/check-placeholders.mjs",
     "preview": "astro preview",
@@ -43,6 +43,7 @@
     "prettier": "^3.9.10",
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2",
-    "vitest": "^5.0.5"
+    "vitest": "^5.0.5",
+    "wrangler": "4.151.2"
   }
 }

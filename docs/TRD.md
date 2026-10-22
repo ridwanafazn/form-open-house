@@ -19,9 +19,9 @@ Tailwind CSS diizinkan untuk utilitas layout, spacing, responsive state, dan kom
 
 Tidak dipakai: pustaka komponen, pustaka ikon, pustaka validasi, pustaka tanggal.
 
-Hosting: Cloudflare Pages. Halaman publik dibuat statis. Hanya `src/pages/api/register.ts` yang dijalankan di server, dengan `export const prerender = false`. Baca dokumentasi terbaru Astro dan adaptor Cloudflare untuk cara membaca variabel lingkungan di server.
+Hosting: Cloudflare Workers melalui alur git-connected Workers Builds. Halaman publik dibuat statis dan disajikan lewat binding `ASSETS`; rute dinamis (`/api/register`, `/api/ticket`, `/api/ticket-image`, `/api/ticket-qr`, `/e-ticket/[code]`) dijalankan oleh Worker (`export const prerender = false`). Baca dokumentasi terbaru Astro dan adaptor Cloudflare untuk cara membaca variabel lingkungan di server.
 
-Deployment memakai `wrangler.toml` bertipe Pages di root (`name = "smkit-assyifa-ohs"`, `compatibility_date = "2024-09-23"`, `compatibility_flags = ["nodejs_compat"]`, `pages_build_output_dir = "dist"`); `name` harus sama persis dengan nama project Pages. Versi Node dikunci lewat `.nvmrc` dan `.node-version` berisi `22.22.0` supaya build image Pages tidak memakai Node bawaan `22.16.0` yang ditolak Astro. Flag `nodejs_compat` wajib ada karena bundel Server Function memuat impor modul bawaan Node; tanpa flag itu, tahap `pages functions build` gagal dengan `Could not resolve "fs"`. Karena file ini menjadi sumber utama konfigurasi Pages, hanya kunci yang didukung Pages yang boleh ditulis di dalamnya (`keep_vars` dan kunci khusus Workers ditolak). Adaptor Cloudflare dijalankan dengan `prerenderEnvironment: 'node'` agar konfigurasi Pages tidak diproses ulang sebagai konfigurasi worker saat build lokal.
+Build memakai `pnpm run build`: adaptor Cloudflare menghasilkan `dist/client` untuk aset statis dan `dist/server` untuk modul Worker, lengkap dengan `dist/server/wrangler.json` berisi `main = "entry.mjs"`, binding `ASSETS` ke `../client`, serta compatibility settings dari `wrangler.toml`. Perintah deploy: `npx wrangler deploy --config dist/server/wrangler.json`. `wrangler.toml` di root adalah sumber compatibility settings (`name = "smkit-assyifa-ohs"`, `compatibility_date = "2024-09-23"`, `compatibility_flags = ["nodejs_compat"]`); JANGAN menambah `pages_build_output_dir` ke file ini karena menandai project sebagai Pages dan wrangler menolak kombinasi `main` + `pages_build_output_dir`. Versi Node dikunci lewat `.nvmrc` dan `.node-version` berisi `22.22.0`. Flag `nodejs_compat` wajib ada karena bundel Worker memuat impor modul bawaan Node. `wrangler` dicantumkan sebagai devDependency (`4.151.2`) agar `npx wrangler` tersedia di environment build. Adaptor Cloudflare dijalankan dengan `prerenderEnvironment: 'node'`.
 
 ## Rute
 
@@ -54,7 +54,7 @@ REGISTRATION_OPEN=true
 
 Catatan: `SUPABASE_SERVICE_ROLE_KEY` dan `TURNSTILE_SECRET_KEY` hanya untuk server. Untuk pengembangan lokal, Cloudflare menyediakan kunci uji Turnstile yang selalu lolos. Cek nilainya di dokumentasi Cloudflare sebelum dipakai.
 
-Kunci uji Turnstile hanya boleh dipakai di localhost. Form dan endpoint menolak kunci uji di host lain: halaman menampilkan pesan `errors.turnstile_config` dan endpoint membalas `503` dengan kode `config`. Karena itu, isi `PUBLIC_TURNSTILE_SITE_KEY` dan `TURNSTILE_SECRET_KEY` dengan kunci asli di setiap environment Cloudflare Pages (Production dan Preview) sebelum dipakai pendaftar. Pemeriksaan ini dilakukan saat runtime dari host permintaan, bukan saat build, agar `pnpm dev` dan `pnpm preview` di localhost tetap bisa memakai kunci uji.
+Kunci uji Turnstile hanya boleh dipakai di localhost. Form dan endpoint menolak kunci uji di host lain: halaman menampilkan pesan `errors.turnstile_config` dan endpoint membalas `503` dengan kode `config`. Karena itu, isi `PUBLIC_TURNSTILE_SITE_KEY` dan `TURNSTILE_SECRET_KEY` dengan kunci asli di setiap environment Cloudflare (Production dan Preview) sebelum dipakai pendaftar. Pemeriksaan ini dilakukan saat runtime dari host permintaan, bukan saat build, agar `pnpm dev` dan `pnpm preview` di localhost tetap bisa memakai kunci uji.
 
 ## Konfigurasi acara
 
@@ -190,8 +190,9 @@ Opsional. Hanya dimuat jika `PUBLIC_META_PIXEL_ID` ada. Dimuat setelah halaman i
 
 ## Deploy
 
-1. Buat proyek Cloudflare Pages dari repo. Perintah build: `pnpm build`. Isi variabel lingkungan di dasbor.
+1. Hubungkan repo lewat alur Workers Builds (Workers & Pages > Create > Import a repository / Connect to Git). Build command: `pnpm run build`. Deploy command: `npx wrangler deploy --config dist/server/wrangler.json`. `wrangler` sudah menjadi devDependency sehingga `npx` menemukannya di node_modules.
 2. Proyek Supabase dibuat di region Singapura. Jalankan `supabase/migrations/0001_init.sql` di SQL editor.
-3. Cabang `main` menjadi produksi. Setiap pull request mendapat pratinjau.
-4. Jalankan `pnpm build` lebih dulu sebelum `pnpm preview`. Build menghasilkan `.wrangler/deploy/config.json` yang dipakai preview/miniflare; karena itu `scripts/build-pages.mjs` tidak menghapus folder `.wrangler` sesudah build (pembersihan dilakukan script `prebuild` sebelum build berikutnya).
-5. Kunci Turnstile asli wajib diisi di lingkungan Production dan Preview. Bila kunci uji terpasang di sana, form menampilkan pesan konfigurasi dan endpoint membalas `503 config`, bukan menerima pendaftaran tanpa pemeriksaan keamanan.
+3. Cabang `main` menjadi produksi. Setiap pull request mendapat pratinjau versi.
+4. Jalankan `pnpm build` lebih dulu sebelum `pnpm preview`. Script `prebuild` membersihkan `.wrangler`; build menulis ulang konfigurasi yang dipakai `astro preview`/miniflare (`dist/server/wrangler.json` dan cache `.wrangler`).
+5. Setel semua environment variables di dashboard Cloudflare (Settings > Variables and Secrets), termasuk kunci Turnstile asli untuk Production dan Preview. Bila kunci uji terpasang di sana, form menampilkan pesan konfigurasi dan endpoint membalas `503 config`, bukan menerima pendaftaran tanpa pemeriksaan keamanan.
+6. Binding yang dihasilkan adaptor (`SESSION` KV dan `IMAGES`) tercantum di `dist/server/wrangler.json`. Aplikasi ini tidak memakai Astro sessions maupun Image service, jadi binding itu tidak berpengaruh pada runtime; biarkan apa adanya agar deploy konsisten.
