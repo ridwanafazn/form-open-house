@@ -64,6 +64,27 @@ const STATUS_LABELS: Record<FollowupStatus, string> = {
   sudah_daftar_pmb: 'Sudah daftar PMB',
 };
 
+function showAdminProfile(user: {
+  id: string;
+  email?: string | null;
+  user_metadata?: { full_name?: string; name?: string };
+}) {
+  const wrap = document.getElementById('admin-nav-user');
+  const name = document.getElementById('admin-nav-name');
+  const avatar = document.getElementById('admin-nav-avatar');
+  if (!wrap || !name || !avatar) return;
+  const displayName = user.user_metadata?.full_name || user.user_metadata?.name || user.email || 'Admin';
+  name.textContent = displayName;
+  // Foto profil acak dari dicebear sesuai seed akun.
+  avatar.src = `https://api.dicebear.com/9.x/dice/svg?seed=${encodeURIComponent(user.id || displayName)}`;
+  wrap.hidden = false;
+  try {
+    localStorage.setItem('oh_admin_email', user.email ?? '');
+  } catch {
+    /* storage tidak tersedia; abaikan */
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Komponen utama
 // ---------------------------------------------------------------------------
@@ -83,9 +104,28 @@ export default function AdminApp() {
     if (!supabase) return;
     supabase.auth.getSession().then(({ data }) => {
       if (data.session) {
+        showAdminProfile(data.session.user);
         setScreen('checking');
       }
     });
+  }, []);
+
+  // Tombol keluar kini berada di navbar, bukan di halaman.
+  useEffect(() => {
+    const onNavLogout = () => {
+      if (supabase) void supabase.auth.signOut();
+      const wrap = document.getElementById('admin-nav-user');
+      if (wrap) wrap.hidden = true;
+      try {
+        localStorage.removeItem('oh_admin_email');
+      } catch {
+        /* storage tidak tersedia; abaikan */
+      }
+      setScreen('login');
+      setLoginError('');
+    };
+    window.addEventListener('admin-logout', onNavLogout);
+    return () => window.removeEventListener('admin-logout', onNavLogout);
   }, []);
 
   async function handleLogin(email: string, password: string) {
@@ -116,6 +156,7 @@ export default function AdminApp() {
       setScreen('login');
       return;
     }
+    showAdminProfile(user);
     setScreen('list');
   }
 
@@ -123,22 +164,12 @@ export default function AdminApp() {
     if (screen === 'checking') handleAdminCheck();
   }, [screen]);
 
-  async function handleLogout() {
-    if (!supabase) return;
-    await supabase.auth.signOut();
-    setScreen('login');
-    setLoginError('');
-  }
-
   if (configError) return <ErrorScreen message={configError} />;
 
   if (screen === 'login') return <LoginScreen onLogin={handleLogin} error={loginError} />;
   if (screen === 'checking') return <LoadingScreen message="Memeriksa akses…" />;
   if (screen === 'list') return (
-    <ListScreen
-      onLogout={handleLogout}
-      setScreen={setScreen}
-    />
+    <ListScreen setScreen={setScreen} />
   );
 
   return null;
@@ -210,10 +241,8 @@ function LoginScreen({ onLogin, error }: { onLogin: (e: string, p: string) => vo
 // Layar daftar
 // ---------------------------------------------------------------------------
 function ListScreen({
-  onLogout,
   setScreen,
 }: {
-  onLogout: () => void;
   setScreen: (s: Screen) => void;
 }) {
   const [activeTab, setActiveTab] = useState<Tab>(() =>
@@ -373,9 +402,6 @@ function ListScreen({
             </button>
           </div>
         </div>
-        <button className="admin-btn admin-btn--ghost" onClick={onLogout}>
-          Keluar
-        </button>
       </header>
 
       {/* Tampilan Tab Scan Presensi */}

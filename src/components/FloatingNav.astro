@@ -15,7 +15,7 @@ const { adminMode = false } = Astro.props;
 <nav class:list={['floating-nav', { 'floating-nav--admin': adminMode }]} aria-label={adminMode ? 'Navigasi admin' : 'Navigasi utama'}>
   <a class="floating-nav__brand" href={adminMode ? '/admin' : '/'} aria-label={adminMode ? 'Halaman admin' : 'Beranda Open House SMKIT As Syifa'}>
     <img class="floating-nav__logo" src="/images/logo.png" alt="Logo SMKIT As Syifa" width="34" height="34" />
-    <span class="floating-nav__brand-text">{adminMode ? 'Admin Open House' : 'Open House'}</span>
+    <span class="floating-nav__brand-text">{adminMode ? 'Admin Open House' : 'Open House SMKIT As-syifa'}</span>
   </a>
   <button class="floating-nav__toggle" type="button" aria-expanded="false" aria-controls="floating-nav-links">
     <span class="floating-nav__toggle-lines" aria-hidden="true"><span></span><span></span><span></span></span>
@@ -27,14 +27,16 @@ const { adminMode = false } = Astro.props;
         <a href="#dashboard">Dashboard</a>
         <a href="#scan">Scan presensi</a>
         <a href="/">Lihat situs</a>
+        <span class="floating-nav__user" id="admin-nav-user" hidden>
+          <img class="floating-nav__avatar" id="admin-nav-avatar" src="" alt="Foto profil admin" width="28" height="28" />
+          <span class="floating-nav__user-name" id="admin-nav-name"></span>
+        </span>
+        <button type="button" class="floating-nav__logout" id="admin-nav-logout">Keluar</button>
       </>
     ) : (
       <>
-        <a href="/">Home</a>
-        <a href="/#story">Pengalaman</a>
         <a href="/#event-info">Info acara</a>
         <a href="/#rundown">Rundown</a>
-        <a href="/privasi">Kebijakan privasi</a>
         <a class="floating-nav__admission" href={admissionHref} rel="noopener" target="_blank">Admisi</a>
       </>
     )}
@@ -65,6 +67,13 @@ const { adminMode = false } = Astro.props;
       if (window.innerWidth > 760) closeMenu();
     });
   }
+
+  // Tombol keluar di navbar admin didelegasikan ke aplikasi admin.
+  document
+    .getElementById('admin-nav-logout')
+    ?.addEventListener('click', () => {
+      window.dispatchEvent(new CustomEvent('admin-logout'));
+    });
 </script>
 
 <style>
@@ -81,9 +90,9 @@ const { adminMode = false } = Astro.props;
     min-height: 56px;
     padding: 8px 10px 8px 14px;
     transform: translateX(-50%);
-    border: 1px solid var(--paper-grid);
+    border: 1px solid #b7d6cf;
     border-radius: 14px;
-    background: var(--paper);
+    background: #eef5f2;
     color: var(--ink);
   }
 
@@ -112,6 +121,54 @@ const { adminMode = false } = Astro.props;
   .floating-nav__brand-text {
     white-space: nowrap;
     font-size: 0.9rem;
+  }
+
+  .floating-nav__user {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-width: 0;
+    padding: 3px 10px 3px 3px;
+    border: 1px solid #b7d6cf;
+    border-radius: 999px;
+    background: #fffdf8;
+  }
+
+  .floating-nav__avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #fffdf8;
+  }
+
+  .floating-nav__user-name {
+    max-width: 150px;
+    overflow: hidden;
+    color: var(--ink);
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .floating-nav__logout {
+    padding: 8px 12px;
+    border: 1px solid var(--error);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--error);
+    font-family: var(--font-heading);
+    font-size: 0.76rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 160ms ease, color 160ms ease;
+  }
+
+  .floating-nav__logout:hover,
+  .floating-nav__logout:focus-visible {
+    background: var(--error);
+    color: #fffdf8;
   }
 
   .floating-nav__toggle {
@@ -246,6 +303,16 @@ const { adminMode = false } = Astro.props;
     .floating-nav__links a {
       padding: 10px;
       font-size: 0.8rem;
+    }
+
+    .floating-nav__user {
+      justify-content: flex-start;
+      border-radius: 10px;
+    }
+
+    .floating-nav__logout {
+      padding: 10px;
+      text-align: left;
     }
 
     .floating-nav--open .floating-nav__toggle-lines span:nth-child(1) {
