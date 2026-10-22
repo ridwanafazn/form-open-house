@@ -3,7 +3,7 @@ import { bodyTooLarge, submitRegistration } from '../../lib/submitRegistration';
 
 export const prerender = false;
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, locals }) => {
   // 1. Tolak jika isi lebih dari 10 KB.
   const contentLength = Number(request.headers.get('content-length') ?? '0');
   if (bodyTooLarge(contentLength)) {
@@ -17,10 +17,13 @@ export const POST: APIRoute = async ({ request }) => {
     return Response.json({ ok: false }, { status: 400 });
   }
 
-  // Kunci uji resmi Cloudflare Turnstile yang selalu lolos otomatis (mode pass).
-  // Hanya dipakai bila permintaan datang dari localhost, tidak untuk domain publik.
-  const CLOUDFLARE_TEST_SECRET_KEY = '1x0000000000000000000000000000000AA';
-  const publicSiteUrl = (import.meta.env.PUBLIC_SITE_URL as string | undefined) ?? '';
+  // Env dibaca runtime-dulu (binding Cloudflare / secret dashboard) lalu
+  // import.meta.env (build-time, untuk dev lokal). import.meta.env di-replace
+  // Vite saat build sehingga secret dashboard tidak pernah sampai lewat
+  // import.meta.env; karena itu dibaca dari locals.runtime.env.
+  const runtimeEnv = (locals as { runtime?: { env?: Record<string, string> } }).runtime?.env;
+  const publicSiteUrl =
+    runtimeEnv?.PUBLIC_SITE_URL || (import.meta.env.PUBLIC_SITE_URL as string | undefined) || '';
   const requestHost = (() => {
     try {
       return new URL(request.url).hostname;
@@ -30,7 +33,13 @@ export const POST: APIRoute = async ({ request }) => {
   })();
   const isLocalHost = requestHost === 'localhost' || requestHost === '127.0.0.1';
 
-  let turnstileSecret = (import.meta.env.TURNSTILE_SECRET_KEY as string | undefined) ?? '';
+  // Kunci uji resmi Cloudflare Turnstile yang selalu lolos otomatis (mode pass).
+  // Hanya dipakai bila permintaan datang dari localhost, tidak untuk domain publik.
+  const CLOUDFLARE_TEST_SECRET_KEY = '1x0000000000000000000000000000000AA';
+  let turnstileSecret =
+    runtimeEnv?.TURNSTILE_SECRET_KEY ||
+    (import.meta.env.TURNSTILE_SECRET_KEY as string | undefined) ||
+    '';
   // Kunci uji tidak boleh dipakai di domain publik: form harus ditolak dengan
   // pesan konfigurasi, bukan lolos tanpa pemeriksaan keamanan.
   if (!isLocalHost && turnstileSecret === CLOUDFLARE_TEST_SECRET_KEY) turnstileSecret = '';
@@ -38,11 +47,16 @@ export const POST: APIRoute = async ({ request }) => {
 
   const env = {
     turnstileSecret,
-    registrationOpen: import.meta.env.REGISTRATION_OPEN !== 'false',
-    supabaseUrl: (import.meta.env.SUPABASE_URL as string | undefined) ?? '',
+    registrationOpen:
+      (runtimeEnv?.REGISTRATION_OPEN ?? import.meta.env.REGISTRATION_OPEN) !== 'false',
+    supabaseUrl:
+      runtimeEnv?.SUPABASE_URL || (import.meta.env.SUPABASE_URL as string | undefined) || '',
     supabaseServiceRoleKey:
-      (import.meta.env.SUPABASE_SERVICE_ROLE_KEY as string | undefined) ?? '',
-    fonnteApiToken: (import.meta.env.FONNTE_API_TOKEN as string | undefined) ?? '',
+      runtimeEnv?.SUPABASE_SERVICE_ROLE_KEY ||
+      (import.meta.env.SUPABASE_SERVICE_ROLE_KEY as string | undefined) ||
+      '',
+    fonnteApiToken:
+      runtimeEnv?.FONNTE_API_TOKEN || (import.meta.env.FONNTE_API_TOKEN as string | undefined) || '',
     publicSiteUrl,
   };
 

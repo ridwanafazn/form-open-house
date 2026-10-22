@@ -4,6 +4,6 @@
 # (main = worker entry, assets binding). JANGAN tambahkan pages_build_output_dir:
 # file ini tipe Workers, bukan Pages, dan kombinasi main+pages_build_output_dir
 # ditolak wrangler.
-name = "smkit-assyifa-ohs"
+name = "smkit-assyifa-ophs"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]

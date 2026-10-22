@@ -16,14 +16,20 @@ function escapeXml(value: string): string {
   });
 }
 
-export const GET: APIRoute = async ({ url }) => {
+export const GET: APIRoute = async ({ url, locals }) => {
   const code = url.searchParams.get('code')?.trim() ?? '';
   if (!/^OH-[2-9A-HJ-NP-Z]{6}$/.test(code)) {
     return new Response('Kode tiket tidak valid', { status: 400 });
   }
 
-  const supabaseUrl = import.meta.env.SUPABASE_URL as string | undefined;
-  const serviceRoleKey = import.meta.env.SUPABASE_SERVICE_ROLE_KEY as string | undefined;
+  // Runtime-dulu (binding Cloudflare / secret dashboard), fallback import.meta.env
+  // (build-time, dev lokal) — sama seperti ticket.ts.
+  const runtimeEnv = (locals as { runtime?: { env?: Record<string, string> } }).runtime?.env;
+  const supabaseUrl =
+    runtimeEnv?.SUPABASE_URL || (import.meta.env.SUPABASE_URL as string | undefined);
+  const serviceRoleKey =
+    runtimeEnv?.SUPABASE_SERVICE_ROLE_KEY ||
+    (import.meta.env.SUPABASE_SERVICE_ROLE_KEY as string | undefined);
   if (!supabaseUrl || !serviceRoleKey) {
     return new Response('Server tidak siap', { status: 500 });
   }
