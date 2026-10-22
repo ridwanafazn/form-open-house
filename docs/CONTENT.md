@@ -91,12 +91,35 @@ Pesan kesalahan
 Judul: Terima kasih, pendaftaran sudah kami terima
 Isi jika ada ringkasan: Kami tunggu {nama anak} dan {jumlah hadir} orang di open house pada Sabtu 07 November 2026, pukul 08.00 sampai 15.00 WIB.
 Isi jika tidak ada ringkasan: Kami tunggu Bapak dan Ibu di open house pada Sabtu 07 November 2026, pukul 08.00 sampai 15.00 WIB.
+
+Tiket Masuk & QR Code:
+- Judul tiket: Tiket Masuk Open House
+- Label kode: Kode Tiket: {kode tiket}
+- Petunjuk: Tunjukkan QR Code ini kepada panitia di meja registrasi saat tiba di lokasi.
+- Tombol: Simpan Tiket QR (unduh gambar untuk disimpan di galeri ponsel).
+- Tombol: Kirim Tiket ke WhatsApp Saya (membuka WhatsApp dengan pesan ringkasan dan tautan tiket).
+
+Pesan WhatsApp penyerta tiket (dikirim ke nomor orang tua atau disimpan sendiri):
+"Assalamualaikum. Ini adalah bukti pendaftaran dan tiket masuk Open House SMKIT As Syifa Boarding School untuk calon siswa: {nama anak} (Jumlah hadir: {jumlah hadir} orang). Kode Tiket: {kode tiket}. Tunjukkan pesan atau QR Code ini kepada panitia di meja registrasi pada Sabtu, 07 November 2026. Sampai jumpa!"
+
 Langkah berikutnya:
 1. Tombol Gabung WhatsApp Open House. Jika jenisnya saluran, keterangan: Saluran ini satu arah, nomor Bapak atau Ibu tidak terlihat oleh orang lain. Jika jenisnya grup, keterangan: Di grup, anggota lain dapat melihat nomor Bapak atau Ibu. Bergabung bersifat pilihan.
 2. Tombol Tambah ke kalender.
 3. Tombol Chat admisi.
 4. Tautan Lihat info pendaftaran PMB.
 Catatan: Panitia akan menghubungi lewat WhatsApp untuk memastikan kehadiran.
+
+## Halaman admin (Fitur Scan & Presensi)
+
+1. Tab/Tombol Mode: Daftar Pendaftar dan Scan Tiket QR.
+2. Tombol di scanner: Mulai Scan Kamera, Tutup Kamera.
+3. Pesan berhasil scan: "{nama anak} ({sekolah}) berhasil diverifikasi! Tercatat hadir bersama {jumlah hadir} orang."
+4. Pesan scan duplikat / sudah hadir: "{nama anak} sudah tercatat hadir sebelumnya pada {jam check-in}."
+5. Pesan gagal scan: "Kode tiket atau QR tidak valid / tidak ditemukan."
+6. Status presensi di tabel:
+   - Hadir (warna hijau / aksen tegas doff): menampilkan waktu check-in.
+   - Belum Hadir (warna netral soft): untuk peserta yang belum melakukan scan.
+7. Statistik kehadiran: Total Pendaftar, Sudah Hadir, Belum Hadir.
 
 ## Halaman privasi
 

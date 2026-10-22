@@ -40,16 +40,22 @@ Pegawai sekolah yang menindaklanjuti lewat WhatsApp pribadi tidak punya akun. Me
 3. Menekan tombol Daftar Hadir Open House, yang membawa ke bagian form di halaman yang sama.
 4. Mengisi form dua langkah.
 5. Mengirim. Berpindah ke halaman terima kasih.
-6. Di halaman terima kasih, ditawari bergabung ke WhatsApp open house, menambah acara ke kalender, dan menghubungi admisi.
+6. Di halaman terima kasih:
+   - Menampilkan ringkasan pendaftaran beserta QR Code Tiket Masuk unik (dibuat instan di browser tanpa Cloudinary).
+   - Tombol simpan/unduh gambar tiket QR ke galeri ponsel.
+   - Tombol kirim tiket dan konfirmasi ke WhatsApp pribadi.
+   - Tombol bergabung ke WhatsApp open house, menambah acara ke kalender, dan menghubungi admisi.
 
 ## Perjalanan admin
 
 1. Membuka halaman admin dan login.
 2. Melihat daftar pendaftar terbaru, jumlah total, dan jumlah per sumber kunjungan.
-3. Mencari atau memfilter berdasarkan status dan penanggung jawab.
-4. Membuka satu pendaftar, menekan tombol chat WhatsApp dengan pesan yang sudah terisi, lalu mengirim dari aplikasi WhatsApp.
-5. Mengubah status, menulis catatan, dan mengisi nama penanggung jawab.
-6. Mengekspor CSV, termasuk hasil filter.
+3. Tab/Fitur Pemindai QR (Scan Presensi) menggunakan kamera ponsel/laptop untuk verifikasi kehadiran peserta di meja registrasi hari-H.
+4. Melihat rekapitulasi riwayat kehadiran (sudah hadir vs belum hadir/tidak hadir).
+5. Mencari atau memfilter berdasarkan status kehadiran, status tindak lanjut, dan penanggung jawab.
+6. Membuka satu pendaftar, menekan tombol chat WhatsApp dengan pesan yang sudah terisi, lalu mengirim dari aplikasi WhatsApp.
+7. Mengubah status, menulis catatan, dan mengisi nama penanggung jawab.
+8. Mengekspor CSV, termasuk hasil filter dan status kehadiran (beserta waktu check-in).
 
 ## Data yang dikumpulkan
 
@@ -57,15 +63,15 @@ Wajib diisi peserta: nama anak, nomor HP orang tua, jumlah yang akan hadir, asal
 
 Opsional, nilai bawaan boleh dihapus pemilik proyek: nama orang tua atau wali, dan minat jurusan dengan pilihan RPL, DKV, atau belum tahu.
 
-Tercatat otomatis: waktu kirim, UTM, kode klik Meta, halaman asal, dan jenis perangkat.
+Tercatat otomatis: waktu kirim, kode tiket pendaftaran, waktu kehadiran (check-in saat scan hari-H), UTM, kode klik Meta, halaman asal, dan jenis perangkat.
 
 Tidak diminta sama sekali: NIK, alamat lengkap, email, penghasilan, data kesehatan, dan foto.
 
 ## Ruang lingkup
 
-Masuk: halaman utama bercerita, form dua langkah, halaman terima kasih, halaman privasi, admin sederhana, penangkapan UTM, dan Pixel Meta opsional yang hanya mengirim event pendaftaran selesai.
+Masuk: halaman utama bercerita, rundown acara, embed lokasi peta, form dua langkah, halaman terima kasih dengan QR code tiket dan kirim WA, fitur scan QR check-in & riwayat kehadiran di admin, halaman privasi, admin sederhana, penangkapan UTM, dan Pixel Meta opsional yang hanya mengirim event pendaftaran selesai.
 
-Tidak masuk: tiket QR, check in, nama anggota keluarga, pilihan sesi, umpan balik, pesan WhatsApp otomatis, Conversions API, login peserta, halaman pengaturan acara. Pengaturan acara berada di berkas konfigurasi kode.
+Tidak masuk: object storage Cloudinary (QR di-generate di browser sebagai teks/SVG), nama anggota keluarga selain anak, pilihan sesi jam terpisah, umpan balik kuesioner, Conversions API, login akun untuk peserta. Pengaturan acara berada di berkas konfigurasi kode.
 
 ## Ukuran keberhasilan
 

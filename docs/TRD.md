@@ -126,12 +126,19 @@ Fitur:
 
 1. Login dengan email dan kata sandi lewat Supabase Auth. Tidak ada tombol daftar.
 2. Setelah login, cek apakah akun ada di tabel `admins`. Jika tidak, keluarkan dan tampilkan pesan bahwa akun tidak punya akses.
-3. Daftar pendaftar terbaru lebih dulu, dengan pencarian nama anak atau nomor, filter status, filter penanggung jawab.
-4. Ringkasan di atas daftar: total pendaftar, total yang akan hadir, jumlah per sumber kunjungan.
-5. Detail satu pendaftar: semua kolom, ubah status, catatan, nama penanggung jawab, tombol Chat WhatsApp.
-6. Tombol Chat WhatsApp membuka `https://wa.me/{nomor tanpa plus}?text={pesan}` dengan pesan dari `docs/CONTENT.md`, diberi `encodeURIComponent`.
-7. Ekspor CSV dari hasil filter yang sedang tampil. Buat CSV di browser. Kolom: waktu daftar, nama anak, nomor, nama orang tua, jumlah hadir, kota, sekolah, minat jurusan, sumber, kampanye, status, penanggung jawab, catatan. Lindungi dari injeksi rumus spreadsheet: jika sel diawali `=`, `+`, `-`, atau `@`, tambahkan tanda petik tunggal di depannya.
-8. Tombol keluar.
+3. Mode Pemindai QR (Scan Presensi): memanfaatkan kamera perangkat (HTML5 Camera) untuk memindai QR Code tiket peserta di meja registrasi. Sistem mencocokkan ID/kode tiket dan mencatat waktu kehadiran (`attended_at = now()`) secara langsung ke Supabase.
+4. Ringkasan di atas daftar: total pendaftar, total hadir (attended), total belum hadir (absent/no-show), total orang yang akan hadir (sum attendee_count), dan jumlah per sumber kunjungan.
+5. Daftar pendaftar dengan pencarian nama anak atau nomor, filter status kehadiran (Semua, Sudah Hadir, Belum Hadir), filter status tindak lanjut, filter penanggung jawab.
+6. Detail satu pendaftar: semua kolom, status kehadiran dan waktu check-in, ubah status tindak lanjut, catatan, nama penanggung jawab, tombol Chat WhatsApp.
+7. Tombol Chat WhatsApp membuka `https://wa.me/{nomor tanpa plus}?text={pesan}` dengan pesan dari `docs/CONTENT.md`, diberi `encodeURIComponent`.
+8. Ekspor CSV dari hasil filter yang sedang tampil. Buat CSV di browser. Kolom: waktu daftar, status kehadiran, waktu check-in, kode tiket, nama anak, nomor, nama orang tua, jumlah hadir, kota, sekolah, minat jurusan, sumber, kampanye, status, penanggung jawab, catatan. Lindungi dari injeksi rumus spreadsheet: jika sel diawali `=`, `+`, `-`, atau `@`, tambahkan tanda petik tunggal di depannya.
+9. Tombol keluar.
+
+## Tiket Masuk dan QR Code
+
+1. Tidak memerlukan object storage eksternal (seperti Cloudinary). QR Code di-generate secara instan di browser/klien dalam bentuk SVG/Canvas berbasis ID pendaftaran / kode tiket unik.
+2. Di halaman `/terima-kasih`, QR Code ditampilkan sebagai tiket digital dengan tombol simpan gambar dan tombol kirim ringkasan tiket ke WhatsApp pribadi.
+3. Nilai QR Code memuat ID pendaftaran atau kode tiket ringkas yang dapat diverifikasi oleh scanner di halaman admin.
 
 ## Penangkapan UTM
 
@@ -145,7 +152,7 @@ Opsional. Hanya dimuat jika `PUBLIC_META_PIXEL_ID` ada. Dimuat setelah halaman i
 
 1. RLS aktif. Anon tidak punya izin apa pun ke tabel. Penulisan publik hanya lewat endpoint server dengan service role key.
 2. Pendaftaran akun Supabase Auth dimatikan. Akun admin dibuat lewat undangan di dasbor, lalu ditambahkan ke tabel `admins`.
-3. Berkas `public/_headers` memuat header: `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `X-Frame-Options: DENY`, `Permissions-Policy` yang mematikan kamera, mikrofon, dan lokasi, serta `Content-Security-Policy`. CSP mengizinkan skrip dari asal sendiri, `https://challenges.cloudflare.com` untuk Turnstile, `https://connect.facebook.net` bila Pixel aktif, dan koneksi ke `https://*.supabase.co`. Uji bahwa form, Turnstile, dan admin tetap jalan setelah CSP dipasang.
+3. Berkas `public/_headers` memuat header: `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `X-Frame-Options: DENY`, `Permissions-Policy` yang mengizinkan kamera untuk asal sendiri (`camera=(self), microphone=(), geolocation=()`) untuk fitur pemindai QR di admin, serta `Content-Security-Policy`. CSP mengizinkan skrip dari asal sendiri, `https://challenges.cloudflare.com` untuk Turnstile, `https://connect.facebook.net` bila Pixel aktif, frame Google Maps, dan koneksi ke `https://*.supabase.co`. Uji bahwa form, Turnstile, dan admin tetap jalan setelah CSP dipasang.
 4. `public/robots.txt` melarang `/admin`, dan halaman admin memakai meta `noindex`.
 5. Jangan menulis nomor telepon atau nama anak ke log.
 

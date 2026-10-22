@@ -63,12 +63,18 @@ create table public.registrations (
   followup_status public.followup_status not null default 'belum_dihubungi',
   followup_note text check (char_length(followup_note) <= 1000),
 
+  -- Tiket QR dan riwayat kehadiran
+  ticket_code text unique check (ticket_code is null or char_length(ticket_code) between 4 and 32),
+  attended_at timestamptz,
+
   unique (parent_phone, child_name_key)
 );
 
 create index registrations_created_at_idx on public.registrations (created_at desc);
 create index registrations_status_idx on public.registrations (followup_status);
 create index registrations_assigned_idx on public.registrations (assigned_to);
+create index registrations_attended_at_idx on public.registrations (attended_at);
+create index registrations_ticket_code_idx on public.registrations (ticket_code);
 
 create function public.set_updated_at() returns trigger
 language plpgsql as $$
@@ -133,3 +139,16 @@ Setelah migrasi, buktikan tiga hal dengan skrip kecil atau uji manual:
 1. Permintaan dengan kunci anon yang membaca `registrations` mengembalikan kosong atau ditolak.
 2. Permintaan dengan kunci anon yang menulis ke `registrations` ditolak.
 3. Akun yang sudah login tetapi tidak ada di `admins` tidak bisa membaca `registrations`.
+
+## Migrasi tambahan (0002_attendance.sql)
+
+Untuk database yang sudah menjalankan `0001_init.sql`, jalankan migrasi berikut untuk menambahkan kolom QR tiket dan presensi kehadiran:
+
+```sql
+alter table public.registrations
+  add column if not exists ticket_code text unique check (ticket_code is null or char_length(ticket_code) between 4 and 32),
+  add column if not exists attended_at timestamptz;
+
+create index if not exists registrations_attended_at_idx on public.registrations (attended_at);
+create index if not exists registrations_ticket_code_idx on public.registrations (ticket_code);
+```
