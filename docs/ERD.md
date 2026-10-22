@@ -64,7 +64,7 @@ create table public.registrations (
   followup_note text check (char_length(followup_note) <= 1000),
 
   -- Tiket QR dan riwayat kehadiran
-  ticket_code text unique check (ticket_code is null or char_length(ticket_code) between 4 and 32),
+  ticket_code text unique check (ticket_code is null or ticket_code ~ '^OH-[2-9A-HJ-NP-Z]{6}$'),
   attended_at timestamptz,
 
   unique (parent_phone, child_name_key)

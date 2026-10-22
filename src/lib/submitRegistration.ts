@@ -12,20 +12,22 @@ export interface RegistrationNotification {
 
 export async function sendRegistrationWhatsApp(notification: RegistrationNotification): Promise<boolean> {
   const ticketUrl = notification.publicSiteUrl
-    ? `${notification.publicSiteUrl.replace(/\/$/, '')}/terima-kasih`
-    : '/terima-kasih';
+    ? `${notification.publicSiteUrl.replace(/\/$/, '')}/e-ticket/${encodeURIComponent(notification.ticketCode)}`
+    : '';
   const message = [
-    'Assalamualaikum.',
+    'Assalamualaikum Bapak/Ibu.',
     '',
-    'Pendaftaran Open House SMKIT As Syifa berhasil diterima.',
-    `Calon siswa: ${notification.childName}`,
-    `Jumlah hadir: ${notification.attendeeCount} orang`,
-    `Kode tiket: ${notification.ticketCode}`,
+    'Pendaftaran Open House SMKIT As Syifa berhasil kami terima.',
     '',
-    'Silakan simpan pesan dan gambar QR tiket ini. Tunjukkan kepada panitia saat tiba di lokasi.',
-    ticketUrl !== '/terima-kasih' ? `Tiket digital: ${ticketUrl}` : '',
+    `👤 Calon siswa: ${notification.childName}`,
+    `👥 Jumlah peserta: ${notification.attendeeCount} orang`,
+    `🎟️ Kode tiket: ${notification.ticketCode}`,
     '',
-    'Sampai jumpa di Open House SMKIT As Syifa.',
+    'Mohon simpan pesan dan gambar tiket ini. Tunjukkan QR Code kepada panitia saat registrasi di lokasi.',
+    ticketUrl ? `🔗 Tiket digital:\n${ticketUrl}` : '',
+    '',
+    'Sampai bertemu di Open House.',
+    'Wassalamualaikum.',
   ].filter(Boolean).join('\n');
 
   // Fonnte dikirim setelah pendaftaran sukses. Kegagalan notifikasi tidak membatalkan pendaftaran.
@@ -35,7 +37,7 @@ export async function sendRegistrationWhatsApp(notification: RegistrationNotific
     // Endpoint SVG server-side yang dapat diambil Fonnte sebagai gambar tiket.
     imageUrl:
       notification.publicSiteUrl && notification.ticketCode
-        ? `${notification.publicSiteUrl.replace(/\/$/, '')}/api/ticket-qr?code=${encodeURIComponent(notification.ticketCode)}`
+        ? `${notification.publicSiteUrl.replace(/\/$/, '')}/api/ticket-image?code=${encodeURIComponent(notification.ticketCode)}`
         : undefined,
     token: notification.fonnteToken,
   });

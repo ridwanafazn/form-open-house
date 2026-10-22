@@ -99,8 +99,25 @@ Tiket Masuk & QR Code:
 - Tombol: Simpan Tiket QR (unduh gambar untuk disimpan di galeri ponsel).
 - Tombol: Bagikan Tiket (mengirim gambar QR tiket dan rekap informasi melalui tombol bagikan perangkat; jika tidak didukung, simpan gambar lalu buka WhatsApp dengan teks).
 
-Pesan WhatsApp penyerta tiket (dikirim ke nomor orang tua atau disimpan sendiri):
-"Assalamualaikum. Ini adalah bukti pendaftaran dan tiket masuk Open House SMKIT As Syifa Boarding School untuk calon siswa: {nama anak} (Jumlah hadir: {jumlah hadir} orang). Kode Tiket: {kode tiket}. Tunjukkan pesan atau QR Code ini kepada panitia di meja registrasi pada Sabtu, 07 November 2026. Sampai jumpa!"
+Pesan WhatsApp otomatis penyerta tiket (dikirim ke nomor orang tua yang didaftarkan):
+
+Assalamualaikum Bapak/Ibu.
+
+Pendaftaran Open House SMKIT As Syifa berhasil kami terima.
+
+👤 Calon siswa: {nama anak}
+👥 Jumlah peserta: {jumlah hadir} orang
+🎟️ Kode tiket: {kode tiket}
+
+Mohon simpan pesan dan gambar tiket ini. Tunjukkan QR Code kepada panitia saat registrasi di lokasi.
+
+🔗 Tiket digital:
+{tautan tiket digital}
+
+Sampai bertemu di Open House.
+Wassalamualaikum.
+
+Catatan teknis: gambar kartu tiket lengkap dikirim melalui Fonnte dari endpoint publik `/api/ticket-image?code={kode tiket}`. Tautan peserta menggunakan `/e-ticket/{kode tiket}`.
 
 Langkah berikutnya:
 1. Tombol Gabung WhatsApp Open House. Jika jenisnya saluran, keterangan: Saluran ini satu arah, nomor Bapak atau Ibu tidak terlihat oleh orang lain. Jika jenisnya grup, keterangan: Di grup, anggota lain dapat melihat nomor Bapak atau Ibu. Bergabung bersifat pilihan.

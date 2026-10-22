@@ -43,7 +43,8 @@ Pegawai sekolah yang menindaklanjuti lewat WhatsApp pribadi tidak punya akun. Me
 6. Di halaman terima kasih:
    - Menampilkan ringkasan pendaftaran beserta QR Code Tiket Masuk unik (dibuat instan di browser tanpa Cloudinary).
    - Tombol simpan/unduh gambar tiket QR ke galeri ponsel.
-   - Tombol kirim tiket dan konfirmasi ke WhatsApp pribadi.
+   - Pesan WhatsApp otomatis dikirim ke nomor orang tua yang didaftarkan, berisi rekap informasi, gambar kartu tiket lengkap, dan tautan publik `/e-ticket/{ticket_code}`.
+   - Tombol berbagi tiket dari browser juga mengirim gambar kartu tiket lengkap dan teks ringkas bila Web Share API didukung.
    - Tombol bergabung ke WhatsApp open house, menambah acara ke kalender, dan menghubungi admisi.
 
 ## Perjalanan admin

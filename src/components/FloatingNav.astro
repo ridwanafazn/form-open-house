@@ -1,0 +1,139 @@
+---
+import { eventConfig } from '../config/event';
+
+const admissionHref = `https://wa.me/${eventConfig.admissionWhatsApp}?text=${encodeURIComponent(
+  'Assalamualaikum. Saya ingin bertanya tentang Open House SMKIT As Syifa.',
+)}`;
+---
+
+<nav class="floating-nav" aria-label="Navigasi utama">
+  <a class="floating-nav__brand" href="/" aria-label="Beranda Open House SMKIT As Syifa">
+    <span class="floating-nav__mark" aria-hidden="true">AS</span>
+    <span class="floating-nav__brand-text">Open House</span>
+  </a>
+  <div class="floating-nav__links">
+    <a href="/">Home</a>
+    <a href="/#story">Yang dilihat</a>
+    <a href="/#event-info">Info acara</a>
+    <a href="/#rundown">Rundown</a>
+    <a href="/privasi">Kebijakan privasi</a>
+    <a class="floating-nav__admission" href={admissionHref} rel="noopener" target="_blank">Admisi</a>
+  </div>
+</nav>
+
+<style>
+  .floating-nav {
+    position: fixed;
+    z-index: 30;
+    top: 16px;
+    left: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    width: min(calc(100% - 32px), 1080px);
+    min-height: 56px;
+    padding: 8px 10px 8px 14px;
+    transform: translateX(-50%);
+    border: 1px solid var(--paper-grid);
+    border-radius: 14px;
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .floating-nav__brand,
+  .floating-nav__links a {
+    text-decoration: none;
+  }
+
+  .floating-nav__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    flex: 0 0 auto;
+    color: var(--ink);
+    font-family: var(--font-heading);
+    font-weight: 700;
+  }
+
+  .floating-nav__mark {
+    display: grid;
+    width: 32px;
+    height: 32px;
+    place-items: center;
+    border: 1px solid var(--teal-dark);
+    border-radius: 10px;
+    color: var(--teal-dark);
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+  }
+
+  .floating-nav__brand-text {
+    white-space: nowrap;
+    font-size: 0.9rem;
+  }
+
+  .floating-nav__links {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .floating-nav__links::-webkit-scrollbar {
+    display: none;
+  }
+
+  .floating-nav__links a {
+    flex: 0 0 auto;
+    padding: 9px 10px;
+    border-radius: 8px;
+    color: var(--ink-soft);
+    font-family: var(--font-heading);
+    font-size: 0.78rem;
+    font-weight: 600;
+    transition: background-color 160ms ease, color 160ms ease;
+  }
+
+  .floating-nav__links a:hover,
+  .floating-nav__links a:focus-visible {
+    background: var(--teal-pale);
+    color: var(--teal-dark);
+  }
+
+  .floating-nav__links .floating-nav__admission {
+    border: 1px solid var(--teal-dark);
+    background: var(--teal-dark);
+    color: var(--paper);
+  }
+
+  .floating-nav__links .floating-nav__admission:hover,
+  .floating-nav__links .floating-nav__admission:focus-visible {
+    background: var(--teal);
+    color: var(--paper);
+  }
+
+  @media (max-width: 760px) {
+    .floating-nav {
+      top: 10px;
+      width: calc(100% - 20px);
+      gap: 8px;
+      padding-left: 10px;
+    }
+
+    .floating-nav__brand-text {
+      display: none;
+    }
+
+    .floating-nav__links {
+      width: 100%;
+      justify-content: flex-start;
+    }
+
+    .floating-nav__links a {
+      padding-inline: 8px;
+      font-size: 0.73rem;
+    }
+  }
+</style>

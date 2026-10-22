@@ -61,7 +61,41 @@ export default function TicketCard() {
         reject(new Error('Canvas tiket belum siap'));
         return;
       }
-      canvasRef.current.toBlob((blob) => {
+      const canvas = document.createElement('canvas');
+      canvas.width = 900;
+      canvas.height = 1120;
+      const context = canvas.getContext('2d');
+      if (!context) {
+        reject(new Error('Canvas tiket tidak tersedia'));
+        return;
+      }
+      context.fillStyle = '#fffdf8';
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.strokeStyle = '#b7d6cf';
+      context.lineWidth = 6;
+      context.strokeRect(24, 24, canvas.width - 48, canvas.height - 48);
+      context.fillStyle = '#1d2c2b';
+      context.font = '700 36px Arial';
+      context.fillText('OPEN HOUSE SMKIT AS SYIFA', 68, 94);
+      context.fillStyle = '#526363';
+      context.font = '24px Arial';
+      context.fillText('Tiket masuk', 68, 132);
+      context.drawImage(canvasRef.current, 300, 180, 300, 300);
+      context.fillStyle = '#1d2c2b';
+      context.font = '700 32px Arial';
+      context.fillText(data?.child_name || 'Calon siswa', 68, 570);
+      context.fillStyle = '#526363';
+      context.font = '23px Arial';
+      context.fillText(`${data?.attendee_count || 1} peserta`, 68, 610);
+      context.font = '700 32px monospace';
+      context.fillStyle = '#1d2c2b';
+      context.fillText(ticketCode, 68, 720);
+      context.fillStyle = '#526363';
+      context.font = '22px Arial';
+      context.fillText('Sabtu, 07 November 2026 · 08.00–15.00 WIB', 68, 790);
+      context.fillText('SMKIT As Syifa Boarding School, Jalancagak, Subang', 68, 830);
+      context.fillText('Tunjukkan tiket ini kepada panitia saat registrasi.', 68, 900);
+      canvas.toBlob((blob) => {
         if (!blob) {
           reject(new Error('Gambar tiket gagal dibuat'));
           return;
@@ -73,9 +107,42 @@ export default function TicketCard() {
 
   function handleDownloadImage() {
     if (!canvasRef.current) return;
-    const url = canvasRef.current.toDataURL('image/png');
+    const source = canvasRef.current;
+    const ticketCanvas = document.createElement('canvas');
+    ticketCanvas.width = 900;
+    ticketCanvas.height = 1120;
+    const context = ticketCanvas.getContext('2d');
+    if (!context) return;
+
+    context.fillStyle = '#fffdf8';
+    context.fillRect(0, 0, ticketCanvas.width, ticketCanvas.height);
+    context.strokeStyle = '#b7d6cf';
+    context.lineWidth = 6;
+    context.strokeRect(24, 24, ticketCanvas.width - 48, ticketCanvas.height - 48);
+    context.fillStyle = '#1d2c2b';
+    context.font = '700 36px Arial';
+    context.fillText('OPEN HOUSE SMKIT AS SYIFA', 68, 94);
+    context.fillStyle = '#526363';
+    context.font = '24px Arial';
+    context.fillText('Tiket masuk', 68, 132);
+    context.drawImage(source, 300, 180, 300, 300);
+    context.fillStyle = '#1d2c2b';
+    context.font = '700 32px Arial';
+    context.fillText(data?.child_name || 'Calon siswa', 68, 570);
+    context.fillStyle = '#526363';
+    context.font = '23px Arial';
+    context.fillText(`${data?.attendee_count || 1} peserta`, 68, 610);
+    context.font = '700 32px monospace';
+    context.fillStyle = '#1d2c2b';
+    context.fillText(ticketCode, 68, 720);
+    context.fillStyle = '#526363';
+    context.font = '22px Arial';
+    context.fillText('Sabtu, 07 November 2026 · 08.00–15.00 WIB', 68, 790);
+    context.fillText('SMKIT As Syifa Boarding School, Jalancagak, Subang', 68, 830);
+    context.fillText('Tunjukkan tiket ini kepada panitia saat registrasi.', 68, 900);
+
     const a = document.createElement('a');
-    a.href = url;
+    a.href = ticketCanvas.toDataURL('image/png');
     a.download = `Tiket-OpenHouse-${ticketCode}.png`;
     document.body.appendChild(a);
     a.click();
@@ -186,7 +253,7 @@ export default function TicketCard() {
           background: #ffffff;
           border: 2px solid var(--border-soft);
           border-radius: var(--radius-lg, 16px);
-          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+          /* Kedalaman dibuat dari garis dan bidang datar, tanpa efek glossy. */
           text-align: center;
         }
         .ticket-card__header {

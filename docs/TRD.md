@@ -23,8 +23,12 @@ Hosting: Cloudflare Pages. Halaman publik dibuat statis. Hanya `src/pages/api/re
 1. `/` halaman utama dan form.
 2. `/terima-kasih` halaman sukses.
 3. `/privasi` kebijakan privasi singkat.
-4. `/admin` aplikasi admin. Satu halaman statis berisi island React yang hanya jalan di browser. Tidak diindeks mesin pencari.
-5. `/api/register` endpoint POST untuk mengirim form.
+4. `/e-ticket/{ticket_code}` tiket digital publik yang dapat dibuka dari perangkat berbeda, hanya menampilkan data tiket minimum.
+5. `/admin` aplikasi admin. Satu halaman statis berisi island React yang hanya jalan di browser. Tidak diindeks mesin pencari.
+6. `/api/register` endpoint POST untuk mengirim form.
+7. `/api/ticket` endpoint data tiket minimum untuk halaman e-ticket.
+8. `/api/ticket-image` endpoint SVG kartu tiket publik sementara untuk lampiran Fonnte.
+9. `/api/ticket-qr` endpoint SVG QR lama untuk kompatibilitas.
 
 ## Variabel lingkungan
 

@@ -1,0 +1,23 @@
+---
+import Base from '../../layouts/Base.astro';
+import PublicTicket from '../../components/PublicTicket';
+export const prerender = false;
+
+const code = Astro.params.code ?? '';
+---
+
+<Base title={`Tiket ${code}`} description="Tiket digital Open House SMKIT As Syifa Boarding School.">
+  <meta slot="head" name="robots" content="noindex" />
+  <main class="ticket-page container">
+    <p class="ticket-page__back"><a href="/">Kembali ke halaman utama</a></p>
+    <PublicTicket client:load code={code} />
+    <p class="ticket-page__footnote">Tiket ini ditujukan untuk keperluan registrasi Open House. Simpan tautan ini sampai hari acara.</p>
+  </main>
+</Base>
+
+<style>
+  .ticket-page { padding-block: 20px 64px; }
+  .ticket-page__back { margin: 0 auto; max-width: 620px; font-size: .9rem; }
+  .ticket-page__back a { color: var(--teal-dark); }
+  .ticket-page__footnote { max-width: 620px; margin: 18px auto; color: var(--ink-soft); font-size: .85rem; text-align: center; }
+</style>

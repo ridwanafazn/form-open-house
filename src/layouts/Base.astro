@@ -4,6 +4,7 @@ import '@fontsource/lora/latin-400-italic.css';
 import '@fontsource/lora/latin-600.css';
 import '@fontsource-variable/plus-jakarta-sans/wght.css';
 import '../styles/global.css';
+import FloatingNav from '../components/FloatingNav.astro';
 
 // Meta dari docs/CONTENT.md bagian "Teks meta".
 const title = 'Open House SMKIT As Syifa Boarding School';
@@ -34,6 +35,7 @@ const finalDescription = pageDescription ?? description;
     <slot name="head" />
   </head>
   <body>
+    <FloatingNav />
     <slot />
     <script is:inline>
       // Tangkap parameter UTM/fbclid dari URL dan simpan di sessionStorage
