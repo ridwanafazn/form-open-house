@@ -134,6 +134,50 @@ p {
   padding-inline: var(--space-4);
 }
 
+/* Tombol global. Komponen Button.astro punya versi scoping sendiri;
+   aturan ini menjamin elemen yang memakai kelas .button di luar
+   komponen tersebut tetap terlihat, misalnya tombol di footer. */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  border: var(--line) solid transparent;
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  cursor: pointer;
+  min-height: 44px;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: transform 0.06s ease;
+}
+
+.button--primary {
+  border-color: var(--teal-dark);
+  background: var(--teal);
+  color: var(--paper);
+}
+
+.button--secondary {
+  border-color: var(--ink);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.button:active {
+  transform: translateY(2px);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 @media (min-width: 720px) {
   .container {
     padding-inline: var(--space-6);
