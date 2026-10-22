@@ -66,6 +66,11 @@ body {
   background-size: 24px 24px;
 }
 
+body.admin-page {
+  background-color: #eef4f5;
+  background-image: none;
+}
+
 img,
 svg {
   display: block;

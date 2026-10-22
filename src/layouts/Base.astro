@@ -36,7 +36,7 @@ const finalDescription = pageDescription ?? description;
     <meta name="og:type" content="website" />
     <slot name="head" />
   </head>
-  <body>
+  <body class:list={{ 'admin-page': adminMode }}>
     <FloatingNav adminMode={adminMode} />
     <slot />
     <script is:inline>

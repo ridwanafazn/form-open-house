@@ -171,8 +171,10 @@ function LoginScreen({ onLogin, error }: { onLogin: (e: string, p: string) => vo
   }
 
   return (
-    <div className="admin-center">
-      <form className="admin-login" onSubmit={handleSubmit}>
+    <>
+      <style>{adminStyles}</style>
+      <div className="admin-center">
+        <form className="admin-login" onSubmit={handleSubmit}>
         <h1>Admin Open House</h1>
         {error && <p className="admin-login__error" role="alert">{error}</p>}
         <label>
@@ -198,8 +200,9 @@ function LoginScreen({ onLogin, error }: { onLogin: (e: string, p: string) => vo
         <button type="submit" disabled={submitting}>
           {submitting ? 'Masuk…' : 'Masuk'}
         </button>
-      </form>
-    </div>
+        </form>
+      </div>
+    </>
   );
 }
 
@@ -337,10 +340,16 @@ function ListScreen({
   }
 
   return (
-    <div className="admin-wrap" id="dashboard">
+    <>
+      <style>{adminStyles}</style>
+      <div className="admin-wrap" id="dashboard">
       <header className="admin-header">
         <div className="admin-header__brand">
-          <h1>Admin Open House</h1>
+          <div className="admin-header__title">
+            <p className="admin-kicker">Ruang kerja panitia</p>
+            <h1>Admin Open House</h1>
+            <p className="admin-header__hint">Pantau pendaftar, tindak lanjuti keluarga, dan catat kehadiran dari satu tempat.</p>
+          </div>
           <div className="admin-tabs">
             <button
               type="button"
@@ -521,7 +530,8 @@ function ListScreen({
           )}
         </>
       )}
-    </div>
+      </div>
+    </>
   );
 }
 
@@ -972,15 +982,27 @@ const adminStyles = `
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
-    padding: 16px;
+    min-height: calc(100vh - 96px);
+    padding: 32px 16px;
   }
   .admin-login {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    width: 100%;
-    max-width: 360px;
+    width: min(100%, 420px);
+    padding: 32px;
+    border: 1px solid #cbd8e0;
+    border-radius: 18px;
+    background: #f7fbfc;
+  }
+  .admin-login::before {
+    content: 'Ruang kerja panitia';
+    color: #31706c;
+    font-family: var(--font-heading);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
   .admin-login h1 {
     font-size: 1.4rem;
@@ -1019,78 +1041,107 @@ const adminStyles = `
     border-radius: 6px;
   }
   .admin-wrap {
-    max-width: 1120px;
+    max-width: 1180px;
     margin-inline: auto;
-    padding: 16px;
+    padding: 32px 24px 72px;
   }
   .admin-header {
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 24px;
+    gap: 24px;
+    margin-bottom: 28px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid #d5e0e4;
     flex-wrap: wrap;
   }
   .admin-header__brand {
     display: flex;
-    align-items: center;
-    gap: 20px;
+    align-items: flex-end;
+    gap: 24px;
     flex-wrap: wrap;
   }
-  .admin-header h1 {
-    font-size: 1.4rem;
+  .admin-header__title {
+    display: grid;
+    gap: 5px;
+  }
+  .admin-kicker {
     margin: 0;
+    color: #31706c;
+    font-family: var(--font-heading);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .admin-header h1 {
+    margin: 0;
+    color: #20373b;
+    font-size: clamp(1.45rem, 3vw, 2rem);
+    letter-spacing: -0.03em;
+  }
+  .admin-header__hint {
+    max-width: 560px;
+    margin: 0;
+    color: #587077;
+    font-size: 0.9rem;
   }
   .admin-tabs {
     display: flex;
-    gap: 8px;
-    background: #e9e3d3;
+    gap: 4px;
     padding: 4px;
-    border-radius: 8px;
+    border: 1px solid #d5e0e4;
+    border-radius: 10px;
+    background: #edf3f5;
   }
   .admin-tab {
-    padding: 6px 14px;
-    border: none;
-    border-radius: 6px;
+    padding: 9px 14px;
+    border: 0;
+    border-radius: 7px;
     background: transparent;
-    font-size: 0.85rem;
-    font-weight: 600;
+    color: #587077;
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    font-weight: 700;
     cursor: pointer;
-    color: #5b6068;
-    transition: all 0.2s ease;
+    transition: background 0.2s ease, color 0.2s ease;
   }
   .admin-tab:hover {
     color: #22262a;
   }
   .admin-tab--active {
-    background: #22262a;
-    color: #f4efe4;
+    background: #20373b;
+    color: #ffffff;
   }
   .admin-tab--scan.admin-tab--active {
-    background: #1b9a94;
+    background: #31706c;
     color: #ffffff;
   }
   .admin-summary {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
     margin-bottom: 24px;
-    padding: 16px;
-    border: 2px solid #e3dccb;
-    border-radius: 6px;
-    background: #f9f6ef;
+    padding: 0;
   }
   .admin-stat {
     display: flex;
     flex-direction: column;
-    gap: 2px;
-    min-width: 100px;
+    justify-content: center;
+    gap: 6px;
+    min-width: 0;
+    min-height: 116px;
+    padding: 18px;
+    border: 1px solid #d5e0e4;
+    border-radius: 12px;
+    background: #f7fbfc;
   }
   .admin-stat__num {
-    font-size: 2rem;
-    font-weight: 700;
+    color: #20373b;
+    font-family: var(--font-heading);
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 800;
     line-height: 1;
-    color: #22262a;
   }
   .admin-stat--attended .admin-stat__num {
     color: #1a7a3b;
@@ -1098,8 +1149,16 @@ const adminStyles = `
   .admin-stat--absent .admin-stat__num {
     color: #d97706;
   }
-  .admin-stat__label { font-size: 0.8rem; color: #5b6068; }
-  .admin-stat--sources { flex: 1; }
+  .admin-stat__label {
+    color: #587077;
+    font-family: var(--font-heading);
+    font-size: 0.76rem;
+    font-weight: 700;
+  }
+  .admin-stat--sources {
+    grid-column: 1 / -1;
+    min-height: auto;
+  }
   .admin-source-list {
     list-style: none;
     padding: 0;
@@ -1137,10 +1196,14 @@ const adminStyles = `
     color: #1e3a8a;
   }
   .admin-toolbar {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: minmax(240px, 1.6fr) repeat(3, minmax(145px, 0.8fr)) auto;
     gap: 8px;
     margin-bottom: 16px;
+    padding: 14px;
+    border: 1px solid #d5e0e4;
+    border-radius: 12px;
+    background: #f7fbfc;
   }
   .admin-search {
     flex: 1;
@@ -1184,22 +1247,29 @@ const adminStyles = `
     border-color: #1a7a3b;
   }
   .admin-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-  .admin-table-wrap { overflow-x: auto; }
+  .admin-table-wrap {
+    overflow-x: auto;
+    border: 1px solid #d5e0e4;
+    border-radius: 12px;
+    background: #ffffff;
+  }
   .admin-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.875rem;
+    font-size: 0.84rem;
   }
   .admin-table th {
     text-align: left;
-    padding: 8px 10px;
-    border-bottom: 2px solid #22262a;
+    padding: 13px 12px;
+    border-bottom: 1px solid #cbd8e0;
+    background: #edf3f5;
+    color: #35545b;
     white-space: nowrap;
     font-weight: 700;
   }
   .admin-table td {
-    padding: 8px 10px;
-    border-bottom: 1px solid #e3dccb;
+    padding: 13px 12px;
+    border-bottom: 1px solid #e8eef0;
     vertical-align: middle;
   }
   .admin-table__row { cursor: pointer; }
@@ -1448,6 +1518,10 @@ const adminStyles = `
       align-items: stretch;
       flex-direction: column;
       gap: 12px;
+    }
+
+    .admin-header__hint {
+      font-size: 0.82rem;
     }
 
     .admin-header h1 {
