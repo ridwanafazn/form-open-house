@@ -54,6 +54,8 @@ REGISTRATION_OPEN=true
 
 Catatan: `SUPABASE_SERVICE_ROLE_KEY` dan `TURNSTILE_SECRET_KEY` hanya untuk server. Untuk pengembangan lokal, Cloudflare menyediakan kunci uji Turnstile yang selalu lolos. Cek nilainya di dokumentasi Cloudflare sebelum dipakai.
 
+Kunci uji Turnstile hanya boleh dipakai di localhost. Form dan endpoint menolak kunci uji di host lain: halaman menampilkan pesan `errors.turnstile_config` dan endpoint membalas `503` dengan kode `config`. Karena itu, isi `PUBLIC_TURNSTILE_SITE_KEY` dan `TURNSTILE_SECRET_KEY` dengan kunci asli di setiap environment Cloudflare Pages (Production dan Preview) sebelum dipakai pendaftar. Pemeriksaan ini dilakukan saat runtime dari host permintaan, bukan saat build, agar `pnpm dev` dan `pnpm preview` di localhost tetap bisa memakai kunci uji.
+
 ## Konfigurasi acara
 
 Berkas `src/config/event.ts` mengekspor satu objek dengan isi:
@@ -106,7 +108,7 @@ Langkah di server, berurutan:
 2. Jika `website` terisi, balas `{ "ok": true }` dengan status 200 tanpa menyimpan apa pun. Ini jebakan bot.
 3. Jika `REGISTRATION_OPEN` bukan `true`, balas 403 dengan kode `closed`.
 4. Validasi semua kolom dengan fungsi di `src/lib/validate.ts`. Jika gagal, balas 400 dengan `{ "ok": false, "errors": { "nama_kolom": "kode_kesalahan" } }`.
-5. Verifikasi Turnstile dengan POST berbentuk form ke `https://challenges.cloudflare.com/turnstile/v0/siteverify` berisi `secret` dan `response`. Jika gagal, balas 403 dengan kode `turnstile`.
+5. Verifikasi Turnstile dengan POST berbentuk form ke `https://challenges.cloudflare.com/turnstile/v0/siteverify` berisi `secret` dan `response`. Jika gagal, balas 403 dengan kode `turnstile`. Jika `TURNSTILE_SECRET_KEY` tidak tersedia atau berisi kunci uji di host non-localhost, balas 503 dengan kode `config` tanpa menulis ke database.
 6. Simpan lewat fetch ke REST Supabase: `POST {SUPABASE_URL}/rest/v1/registrations` dengan header `apikey` dan `Authorization: Bearer` berisi service role key, `Content-Type: application/json`, `Prefer: return=representation`, serta `ticket_code` unik.
 7. Jika penyimpanan berhasil, server mencoba mengirim notifikasi WhatsApp melalui Fonnte ke nomor orang tua. Pesan berisi rekap tiket dan Fonnte mengambil SVG QR dari `/api/ticket-qr?code=OH-XXXXXX`. Kegagalan Fonnte tidak membatalkan pendaftaran; peserta tetap mendapat halaman terima kasih dan tiket QR.
 8. Endpoint `/api/ticket-qr?code=OH-XXXXXX` menyediakan SVG QR tanpa menyimpan gambar di object storage. Endpoint hanya menerima format kode tiket yang valid dan mengirim `Cache-Control: private, no-store`.
@@ -182,7 +184,7 @@ Opsional. Hanya dimuat jika `PUBLIC_META_PIXEL_ID` ada. Dimuat setelah halaman i
 ## Pengujian
 
 1. Uji unit dengan Vitest untuk `phone.ts`, `validate.ts`, `utm.ts`, dan `csv.ts`.
-2. Uji e2e dengan Playwright pada viewport HP: buka halaman utama, isi form dua langkah, kirim, lihat halaman terima kasih. Gunakan stub untuk endpoint dan Turnstile.
+2. Uji e2e dengan Playwright pada viewport HP: buka halaman utama, isi form dua langkah, kirim, lihat halaman terima kasih. Gunakan stub untuk endpoint dan Turnstile. Ada juga skenario gagal muat pemeriksaan keamanan: script Turnstile diblokir, tombol kirim harus terkunci dan tombol muat ulang muncul.
 3. Uji bahwa kirim form dengan nomor tidak valid menampilkan pesan yang benar dan tidak berpindah halaman.
 4. Cek manual Lighthouse mode mobile sebelum tayang.
 
@@ -191,3 +193,5 @@ Opsional. Hanya dimuat jika `PUBLIC_META_PIXEL_ID` ada. Dimuat setelah halaman i
 1. Buat proyek Cloudflare Pages dari repo. Perintah build: `pnpm build`. Isi variabel lingkungan di dasbor.
 2. Proyek Supabase dibuat di region Singapura. Jalankan `supabase/migrations/0001_init.sql` di SQL editor.
 3. Cabang `main` menjadi produksi. Setiap pull request mendapat pratinjau.
+4. Jalankan `pnpm build` lebih dulu sebelum `pnpm preview`. Build menghasilkan `.wrangler/deploy/config.json` yang dipakai preview/miniflare; karena itu `scripts/build-pages.mjs` tidak menghapus folder `.wrangler` sesudah build (pembersihan dilakukan script `prebuild` sebelum build berikutnya).
+5. Kunci Turnstile asli wajib diisi di lingkungan Production dan Preview. Bila kunci uji terpasang di sana, form menampilkan pesan konfigurasi dan endpoint membalas `503 config`, bukan menerima pendaftaran tanpa pemeriksaan keamanan.

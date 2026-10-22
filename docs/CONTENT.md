@@ -85,6 +85,9 @@ Pesan kesalahan
 6. Kegagalan Turnstile: Pemeriksaan keamanan belum selesai. Coba lagi sebentar.
 7. Kegagalan server: Pendaftaran belum terkirim. Silakan coba lagi, atau hubungi admisi lewat WhatsApp.
 8. Pendaftaran ditutup: Pendaftaran online sudah ditutup. Silakan hubungi admisi.
+9. Pemeriksaan keamanan sedang disiapkan: Menyiapkan pemeriksaan keamanan. Tunggu sebentar sampai pemeriksaan selesai.
+10. Pemeriksaan keamanan gagal dimuat: Pemeriksaan keamanan tidak bisa dimuat. Periksa koneksi internet lalu muat ulang pemeriksaan keamanan. Tombol: Muat ulang pemeriksaan keamanan.
+11. Pemeriksaan keamanan belum dikonfigurasi: Form belum bisa dipakai karena pemeriksaan keamanan belum dikonfigurasi. Hubungi admisi lewat WhatsApp untuk mendaftar.
 
 ## Halaman terima kasih
 
