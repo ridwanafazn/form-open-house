@@ -99,17 +99,20 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || CLOUDFLARE
     </section>
 
     <footer class="site-footer">
-      <div class="container">
-        <p>{content.home.footer.text}</p>
-        <a
-          class="button button--secondary"
-          href={`https://wa.me/${eventConfig.admissionWhatsApp}?text=${encodeURIComponent('Assalamualaikum. Saya ingin bertanya tentang Open House SMKIT As Syifa.')}`}
-          rel="noopener"
-          target="_blank"
-        >{content.home.footer.cta}</a>
-        <p class="footer-legal">
-          <a href="/privasi">Kebijakan privasi</a>
-        </p>
+      <div class="container site-footer__inner">
+        <div>
+          <p class="site-footer__eyebrow">SMKIT As Syifa Boarding School</p>
+          <p>{content.home.footer.text}</p>
+        </div>
+        <div class="site-footer__actions">
+          <a
+            class="button button--primary"
+            href={`https://wa.me/${eventConfig.admissionWhatsApp}?text=${encodeURIComponent('Assalamualaikum. Saya ingin bertanya tentang Open House SMKIT As Syifa.')}`}
+            rel="noopener"
+            target="_blank"
+          >{content.home.footer.cta}</a>
+          <a class="site-footer__legal" href="/privasi">Kebijakan privasi</a>
+        </div>
       </div>
     </footer>
   </main>
@@ -304,17 +307,41 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || CLOUDFLARE
   }
 
   .site-footer {
+    margin-top: var(--space-12);
     padding-block: var(--space-12);
-    border-top: 2px solid var(--paper-grid);
-    margin-top: var(--space-8);
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .site-footer__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-8);
   }
   .site-footer p {
-    margin-bottom: var(--space-4);
-    color: var(--ink-soft);
+    margin-bottom: var(--space-2);
+    color: #dce5df;
   }
-  .footer-legal {
-    margin-top: var(--space-6) !important;
+  .site-footer__eyebrow {
+    color: var(--teal-pale) !important;
+    font-family: var(--font-heading);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .site-footer__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+  .site-footer__legal {
+    color: var(--teal-pale);
     font-size: 0.875rem;
+  }
+  @media (max-width: 640px) {
+    .site-footer__inner { align-items: flex-start; flex-direction: column; }
   }
 
   .sticky-cta {

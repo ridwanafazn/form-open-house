@@ -4,20 +4,36 @@ import { eventConfig } from '../config/event';
 const admissionHref = `https://wa.me/${eventConfig.admissionWhatsApp}?text=${encodeURIComponent(
   'Assalamualaikum. Saya ingin bertanya tentang Open House SMKIT As Syifa.',
 )}`;
+
+interface Props {
+  adminMode?: boolean;
+}
+
+const { adminMode = false } = Astro.props;
 ---
 
-<nav class="floating-nav" aria-label="Navigasi utama">
-  <a class="floating-nav__brand" href="/" aria-label="Beranda Open House SMKIT As Syifa">
-    <span class="floating-nav__mark" aria-hidden="true">AS</span>
-    <span class="floating-nav__brand-text">Open House</span>
+<nav class:list={['floating-nav', { 'floating-nav--admin': adminMode }]} aria-label={adminMode ? 'Navigasi admin' : 'Navigasi utama'}>
+  <a class="floating-nav__brand" href={adminMode ? '/admin' : '/'} aria-label={adminMode ? 'Halaman admin' : 'Beranda Open House SMKIT As Syifa'}>
+    <img class="floating-nav__logo" src="/images/logo.png" alt="Logo SMKIT As Syifa" width="34" height="34" />
+    <span class="floating-nav__brand-text">{adminMode ? 'Admin Open House' : 'Open House'}</span>
   </a>
   <div class="floating-nav__links">
-    <a href="/">Home</a>
-    <a href="/#story">Yang dilihat</a>
-    <a href="/#event-info">Info acara</a>
-    <a href="/#rundown">Rundown</a>
-    <a href="/privasi">Kebijakan privasi</a>
-    <a class="floating-nav__admission" href={admissionHref} rel="noopener" target="_blank">Admisi</a>
+    {adminMode ? (
+      <>
+        <a href="/admin">Dashboard</a>
+        <a href="/admin">Scan presensi</a>
+        <a href="/">Lihat situs</a>
+      </>
+    ) : (
+      <>
+        <a href="/">Home</a>
+        <a href="/#story">Pengalaman</a>
+        <a href="/#event-info">Info acara</a>
+        <a href="/#rundown">Rundown</a>
+        <a href="/privasi">Kebijakan privasi</a>
+        <a class="floating-nav__admission" href={admissionHref} rel="noopener" target="_blank">Admisi</a>
+      </>
+    )}
   </div>
 </nav>
 
@@ -56,16 +72,11 @@ const admissionHref = `https://wa.me/${eventConfig.admissionWhatsApp}?text=${enc
     font-weight: 700;
   }
 
-  .floating-nav__mark {
-    display: grid;
-    width: 32px;
-    height: 32px;
-    place-items: center;
-    border: 1px solid var(--teal-dark);
-    border-radius: 10px;
-    color: var(--teal-dark);
-    font-size: 0.72rem;
-    letter-spacing: 0.02em;
+  .floating-nav__logo {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+    border-radius: 8px;
   }
 
   .floating-nav__brand-text {
@@ -102,6 +113,15 @@ const admissionHref = `https://wa.me/${eventConfig.admissionWhatsApp}?text=${enc
     color: var(--teal-dark);
   }
 
+  .floating-nav--admin {
+    border-color: #b9c9d8;
+    background: #edf3f7;
+  }
+
+  .floating-nav--admin .floating-nav__logo {
+    border-radius: 50%;
+  }
+
   .floating-nav__links .floating-nav__admission {
     border: 1px solid var(--teal-dark);
     background: var(--teal-dark);
@@ -112,6 +132,12 @@ const admissionHref = `https://wa.me/${eventConfig.admissionWhatsApp}?text=${enc
   .floating-nav__links .floating-nav__admission:focus-visible {
     background: var(--teal);
     color: var(--paper);
+  }
+
+  .floating-nav--admin .floating-nav__links a:hover,
+  .floating-nav--admin .floating-nav__links a:focus-visible {
+    background: #d9e6f0;
+    color: #294b67;
   }
 
   @media (max-width: 760px) {

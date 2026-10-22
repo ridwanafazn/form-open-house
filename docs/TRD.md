@@ -13,8 +13,11 @@ Paket yang diizinkan, selain itu tidak boleh ditambah tanpa izin:
 5. `@supabase/supabase-js`, hanya dipakai di halaman admin
 6. `@fontsource/caveat-brush` dan `@fontsource-variable/public-sans`. Jika salah satu tidak tersedia, pakai font sistem sebagai cadangan dan catat di `docs/QUESTIONS.md`.
 7. `vitest`, `@playwright/test`, `eslint`, `prettier`
+8. `tailwindcss`, `@tailwindcss/vite`
 
-Tidak dipakai: Tailwind, pustaka komponen, pustaka ikon, pustaka validasi, pustaka tanggal. Gaya ditulis dengan CSS biasa dan variabel CSS.
+Tailwind CSS diizinkan untuk utilitas layout, spacing, responsive state, dan komponen visual. Gunakan kelas Tailwind secukupnya dengan token desain proyek. Jangan memakai gradient, shadow, blur, glossy effect, atau bentuk pil yang berlebihan. CSS biasa tetap boleh untuk animasi, SVG, dan aturan yang lebih mudah dirawat di komponen.
+
+Tidak dipakai: pustaka komponen, pustaka ikon, pustaka validasi, pustaka tanggal.
 
 Hosting: Cloudflare Pages. Halaman publik dibuat statis. Hanya `src/pages/api/register.ts` yang dijalankan di server, dengan `export const prerender = false`. Baca dokumentasi terbaru Astro dan adaptor Cloudflare untuk cara membaca variabel lingkungan di server.
 
