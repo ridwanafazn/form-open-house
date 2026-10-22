@@ -1,10 +1,53 @@
 import { validateRegistration } from './validate';
+import { sendWhatsAppViaFonnte } from './fonnte';
+
+export interface RegistrationNotification {
+  parentPhone: string;
+  childName: string;
+  attendeeCount: number;
+  ticketCode: string;
+  publicSiteUrl?: string;
+  fonnteToken?: string;
+} 
+
+export async function sendRegistrationWhatsApp(notification: RegistrationNotification): Promise<boolean> {
+  const ticketUrl = notification.publicSiteUrl
+    ? `${notification.publicSiteUrl.replace(/\/$/, '')}/terima-kasih`
+    : '/terima-kasih';
+  const message = [
+    'Assalamualaikum.',
+    '',
+    'Pendaftaran Open House SMKIT As Syifa berhasil diterima.',
+    `Calon siswa: ${notification.childName}`,
+    `Jumlah hadir: ${notification.attendeeCount} orang`,
+    `Kode tiket: ${notification.ticketCode}`,
+    '',
+    'Silakan simpan pesan dan gambar QR tiket ini. Tunjukkan kepada panitia saat tiba di lokasi.',
+    ticketUrl !== '/terima-kasih' ? `Tiket digital: ${ticketUrl}` : '',
+    '',
+    'Sampai jumpa di Open House SMKIT As Syifa.',
+  ].filter(Boolean).join('\n');
+
+  // Fonnte dikirim setelah pendaftaran sukses. Kegagalan notifikasi tidak membatalkan pendaftaran.
+  return sendWhatsAppViaFonnte({
+    target: notification.parentPhone,
+    message,
+    // Endpoint SVG server-side yang dapat diambil Fonnte sebagai gambar tiket.
+    imageUrl:
+      notification.publicSiteUrl && notification.ticketCode
+        ? `${notification.publicSiteUrl.replace(/\/$/, '')}/api/ticket-qr?code=${encodeURIComponent(notification.ticketCode)}`
+        : undefined,
+    token: notification.fonnteToken,
+  });
+}
 
 export interface SubmitEnv {
   turnstileSecret: string;
   registrationOpen: boolean;
   supabaseUrl: string;
   supabaseServiceRoleKey: string;
+  fonnteApiToken?: string;
+  publicSiteUrl?: string;
 }
 
 export type Fetcher = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
@@ -116,11 +159,26 @@ export async function submitRegistration(
   const inserted = (await writeRes.json().catch(() => [])) as Array<{ id?: string; ticket_code?: string }>;
   const savedRow = Array.isArray(inserted) && inserted[0] ? inserted[0] : null;
 
+  const savedTicketCode = savedRow?.ticket_code || ticketCode;
+
+  // Notifikasi dijalankan setelah data aman tersimpan. Hasil Fonnte tidak
+  // memengaruhi respons pendaftaran agar kegagalan layanan tidak menjadi error palsu.
+  if (env.fonnteApiToken) {
+    await sendRegistrationWhatsApp({
+      parentPhone: result.value.parent_phone,
+      childName: result.value.child_name,
+      attendeeCount: result.value.attendee_count,
+      ticketCode: savedTicketCode,
+      publicSiteUrl: env.publicSiteUrl,
+      fonnteToken: env.fonnteApiToken,
+    });
+  }
+
   return {
     kind: 'ok',
     status: 200,
     id: savedRow?.id,
-    ticket_code: savedRow?.ticket_code || ticketCode,
+    ticket_code: savedTicketCode,
   };
 }
 

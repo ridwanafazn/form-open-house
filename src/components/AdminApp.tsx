@@ -841,11 +841,11 @@ function ScannerTab({
           <div className="admin-scanner-controls">
             {!isScanning ? (
               <button type="button" className="admin-btn admin-btn--attended" onClick={startCamera}>
-                📷 Buka Kamera Scanner
+                Buka Kamera Scanner
               </button>
             ) : (
               <button type="button" className="admin-btn admin-btn--ghost" onClick={stopCamera}>
-                ⏹️ Tutup Kamera
+                Tutup Kamera
               </button>
             )}
           </div>
@@ -883,9 +883,9 @@ function ScannerTab({
           {scanResult && (
             <div className={`admin-scan-alert admin-scan-alert--${scanResult.type}`} role="alert">
               <div className="admin-scan-alert__icon">
-                {scanResult.type === 'success' && '✅'}
-                {scanResult.type === 'duplicate' && '⚠️'}
-                {scanResult.type === 'error' && '❌'}
+                {scanResult.type === 'success' && 'OK'}
+                {scanResult.type === 'duplicate' && '!'}
+                {scanResult.type === 'error' && 'X'}
               </div>
               <div className="admin-scan-alert__content">
                 <strong>

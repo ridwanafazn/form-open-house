@@ -1,5 +1,8 @@
 # QUESTIONS
 
+Q05 | 2026-10-22 | Fonnte token yang dipakai untuk mengirim pesan adalah device token yang disalin dari menu perangkat melalui aksi Token/API key, bukan account token. Format token tidak harus tepat 20 karakter; ikuti nilai token yang diberikan dashboard dan simpan hanya sebagai `FONNTE_API_TOKEN` server-side.
+
+
 Agent menulis di sini setiap kali memakai nilai bawaan, menemukan hal yang tidak jelas, atau butuh paket di luar daftar izin. Pemilik proyek menjawab di bawah tiap butir.
 
 ## Q01 waJoinUrl masih teks pengganti (2026-10-20)

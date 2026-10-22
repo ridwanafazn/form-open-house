@@ -97,7 +97,7 @@ Tiket Masuk & QR Code:
 - Label kode: Kode Tiket: {kode tiket}
 - Petunjuk: Tunjukkan QR Code ini kepada panitia di meja registrasi saat tiba di lokasi.
 - Tombol: Simpan Tiket QR (unduh gambar untuk disimpan di galeri ponsel).
-- Tombol: Kirim Tiket ke WhatsApp Saya (membuka WhatsApp dengan pesan ringkasan dan tautan tiket).
+- Tombol: Bagikan Tiket (mengirim gambar QR tiket dan rekap informasi melalui tombol bagikan perangkat; jika tidak didukung, simpan gambar lalu buka WhatsApp dengan teks).
 
 Pesan WhatsApp penyerta tiket (dikirim ke nomor orang tua atau disimpan sendiri):
 "Assalamualaikum. Ini adalah bukti pendaftaran dan tiket masuk Open House SMKIT As Syifa Boarding School untuk calon siswa: {nama anak} (Jumlah hadir: {jumlah hadir} orang). Kode Tiket: {kode tiket}. Tunjukkan pesan atau QR Code ini kepada panitia di meja registrasi pada Sabtu, 07 November 2026. Sampai jumpa!"

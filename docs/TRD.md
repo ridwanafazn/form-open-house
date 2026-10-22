@@ -39,6 +39,7 @@ SUPABASE_SERVICE_ROLE_KEY=
 PUBLIC_SUPABASE_URL=
 PUBLIC_SUPABASE_ANON_KEY=
 PUBLIC_META_PIXEL_ID=
+FONNTE_API_TOKEN=
 REGISTRATION_OPEN=true
 ```
 
@@ -97,10 +98,12 @@ Langkah di server, berurutan:
 3. Jika `REGISTRATION_OPEN` bukan `true`, balas 403 dengan kode `closed`.
 4. Validasi semua kolom dengan fungsi di `src/lib/validate.ts`. Jika gagal, balas 400 dengan `{ "ok": false, "errors": { "nama_kolom": "kode_kesalahan" } }`.
 5. Verifikasi Turnstile dengan POST berbentuk form ke `https://challenges.cloudflare.com/turnstile/v0/siteverify` berisi `secret` dan `response`. Jika gagal, balas 403 dengan kode `turnstile`.
-6. Simpan lewat fetch ke REST Supabase: `POST {SUPABASE_URL}/rest/v1/registrations` dengan header `apikey` dan `Authorization: Bearer` berisi service role key, `Content-Type: application/json`, dan `Prefer: return=minimal`.
-7. Jika Supabase membalas konflik 409, anggap berhasil dan balas `{ "ok": true }`. Jangan beri tahu bahwa data sudah ada.
-8. Jika gagal karena sebab lain, balas 500 dengan kode `server`. Jangan menyertakan rincian kesalahan. Catat hanya kode status ke log.
-9. Jika berhasil, balas `{ "ok": true }`.
+6. Simpan lewat fetch ke REST Supabase: `POST {SUPABASE_URL}/rest/v1/registrations` dengan header `apikey` dan `Authorization: Bearer` berisi service role key, `Content-Type: application/json`, `Prefer: return=representation`, serta `ticket_code` unik.
+7. Jika penyimpanan berhasil, server mencoba mengirim notifikasi WhatsApp melalui Fonnte ke nomor orang tua. Pesan berisi rekap tiket dan Fonnte mengambil SVG QR dari `/api/ticket-qr?code=OH-XXXXXX`. Kegagalan Fonnte tidak membatalkan pendaftaran; peserta tetap mendapat halaman terima kasih dan tiket QR.
+8. Endpoint `/api/ticket-qr?code=OH-XXXXXX` menyediakan SVG QR tanpa menyimpan gambar di object storage. Endpoint hanya menerima format kode tiket yang valid dan mengirim `Cache-Control: private, no-store`.
+9. Jika Supabase membalas konflik 409, anggap berhasil dan balas `{ "ok": true }`. Jangan beri tahu bahwa data sudah ada.
+10. Jika gagal karena sebab lain, balas 500 dengan kode `server`. Jangan menyertakan rincian kesalahan. Jangan mencatat nomor telepon atau nama anak ke log.
+11. Jika berhasil, balas `{ "ok": true, "id": "...", "ticket_code": "..." }`.
 
 ## Aturan validasi dan normalisasi
 
@@ -136,9 +139,10 @@ Fitur:
 
 ## Tiket Masuk dan QR Code
 
-1. Tidak memerlukan object storage eksternal (seperti Cloudinary). QR Code di-generate secara instan di browser/klien dalam bentuk SVG/Canvas berbasis ID pendaftaran / kode tiket unik.
-2. Di halaman `/terima-kasih`, QR Code ditampilkan sebagai tiket digital dengan tombol simpan gambar dan tombol kirim ringkasan tiket ke WhatsApp pribadi.
-3. Nilai QR Code memuat ID pendaftaran atau kode tiket ringkas yang dapat diverifikasi oleh scanner di halaman admin.
+1. Tidak memerlukan object storage eksternal (seperti Cloudinary). QR Code dibuat di browser sebagai Canvas dan juga tersedia sebagai SVG sementara di endpoint server untuk lampiran Fonnte.
+2. Di halaman `/terima-kasih`, QR Code ditampilkan sebagai tiket digital dengan tombol simpan gambar dan tombol bagikan file gambar + rekap teks melalui Web Share API; browser lama memakai fallback unduh gambar dan membuka WhatsApp dengan teks.
+3. Nilai QR Code memuat kode tiket ringkas yang dapat diverifikasi oleh scanner di halaman admin.
+4. Fonnte memakai `FONNTE_API_TOKEN` server-side. Token dikirim melalui header `Authorization`, tidak pernah dikirim ke browser atau dicatat ke log.
 
 ## Penangkapan UTM
 

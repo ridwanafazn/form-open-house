@@ -49,6 +49,28 @@ export default function TicketCard() {
     );
   }, [ticketCode, data]);
 
+  function buildTicketMessage() {
+    const child = data?.child_name || 'Calon Siswa';
+    const count = data?.attendee_count || 1;
+    return `Assalamualaikum. Ini adalah bukti pendaftaran dan tiket masuk Open House SMKIT As Syifa Boarding School untuk calon siswa: ${child} (Jumlah hadir: ${count} orang). Kode Tiket: ${ticketCode}. Tunjukkan pesan atau QR Code ini kepada panitia di meja registrasi pada Sabtu, 07 November 2026. Sampai jumpa!`;
+  }
+
+  function createTicketFile(): Promise<File> {
+    return new Promise((resolve, reject) => {
+      if (!canvasRef.current) {
+        reject(new Error('Canvas tiket belum siap'));
+        return;
+      }
+      canvasRef.current.toBlob((blob) => {
+        if (!blob) {
+          reject(new Error('Gambar tiket gagal dibuat'));
+          return;
+        }
+        resolve(new File([blob], `Tiket-OpenHouse-${ticketCode}.png`, { type: 'image/png' }));
+      }, 'image/png');
+    });
+  }
+
   function handleDownloadImage() {
     if (!canvasRef.current) return;
     const url = canvasRef.current.toDataURL('image/png');
@@ -60,16 +82,26 @@ export default function TicketCard() {
     document.body.removeChild(a);
   }
 
-  function handleShareWa() {
-    const child = data?.child_name || 'Calon Siswa';
-    const count = data?.attendee_count || 1;
-    const msg = `Assalamualaikum. Ini adalah bukti pendaftaran dan tiket masuk Open House SMKIT As Syifa Boarding School untuk calon siswa: ${child} (Jumlah hadir: ${count} orang). Kode Tiket: ${ticketCode}. Tunjukkan pesan atau QR Code ini kepada panitia di meja registrasi pada Sabtu, 07 November 2026. Sampai jumpa!`;
+  async function handleShareWa() {
+    const msg = buildTicketMessage();
+    try {
+      const file = await createTicketFile();
+      const shareData = { files: [file], title: 'Tiket Open House', text: msg };
+      if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
+        await navigator.share(shareData);
+        return;
+      }
+    } catch (error) {
+      // Cancel pada native share bukan error yang perlu ditampilkan kepada peserta.
+      if (error instanceof DOMException && error.name === 'AbortError') return;
+    }
 
+    // Fallback desktop/browser lama: unduh gambar dan buka WhatsApp dengan teks.
+    handleDownloadImage();
     const cleanPhone = (data?.parent_phone || '').replace(/[^0-9]/g, '');
     const targetUrl = cleanPhone
       ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`
       : `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`;
-
     window.open(targetUrl, '_blank', 'noopener');
   }
 

@@ -26,6 +26,8 @@ export const POST: APIRoute = async ({ request }) => {
     supabaseUrl: (import.meta.env.SUPABASE_URL as string | undefined) ?? '',
     supabaseServiceRoleKey:
       (import.meta.env.SUPABASE_SERVICE_ROLE_KEY as string | undefined) ?? '',
+    fonnteApiToken: (import.meta.env.FONNTE_API_TOKEN as string | undefined) ?? '',
+    publicSiteUrl: (import.meta.env.PUBLIC_SITE_URL as string | undefined) ?? '',
   };
 
   const result = await submitRegistration(parsed, env, globalThis.fetch.bind(globalThis));
