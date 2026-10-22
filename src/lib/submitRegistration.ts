@@ -102,6 +102,10 @@ export async function submitRegistration(
   }
 
   // 5. Verifikasi Turnstile.
+  if (!env.turnstileSecret) {
+    // Konfigurasi pemeriksaan keamanan belum lengkap di server.
+    return { kind: 'error', status: 503, code: 'config' };
+  }
   const token = typeof parsed.turnstile_token === 'string' ? parsed.turnstile_token : '';
   if (!(await verifyTurnstile(token, env.turnstileSecret, fetchImpl))) {
     return { kind: 'error', status: 403, code: 'turnstile' };
@@ -189,8 +193,8 @@ export function bodyTooLarge(rawBodyLength: number): boolean {
 }
 
 async function verifyTurnstile(token: string, secret: string, fetchImpl: Fetcher): Promise<boolean> {
-  // Jika menggunakan Cloudflare official test secret key atau token uji di localhost/dev, selalu loloskan
-  if (secret === CLOUDFLARE_TEST_SECRET || token.startsWith('XXXX.') || token === 'test-token') {
+  // Kunci uji resmi Cloudflare selalu lolos otomatis tanpa memanggil siteverify.
+  if (secret === CLOUDFLARE_TEST_SECRET) {
     return true;
   }
   if (!secret || !token) return false;

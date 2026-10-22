@@ -7,7 +7,8 @@ import RegisterForm from '../components/RegisterForm';
 import { content } from '../config/content';
 import { eventConfig } from '../config/event';
 
-// Kunci uji resmi Cloudflare Turnstile yang selalu lolos otomatis (mode pass)
+// Kunci uji resmi Cloudflare Turnstile yang selalu lolos otomatis (mode pass).
+// Form menolak kunci ini saat runtime bila situs tidak dibuka dari localhost.
 const CLOUDFLARE_TEST_SITE_KEY = '1x00000000000000000000AA';
 const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || CLOUDFLARE_TEST_SITE_KEY;
 ---
