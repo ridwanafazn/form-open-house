@@ -1,5 +1,13 @@
+# pnpm >= 10 uses onlyBuiltDependencies; pnpm 12 also accepts allowBuilds.
+# Keep both so build-script approval works regardless of the pnpm version
+# (Cloudflare Pages currently runs pnpm 10.11.1).
 allowBuilds:
   esbuild: true
   workerd: true
   '@cloudflare/workerd-linux-64': true
   '@cloudflare/workerd-windows-64': true
+onlyBuiltDependencies:
+  - esbuild
+  - workerd
+  - '@cloudflare/workerd-linux-64'
+  - '@cloudflare/workerd-windows-64'
