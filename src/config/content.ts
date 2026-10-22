@@ -128,12 +128,6 @@ export const content = {
       submit: 'Kirim pendaftaran',
       submitting: 'Mengirim...',
     },
-    turnstile: {
-      preparing: 'Menyiapkan pemeriksaan keamanan. Tunggu sebentar sampai pemeriksaan selesai.',
-      verifying: 'Menyelesaikan pemeriksaan keamanan. Tunggu sebentar.',
-      retry: 'Muat ulang pemeriksaan keamanan',
-      failed: 'Pemeriksaan keamanan tidak bisa dimuat. Periksa koneksi internet lalu muat ulang pemeriksaan keamanan.',
-    },
     majors: {
       rpl: 'RPL',
       dkv: 'DKV',
@@ -147,9 +141,6 @@ export const content = {
     phone: 'Nomor HP belum sesuai. Contoh yang benar: 081234567890.',
     attendee_count: 'Pilih jumlah antara 1 dan 10.',
     consent: 'Centang dulu persetujuan agar kami boleh menghubungi.',
-    turnstile: 'Pemeriksaan keamanan belum selesai. Coba lagi sebentar.',
-    turnstile_config:
-      'Form belum bisa dipakai karena pemeriksaan keamanan belum dikonfigurasi. Hubungi admisi lewat WhatsApp untuk mendaftar.',
     server: 'Pendaftaran belum terkirim. Silakan coba lagi, atau hubungi admisi lewat WhatsApp.',
     closed: 'Pendaftaran online sudah ditutup. Silakan hubungi admisi.',
   },

@@ -19,18 +19,6 @@ async function stubRegisterError(page: Page, status = 500) {
   );
 }
 
-// Stub Turnstile: simulasikan widget yang langsung memberikan token palsu
-async function stubTurnstile(page: Page) {
-  await page.addInitScript(() => {
-    (window as unknown as { turnstile: unknown }).turnstile = {
-      render(el: HTMLElement, opts: { callback?: (token: string) => void }) {
-        el.innerHTML = '<div data-testid="turnstile-stub" style="height:65px;background:#eee"></div>';
-        if (opts.callback) opts.callback('test-token-stub');
-      },
-    };
-  });
-}
-
 // ---------------------------------------------------------------------------
 // Helper: isi langkah 1 form dengan data valid
 // ---------------------------------------------------------------------------
@@ -75,8 +63,9 @@ async function gotoForm(page: Page) {
 // ===========================================================================
 // TEST 1: Nomor HP tidak valid → pesan error muncul, tidak pindah ke langkah 2
 // ===========================================================================
-test('nomor HP tidak valid menampilkan pesan error dan tidak berpindah langkah', async ({ page }) => {
-  await stubTurnstile(page);
+test('nomor HP tidak valid menampilkan pesan error dan tidak berpindah langkah', async ({
+  page,
+}) => {
   await gotoForm(page);
 
   await page.fill('#f-child_name', 'Budi Santoso');
@@ -96,7 +85,6 @@ test('nomor HP tidak valid menampilkan pesan error dan tidak berpindah langkah',
 // TEST 2: Nama anak terlalu pendek → pesan error
 // ===========================================================================
 test('nama anak terlalu pendek menampilkan pesan error', async ({ page }) => {
-  await stubTurnstile(page);
   await gotoForm(page);
 
   await page.fill('#f-child_name', 'A'); // kurang dari 2 huruf setelah trim
@@ -113,7 +101,7 @@ test('nama anak terlalu pendek menampilkan pesan error', async ({ page }) => {
 // ===========================================================================
 test('form dua langkah valid dikirim dan berpindah ke halaman terima kasih', async ({ page }) => {
   await stubRegisterOk(page);
-  await stubTurnstile(page);
+
   await gotoForm(page);
 
   // Langkah 1
@@ -138,7 +126,6 @@ test('form dua langkah valid dikirim dan berpindah ke halaman terima kasih', asy
 // TEST 4: Kembali dari langkah 2 ke langkah 1 → data langkah 1 tidak hilang
 // ===========================================================================
 test('kembali dari langkah 2 ke langkah 1 mempertahankan isian', async ({ page }) => {
-  await stubTurnstile(page);
   await gotoForm(page);
 
   await page.locator('#f-child_name').click();
@@ -165,7 +152,6 @@ test('kembali dari langkah 2 ke langkah 1 mempertahankan isian', async ({ page }
 // TEST 5: Persetujuan tidak dicentang → pesan error consent
 // ===========================================================================
 test('kirim tanpa persetujuan menampilkan pesan error consent', async ({ page }) => {
-  await stubTurnstile(page);
   await gotoForm(page);
 
   await fillStepOne(page);
@@ -190,7 +176,7 @@ test('kirim tanpa persetujuan menampilkan pesan error consent', async ({ page })
 // ===========================================================================
 test('gagal server menampilkan pesan error dan tidak berpindah halaman', async ({ page }) => {
   await stubRegisterError(page, 500);
-  await stubTurnstile(page);
+
   await gotoForm(page);
 
   await fillStepOne(page);
@@ -213,14 +199,15 @@ test('halaman terima kasih tampil tanpa ringkasan sessionStorage', async ({ page
   await page.goto('/terima-kasih');
   await expect(page.locator('h1')).toContainText(/terima kasih/i);
   // Teks fallback muncul (tanpa nama anak)
-  await expect(page.locator('.ty-summary')).toContainText(/Kami tunggu Bapak dan Ibu/i, { timeout: 5000 });
+  await expect(page.locator('.ty-summary')).toContainText(/Kami tunggu Bapak dan Ibu/i, {
+    timeout: 5000,
+  });
 });
 
 // ===========================================================================
 // TEST 8: Progress bar — langkah 1 aktif di awal, langkah 1 selesai saat step 2
 // ===========================================================================
 test('progress bar menunjukkan langkah aktif yang benar', async ({ page }) => {
-  await stubTurnstile(page);
   await gotoForm(page);
 
   // Langkah 1 harus aktif
@@ -237,25 +224,4 @@ test('progress bar menunjukkan langkah aktif yang benar', async ({ page }) => {
   // Langkah 1 done, langkah 2 aktif
   await expect(step1).toHaveClass(/done/);
   await expect(step2).toHaveClass(/active/);
-});
-
-// ===========================================================================
-// TEST 9: Pemeriksaan keamanan gagal dimuat → tombol kirim terkunci + tombol muat ulang
-// ===========================================================================
-test('pemeriksaan keamanan gagal dimuat mengunci tombol kirim dan menawarkan muat ulang', async ({
-  page,
-}) => {
-  // Blokir script Turnstile agar widget benar-benar gagal dimuat
-  await page.route('**/challenges.cloudflare.com/**', (route) => route.abort());
-  await stubRegisterOk(page);
-  await gotoForm(page);
-
-  await fillStepOne(page);
-  await page.click('button:has-text("Lanjut")');
-  await expect(page.locator('#f-city')).toBeVisible({ timeout: 8000 });
-
-  const errorText = page.locator('.turnstile-error .err');
-  await expect(errorText).toBeVisible({ timeout: 15000 });
-  await expect(page.locator('.turnstile-error button')).toBeVisible();
-  await expect(page.locator('button[type="submit"]')).toBeDisabled();
 });

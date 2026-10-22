@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { AnimatePresence, LazyMotion, domAnimation, m } from 'motion/react';
 import { content } from '../config/content';
 import { eventConfig } from '../config/event';
@@ -17,101 +17,11 @@ type Fields = {
   website: string; // jebakan bot (isian tersembunyi)
 };
 
-interface Props {
-  turnstileSiteKey: string;
-}
-
-const { stepOne, stepTwo, consent, buttons, turnstile: turnstileText } = content.form;
+const { stepOne, stepTwo, consent, buttons } = content.form;
 
 const STORAGE_SUMMARY_KEY = 'oh_summary';
 
-const CLOUDFLARE_TEST_SITE_KEY = '1x00000000000000000000AA';
-const TURNSTILE_SCRIPT_ID = 'cf-turnstile-src';
-const TURNSTILE_SCRIPT_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
-const TURNSTILE_SCRIPT_TIMEOUT_MS = 10_000;
-const TURNSTILE_API_TIMEOUT_MS = 5_000;
-
-type TurnstileApi = {
-  render: (el: HTMLElement, options: Record<string, unknown>) => void;
-};
-
-type TurnstileWindow = Window & { turnstile?: TurnstileApi };
-
-// Satu promise untuk semua pemanggilan agar script Turnstile hanya dimuat sekali.
-let turnstileScriptPromise: Promise<void> | null = null;
-
-function waitForTurnstileApi(timeoutMs = TURNSTILE_API_TIMEOUT_MS): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const startedAt = Date.now();
-    const check = () => {
-      if ((window as TurnstileWindow).turnstile) {
-        resolve();
-        return;
-      }
-      if (Date.now() - startedAt > timeoutMs) {
-        reject(new Error('turnstile_api_timeout'));
-        return;
-      }
-      window.setTimeout(check, 100);
-    };
-    check();
-  });
-}
-
-function loadTurnstileScript(): Promise<void> {
-  if ((window as TurnstileWindow).turnstile) return Promise.resolve();
-  if (turnstileScriptPromise) return turnstileScriptPromise;
-
-  turnstileScriptPromise = new Promise<void>((resolve, reject) => {
-    // Script lama yang gagal dimuat dibuang agar percobaan ulang benar-benar
-    // memuat script baru, bukan menunggu script mati yang tak akan berbunyi lagi.
-    document.getElementById(TURNSTILE_SCRIPT_ID)?.remove();
-
-    const script = document.createElement('script');
-    const timer = window.setTimeout(
-      () => fail(new Error('turnstile_script_timeout')),
-      TURNSTILE_SCRIPT_TIMEOUT_MS,
-    );
-
-    function done() {
-      window.clearTimeout(timer);
-      resolve();
-    }
-
-    function fail(error: Error) {
-      window.clearTimeout(timer);
-      turnstileScriptPromise = null;
-      reject(error);
-    }
-
-    script.addEventListener('load', done, { once: true });
-    script.addEventListener('error', () => fail(new Error('turnstile_script_error')), { once: true });
-
-    script.id = TURNSTILE_SCRIPT_ID;
-    script.src = TURNSTILE_SCRIPT_SRC;
-    script.async = true;
-    script.defer = true;
-    document.head.appendChild(script);
-  });
-
-  return turnstileScriptPromise;
-}
-
-function isLocalHostname(): boolean {
-  if (typeof window === 'undefined') return false;
-  const name = window.location.hostname;
-  return name === 'localhost' || name === '127.0.0.1';
-}
-
-// Kunci uji selalu lolos otomatis, jadi hanya boleh dipakai saat situs dibuka
-// dari localhost. Di domain publik kunci uji berarti form dinonaktifkan.
-function isTurnstileBlocked(siteKey: string): boolean {
-  if (typeof window === 'undefined') return false;
-  if (siteKey === '') return true;
-  return siteKey === CLOUDFLARE_TEST_SITE_KEY && !isLocalHostname();
-}
-
-export default function RegisterForm({ turnstileSiteKey }: Props) {
+export default function RegisterForm() {
   const [step, setStep] = useState<1 | 2>(1);
   const [fields, setFields] = useState<Fields>({
     child_name: '',
@@ -125,72 +35,11 @@ export default function RegisterForm({ turnstileSiteKey }: Props) {
     website: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [token, setToken] = useState('');
   const [status, setStatus] = useState<'idle' | 'sending' | 'error'>('idle');
   const [submitError, setSubmitError] = useState('');
-  const [turnstileState, setTurnstileState] = useState<'loading' | 'ready' | 'error'>('loading');
-  const [turnstileAttempt, setTurnstileAttempt] = useState(0);
-  // Diperiksa saat runtime karena host situs tidak bisa dipastikan saat build.
-  const [turnstileBlocked, setTurnstileBlocked] = useState(false);
-  // Elemen wadah widget disimpan sebagai state agar efek berjalan setelah
-  // React benar-benar memasang elemennya (AnimatePresence memasang langkah 2
-  // setelah animasi keluar langkah 1 selesai).
-  const [turnstileEl, setTurnstileEl] = useState<HTMLDivElement | null>(null);
 
   const set = <K extends keyof Fields>(key: K, value: Fields[K]) =>
     setFields((f) => ({ ...f, [key]: value }));
-
-  useEffect(() => {
-    setTurnstileBlocked(isTurnstileBlocked(turnstileSiteKey));
-  }, [turnstileSiteKey]);
-
-  // Muat Turnstile saat langkah dua tampil. Script hanya dimuat sekali; widget
-  // dirender ulang setiap kali masuk langkah 2 atau saat pemeriksaan dimuat ulang.
-  useEffect(() => {
-    if (step !== 2 || turnstileBlocked || !turnstileEl) return;
-    let cancelled = false;
-    setToken('');
-    setTurnstileState('loading');
-
-    void (async () => {
-      try {
-        await loadTurnstileScript();
-        await waitForTurnstileApi();
-        if (cancelled) return;
-        const win = window as TurnstileWindow;
-        if (!win.turnstile) throw new Error('turnstile_unavailable');
-        // Kosongkan terlebih dulu agar tidak duplikat saat kembali ke langkah 2
-        turnstileEl.innerHTML = '';
-        win.turnstile.render(turnstileEl, {
-          sitekey: turnstileSiteKey,
-          size: 'flexible',
-          callback: (value: string) => {
-            if (cancelled) return;
-            setToken(value);
-            setTurnstileState('ready');
-          },
-          'expired-callback': () => {
-            if (cancelled) return;
-            setToken('');
-            setTurnstileState('error');
-          },
-          'error-callback': () => {
-            if (cancelled) return;
-            setToken('');
-            setTurnstileState('error');
-          },
-        });
-      } catch {
-        if (cancelled) return;
-        setToken('');
-        setTurnstileState('error');
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [step, turnstileSiteKey, turnstileBlocked, turnstileEl, turnstileAttempt]);
 
   // progress: langkah 1 aktif, langkah 2 aktif saat step=2 dan sudah selesai saat kirim
   const step1Done = step === 2;
@@ -247,14 +96,6 @@ export default function RegisterForm({ turnstileSiteKey }: Props) {
     setErrors({});
     setStatus('sending');
 
-    // Token Turnstile wajib ada sebelum form boleh dikirim.
-    if (!token) {
-      setStatus('idle');
-      setSubmitError(content.errors.turnstile);
-      return;
-    }
-    const activeToken = token;
-
     const device = window.innerWidth < 768 ? 'mobile' : window.innerWidth < 1024 ? 'tablet' : 'desktop';
     const tracking = trackingForSubmit();
     const payload = {
@@ -266,7 +107,6 @@ export default function RegisterForm({ turnstileSiteKey }: Props) {
       school: r.value.school,
       interest_major: r.value.interest_major,
       consent_wa: r.value.consent_wa,
-      turnstile_token: activeToken,
       website: fields.website,
       ...tracking,
       referrer: document.referrer,
@@ -305,15 +145,7 @@ export default function RegisterForm({ turnstileSiteKey }: Props) {
       }
       const code = data && typeof data.code === 'string' ? data.code : 'server';
       setStatus('idle');
-      setSubmitError(
-        code === 'closed'
-          ? content.errors.closed
-          : code === 'turnstile'
-            ? content.errors.turnstile
-            : code === 'config'
-              ? content.errors.turnstile_config
-              : content.errors.server,
-      );
+      setSubmitError(code === 'closed' ? content.errors.closed : content.errors.server);
     } catch {
       setStatus('idle');
       setSubmitError(content.errors.server);
@@ -334,14 +166,6 @@ export default function RegisterForm({ turnstileSiteKey }: Props) {
 
   function errorFor(key: string) {
     return errors[key] ?? '';
-  }
-
-  if (turnstileBlocked) {
-    return (
-      <div className="form-notice" role="alert">
-        <p className="err">{content.errors.turnstile_config}</p>
-      </div>
-    );
   }
 
   return (
@@ -449,33 +273,13 @@ export default function RegisterForm({ turnstileSiteKey }: Props) {
                 {errorFor('consent_wa') && <p className="err">{errorFor('consent_wa')}</p>}
               </div>
 
-              <div ref={setTurnstileEl} className="turnstile" data-size="flexible" />
-
-              {turnstileState === 'loading' && <p className="hint">{turnstileText.preparing}</p>}
-              {turnstileState === 'error' && (
-                <div className="turnstile-error">
-                  <p className="err">{turnstileText.failed}</p>
-                  <button
-                    type="button"
-                    className="button button--secondary"
-                    onClick={() => setTurnstileAttempt((n) => n + 1)}
-                  >
-                    {turnstileText.retry}
-                  </button>
-                </div>
-              )}
-
               {submitError && <p className="err submit-err">{submitError}</p>}
 
               <div className="actions">
                 <button type="button" className="button button--secondary" onClick={() => setStep(1)}>
                   {buttons.back}
                 </button>
-                <button
-                  type="submit"
-                  className="button button--primary"
-                  disabled={status === 'sending' || !token}
-                >
+                <button type="submit" className="button button--primary" disabled={status === 'sending'}>
                   {status === 'sending' ? buttons.submitting : buttons.submit}
                 </button>
               </div>
@@ -517,8 +321,6 @@ export default function RegisterForm({ turnstileSiteKey }: Props) {
         .chip--on { background: var(--teal-pale); border-color: var(--teal-dark); color: var(--teal-dark); }
         .consent { display: flex; gap: var(--space-2); align-items: flex-start; font-style: normal; }
         .consent input { width: auto; margin-top: 4px; }
-        .turnstile { min-height: 65px; }
-        .turnstile-error { display: flex; flex-direction: column; gap: var(--space-2); align-items: flex-start; }
         .form-notice { max-width: 46ch; }
         .actions { display: flex; gap: var(--space-3); flex-wrap: wrap; }
         @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }

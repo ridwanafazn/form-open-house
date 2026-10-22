@@ -44,7 +44,6 @@ export async function sendRegistrationWhatsApp(notification: RegistrationNotific
 }
 
 export interface SubmitEnv {
-  turnstileSecret: string;
   registrationOpen: boolean;
   supabaseUrl: string;
   supabaseServiceRoleKey: string;
@@ -55,7 +54,6 @@ export interface SubmitEnv {
 export type Fetcher = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
 
 const MAX_BODY = 10 * 1024;
-const CLOUDFLARE_TEST_SECRET = '1x0000000000000000000000000000000AA';
 
 export type SubmitResult =
   | { kind: 'ok' | 'bot' | 'conflict'; status: number; id?: string; ticket_code?: string }
@@ -99,16 +97,6 @@ export async function submitRegistration(
   const result = validateRegistration(parsed);
   if (!result.ok) {
     return { kind: 'error', status: 400, code: 'validation', errors: result.errors };
-  }
-
-  // 5. Verifikasi Turnstile.
-  if (!env.turnstileSecret) {
-    // Konfigurasi pemeriksaan keamanan belum lengkap di server.
-    return { kind: 'error', status: 503, code: 'config' };
-  }
-  const token = typeof parsed.turnstile_token === 'string' ? parsed.turnstile_token : '';
-  if (!(await verifyTurnstile(token, env.turnstileSecret, fetchImpl))) {
-    return { kind: 'error', status: 403, code: 'turnstile' };
   }
 
   const ticketCode = generateTicketCode();
@@ -190,27 +178,6 @@ export async function submitRegistration(
 
 export function bodyTooLarge(rawBodyLength: number): boolean {
   return rawBodyLength > MAX_BODY;
-}
-
-async function verifyTurnstile(token: string, secret: string, fetchImpl: Fetcher): Promise<boolean> {
-  // Kunci uji resmi Cloudflare selalu lolos otomatis tanpa memanggil siteverify.
-  if (secret === CLOUDFLARE_TEST_SECRET) {
-    return true;
-  }
-  if (!secret || !token) return false;
-  try {
-    const body = new URLSearchParams({ secret, response: token });
-    const res = await fetchImpl('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: body.toString(),
-    });
-    if (!res.ok) return false;
-    const data = (await res.json()) as { success?: boolean };
-    return data.success === true;
-  } catch {
-    return false;
-  }
 }
 
 function emptyToNull(value: string): string | null {
