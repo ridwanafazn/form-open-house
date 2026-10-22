@@ -20,7 +20,45 @@ const words = content.home.hero.title.split(' ');
 
 <style>
   .hero {
-    padding-block: var(--space-12) var(--space-8);
+    position: relative;
+    min-height: min(620px, calc(100vh - 88px));
+    display: grid;
+    align-items: center;
+    margin-inline: var(--space-4);
+    padding-block: clamp(72px, 12vw, 144px);
+    border: 1px solid var(--teal-dark);
+    border-radius: 24px;
+    background: var(--teal-pale);
+    overflow: hidden;
+  }
+
+  .hero::before,
+  .hero::after {
+    position: absolute;
+    content: '';
+    pointer-events: none;
+    border: 1px solid rgba(15, 111, 106, 0.22);
+    border-radius: 50%;
+  }
+
+  .hero::before {
+    width: 360px;
+    height: 360px;
+    right: -130px;
+    top: -120px;
+  }
+
+  .hero::after {
+    width: 220px;
+    height: 220px;
+    right: 80px;
+    bottom: -140px;
+  }
+
+  .hero__inner {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
   }
   .hero__title {
     font-family: var(--font-heading);

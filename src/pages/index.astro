@@ -149,7 +149,11 @@ const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || CLOUDFLARE
     padding-block: var(--space-12);
   }
 
-  /* Bagian cerita */
+  /* Bagian pengalaman dibuat lebih tenang agar hero tetap menjadi pembuka utama. */
+  #story {
+    padding-top: clamp(72px, 10vw, 120px);
+  }
+
   #story h2 {
     margin-bottom: var(--space-8);
   }

@@ -213,7 +213,9 @@ function ListScreen({
   onLogout: () => void;
   setScreen: (s: Screen) => void;
 }) {
-  const [activeTab, setActiveTab] = useState<Tab>('list');
+  const [activeTab, setActiveTab] = useState<Tab>(() =>
+    typeof window !== 'undefined' && window.location.hash === '#scan' ? 'scan' : 'list',
+  );
   const [rows, setRows] = useState<Registration[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
@@ -336,7 +338,7 @@ function ListScreen({
               className={`admin-tab ${activeTab === 'list' ? 'admin-tab--active' : ''}`}
               onClick={() => setActiveTab('list')}
             >
-              Daftar Peserta ({rows.length})
+              Daftar peserta: {rows.length}
             </button>
             <button
               type="button"
@@ -369,7 +371,7 @@ function ListScreen({
             </div>
             <div className="admin-stat admin-stat--attended">
               <span className="admin-stat__num">{totalAttended}</span>
-              <span className="admin-stat__label">Hadir ({totalAttendedPersons} orang)</span>
+              <span className="admin-stat__label">Hadir: {totalAttendedPersons} orang</span>
             </div>
             <div className="admin-stat admin-stat--absent">
               <span className="admin-stat__num">{totalAbsent}</span>
@@ -380,7 +382,7 @@ function ListScreen({
               <span className="admin-stat__label">Target Total Hadir</span>
             </div>
             <div className="admin-stat admin-stat--sources">
-              <span className="admin-stat__label">Per Sumber</span>
+              <span className="admin-stat__label">Sumber pendaftaran</span>
               <ul className="admin-source-list">
                 {Object.entries(sourceSummary)
                   .sort((a, b) => b[1] - a[1])
@@ -408,8 +410,8 @@ function ListScreen({
               onChange={(e) => setFilterAttendance(e.target.value as 'all' | 'attended' | 'absent')}
             >
               <option value="all">Semua Presensi</option>
-              <option value="attended">Sudah Hadir ({totalAttended})</option>
-              <option value="absent">Belum Hadir ({totalAbsent})</option>
+              <option value="attended">Sudah hadir: {totalAttended}</option>
+              <option value="absent">Belum hadir: {totalAbsent}</option>
             </select>
             <select
               className="admin-select"
@@ -479,7 +481,7 @@ function ListScreen({
                       <td>
                         {r.attended_at ? (
                           <span className="badge badge--attended" title={`Hadir: ${new Date(r.attended_at).toLocaleString('id-ID')}`}>
-                            Hadir ({new Date(r.attended_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })})
+                            Hadir: {new Date(r.attended_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
                           </span>
                         ) : (
                           <span className="badge badge--absent">Belum Hadir</span>
@@ -603,7 +605,7 @@ function DetailScreen({
           <dd>
             {reg.attended_at ? (
               <span className="badge badge--attended">
-                Hadir ({new Date(reg.attended_at).toLocaleString('id-ID')})
+                Hadir: {new Date(reg.attended_at).toLocaleString('id-ID')}
               </span>
             ) : (
               <span className="badge badge--absent">Belum Hadir</span>
@@ -757,7 +759,7 @@ function ScannerTab({
       });
       setScanResult({
         type: 'duplicate',
-        message: `${target.child_name} (${target.school}) sudah tercatat hadir pada pukul ${jam} WIB.`,
+        message: `${target.child_name} dari ${target.school} sudah tercatat hadir pada pukul ${jam} WIB.`,
         item: target,
       });
       setProcessing(false);
@@ -773,7 +775,7 @@ function ScannerTab({
     onCheckInSuccess(target.id, now);
     setScanResult({
       type: 'success',
-      message: `Presensi Berhasil! ${target.child_name} (${target.school}) hadir bersama ${target.attendee_count} orang.`,
+      message: `Presensi berhasil. ${target.child_name} dari ${target.school} hadir bersama ${target.attendee_count} orang.`,
       item: updated,
     });
     setManualCode('');
