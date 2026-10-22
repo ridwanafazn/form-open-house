@@ -238,3 +238,24 @@ test('progress bar menunjukkan langkah aktif yang benar', async ({ page }) => {
   await expect(step1).toHaveClass(/done/);
   await expect(step2).toHaveClass(/active/);
 });
+
+// ===========================================================================
+// TEST 9: Pemeriksaan keamanan gagal dimuat → tombol kirim terkunci + tombol muat ulang
+// ===========================================================================
+test('pemeriksaan keamanan gagal dimuat mengunci tombol kirim dan menawarkan muat ulang', async ({
+  page,
+}) => {
+  // Blokir script Turnstile agar widget benar-benar gagal dimuat
+  await page.route('**/challenges.cloudflare.com/**', (route) => route.abort());
+  await stubRegisterOk(page);
+  await gotoForm(page);
+
+  await fillStepOne(page);
+  await page.click('button:has-text("Lanjut")');
+  await expect(page.locator('#f-city')).toBeVisible({ timeout: 8000 });
+
+  const errorText = page.locator('.turnstile-error .err');
+  await expect(errorText).toBeVisible({ timeout: 15000 });
+  await expect(page.locator('.turnstile-error button')).toBeVisible();
+  await expect(page.locator('button[type="submit"]')).toBeDisabled();
+});

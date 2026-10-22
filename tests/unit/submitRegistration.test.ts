@@ -84,6 +84,44 @@ describe('submitRegistration', () => {
     expect(r).toEqual({ kind: 'error', status: 403, code: 'turnstile' });
   });
 
+  it('kunci uji Turnstile selalu lolos tanpa memanggil siteverify', async () => {
+    const f = makeFetch({
+      'https://proj.supabase.co/rest/v1/registrations': { status: 201 },
+    });
+    const r = await submitRegistration(
+      valid,
+      env({ turnstileSecret: '1x0000000000000000000000000000000AA' }),
+      f,
+    );
+    expect(r.kind).toBe('ok');
+    const siteverifyCall = f.mock.calls.find((c) => String(c[0]).includes('/siteverify'));
+    expect(siteverifyCall).toBeUndefined();
+  });
+
+  it('token uji klien tidak lolos tanpa verifikasi server', async () => {
+    const f = makeFetch({
+      'https://challenges.cloudflare.com/turnstile/v0/siteverify': {
+        status: 200,
+        body: { success: false },
+      },
+    });
+    const r = await submitRegistration(
+      { ...valid, turnstile_token: 'XXXX.DUMMY.TOKEN.XXXX' },
+      env(),
+      f,
+    );
+    expect(r).toEqual({ kind: 'error', status: 403, code: 'turnstile' });
+  });
+
+  it('kunci Turnstile tidak dikonfigurasi => 503 config tanpa menulis', async () => {
+    const f = makeFetch({
+      'https://proj.supabase.co/rest/v1/registrations': { status: 201 },
+    });
+    const r = await submitRegistration(valid, env({ turnstileSecret: '' }), f);
+    expect(r).toEqual({ kind: 'error', status: 503, code: 'config' });
+    expect(f.mock.calls.length).toBe(0);
+  });
+
   it('sukses dan menulis ke Supabase dengan service role key', async () => {
     const f = makeFetch({
       ...turnstileOk(),
