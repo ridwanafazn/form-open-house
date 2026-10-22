@@ -1,4 +1,4 @@
-import { cpSync, existsSync, readdirSync, readFileSync, writeFileSync } from 'fs';
+import { cpSync, existsSync, readdirSync } from 'fs';
 import { resolve } from 'path';
 
 const root = process.cwd();
@@ -25,19 +25,6 @@ if (existsSync(serverDir)) {
   if (existsSync(entryMjs)) {
     cpSync(entryMjs, resolve(clientDir, '_worker.js'));
     console.log('[build-pages] Generated dist/client/_worker.js');
-  }
-
-  // Wrangler menolak binding ASSETS bila config dibaca sebagai proyek Pages
-  // (karena pages_build_output_dir di wrangler.toml root). Config ini hanya
-  // dipakai untuk preview/miniflare lokal, jadi penanda Pages dilepas di sini.
-  const serverWrangler = resolve(serverDir, 'wrangler.json');
-  if (existsSync(serverWrangler)) {
-    const raw = JSON.parse(readFileSync(serverWrangler, 'utf8'));
-    delete raw.pages_build_output_dir;
-    delete raw.topLevelName;
-    delete raw.userConfigPath;
-    writeFileSync(serverWrangler, JSON.stringify(raw));
-    console.log('[build-pages] Prepared dist/server/wrangler.json for local preview');
   }
 
   // Salin seluruh isi dist/client ke root dist agar Cloudflare Pages
