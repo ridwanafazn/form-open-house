@@ -136,6 +136,20 @@ export default function RegisterForm({ turnstileSiteKey }: Props) {
     }
     setErrors({});
     setStatus('sending');
+
+    // Tangani token Turnstile: jika kunci uji Cloudflare atau token belum selesai diisi di dev, beri dummy token
+    let activeToken = token;
+    const isTestKey = turnstileSiteKey === '1x00000000000000000000AA';
+    if (!activeToken) {
+      if (isTestKey || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        activeToken = 'XXXX.DUMMY.TOKEN.XXXX';
+      } else {
+        setStatus('idle');
+        setSubmitError(content.errors.turnstile);
+        return;
+      }
+    }
+
     const device = window.innerWidth < 768 ? 'mobile' : window.innerWidth < 1024 ? 'tablet' : 'desktop';
     const tracking = trackingForSubmit();
     const payload = {
@@ -147,7 +161,7 @@ export default function RegisterForm({ turnstileSiteKey }: Props) {
       school: r.value.school,
       interest_major: r.value.interest_major,
       consent_wa: r.value.consent_wa,
-      turnstile_token: token,
+      turnstile_token: activeToken,
       website: fields.website,
       ...tracking,
       referrer: document.referrer,
@@ -167,6 +181,9 @@ export default function RegisterForm({ turnstileSiteKey }: Props) {
             JSON.stringify({
               child_name: r.value.child_name,
               attendee_count: r.value.attendee_count,
+              ticket_code: data.ticket_code || '',
+              id: data.id || '',
+              parent_phone: r.value.parent_phone,
             }),
           );
         } catch {

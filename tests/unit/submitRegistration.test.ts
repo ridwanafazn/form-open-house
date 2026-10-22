@@ -90,7 +90,11 @@ describe('submitRegistration', () => {
       'https://proj.supabase.co/rest/v1/registrations': { status: 201 },
     });
     const r = await submitRegistration(valid, env(), f);
-    expect(r).toEqual({ kind: 'ok', status: 200 });
+    expect(r.kind).toBe('ok');
+    expect(r.status).toBe(200);
+    if (r.kind === 'ok') {
+      expect(r.ticket_code).toMatch(/^OH-[2-9A-Z]{6}$/);
+    }
     const writeCall = f.mock.calls.find((c) => String(c[0]).includes('/rest/v1/registrations'));
     expect(writeCall).toBeDefined();
     const headers = writeCall?.[1]?.headers as Record<string, string>;

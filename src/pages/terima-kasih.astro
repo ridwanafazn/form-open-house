@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import ThankYouSummary from '../components/ThankYouSummary';
+import TicketCard from '../components/TicketCard';
 import AddCalendar from '../components/AddCalendar';
 import { eventConfig } from '../config/event';
 import { content } from '../config/content';
@@ -25,6 +26,10 @@ const chatAdmisi = `https://wa.me/${eventConfig.admissionWhatsApp}?text=${encode
       </div>
       <h1 id="ty-title">{content.thankyou.title}</h1>
       <ThankYouSummary client:idle />
+
+      <!-- Kartu Tiket Masuk Digital & QR Code -->
+      <TicketCard client:load />
+
       <p class="ty__note">{content.thankyou.note}</p>
 
       <div class="ty__actions">

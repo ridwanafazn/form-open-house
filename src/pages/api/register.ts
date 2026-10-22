@@ -32,9 +32,17 @@ export const POST: APIRoute = async ({ request }) => {
 
   switch (result.kind) {
     case 'bot':
+      return Response.json({ ok: true }, { status: result.status });
     case 'conflict':
     case 'ok':
-      return Response.json({ ok: true }, { status: result.status });
+      return Response.json(
+        {
+          ok: true,
+          id: result.id,
+          ticket_code: result.ticket_code,
+        },
+        { status: result.status },
+      );
     case 'error':
       if (result.status === 400) {
         return Response.json({ ok: false, errors: result.errors ?? {} }, { status: 400 });

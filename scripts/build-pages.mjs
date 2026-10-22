@@ -8,7 +8,11 @@ const clientDir = resolve(root, 'dist/client');
 // Bersihkan folder cache .wrangler bila ada dari build lokal
 const wranglerCacheDir = resolve(root, '.wrangler');
 if (existsSync(wranglerCacheDir)) {
-  rmSync(wranglerCacheDir, { recursive: true, force: true });
+  try {
+    rmSync(wranglerCacheDir, { recursive: true, force: true });
+  } catch {
+    // Abaikan jika .wrangler sedang di-lock oleh proses miniflare/dev lokal di Windows
+  }
 }
 
 if (existsSync(serverDir)) {

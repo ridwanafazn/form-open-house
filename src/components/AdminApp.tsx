@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createClient } from '@supabase/supabase-js';
+import { Html5Qrcode } from 'html5-qrcode';
 import { buildCsv, downloadCsv } from '../lib/csv';
 import type { CsvRow } from '../lib/csv';
 import { content } from '../config/content';
@@ -47,9 +48,12 @@ interface Registration {
   followup_status: FollowupStatus;
   assigned_to: string | null;
   followup_note: string | null;
+  ticket_code: string | null;
+  attended_at: string | null;
 }
 
 type Screen = 'login' | 'checking' | 'list' | 'detail';
+type Tab = 'list' | 'scan';
 
 const STATUS_LABELS: Record<FollowupStatus, string> = {
   belum_dihubungi: 'Belum dihubungi',
@@ -209,25 +213,35 @@ function ListScreen({
   onLogout: () => void;
   setScreen: (s: Screen) => void;
 }) {
+  const [activeTab, setActiveTab] = useState<Tab>('list');
   const [rows, setRows] = useState<Registration[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
   const [search, setSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
+  const [filterAttendance, setFilterAttendance] = useState<'all' | 'attended' | 'absent'>('all');
   const [filterAssigned, setFilterAssigned] = useState('');
   const [selected, setSelected] = useState<Registration | null>(null);
 
-  useEffect(() => {
+  function fetchRegistrations() {
     if (!supabase) return;
+    setLoading(true);
     supabase
       .from('registrations')
       .select('*')
       .order('created_at', { ascending: false })
       .then(({ data, error }) => {
-        if (error) { setLoadError('Gagal memuat data.'); }
-        else { setRows((data as Registration[]) ?? []); }
+        if (error) {
+          setLoadError('Gagal memuat data.');
+        } else {
+          setRows((data as Registration[]) ?? []);
+        }
         setLoading(false);
       });
+  }
+
+  useEffect(() => {
+    fetchRegistrations();
   }, []);
 
   const assignees = Array.from(new Set(rows.map((r) => r.assigned_to).filter(Boolean))) as string[];
@@ -237,13 +251,26 @@ function ListScreen({
     const matchSearch =
       !q ||
       r.child_name.toLowerCase().includes(q) ||
-      r.parent_phone.includes(q);
+      r.parent_phone.includes(q) ||
+      (r.ticket_code && r.ticket_code.toLowerCase().includes(q));
     const matchStatus = !filterStatus || r.followup_status === filterStatus;
     const matchAssigned = !filterAssigned || r.assigned_to === filterAssigned;
-    return matchSearch && matchStatus && matchAssigned;
+    const matchAttendance =
+      filterAttendance === 'all'
+        ? true
+        : filterAttendance === 'attended'
+          ? !!r.attended_at
+          : !r.attended_at;
+
+    return matchSearch && matchStatus && matchAssigned && matchAttendance;
   });
 
-  const totalHadir = filtered.reduce((s, r) => s + r.attendee_count, 0);
+  const totalRegistered = rows.length;
+  const attendedRows = rows.filter((r) => !!r.attended_at);
+  const totalAttended = attendedRows.length;
+  const totalAbsent = totalRegistered - totalAttended;
+  const totalAttendedPersons = attendedRows.reduce((sum, r) => sum + r.attendee_count, 0);
+  const totalExpectedPersons = rows.reduce((sum, r) => sum + r.attendee_count, 0);
 
   const sourceSummary = rows.reduce<Record<string, number>>((acc, r) => {
     const src = r.utm_source ?? 'langsung';
@@ -276,123 +303,206 @@ function ListScreen({
 
   function handleBack() {
     setSelected(null);
-    // Refresh data setelah kembali dari detail
-    if (!supabase) return;
-    supabase
-      .from('registrations')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .then(({ data }) => {
-        if (data) setRows(data as Registration[]);
-      });
+    fetchRegistrations();
+  }
+
+  function handleCheckInSuccess(updatedId: string, attendedAt: string) {
+    setRows((prev) =>
+      prev.map((item) => (item.id === updatedId ? { ...item, attended_at: attendedAt } : item)),
+    );
   }
 
   if (selected) {
-    return <DetailScreen registration={selected} onBack={handleBack} />;
+    return (
+      <DetailScreen
+        registration={selected}
+        onBack={handleBack}
+        onUpdateRow={(updated) => {
+          setSelected(updated);
+          setRows((prev) => prev.map((item) => (item.id === updated.id ? updated : item)));
+        }}
+      />
+    );
   }
 
   return (
     <div className="admin-wrap">
       <header className="admin-header">
-        <h1>Admin Open House</h1>
-        <button className="admin-btn admin-btn--ghost" onClick={onLogout}>Keluar</button>
+        <div className="admin-header__brand">
+          <h1>Admin Open House</h1>
+          <div className="admin-tabs">
+            <button
+              type="button"
+              className={`admin-tab ${activeTab === 'list' ? 'admin-tab--active' : ''}`}
+              onClick={() => setActiveTab('list')}
+            >
+              Daftar Peserta ({rows.length})
+            </button>
+            <button
+              type="button"
+              className={`admin-tab admin-tab--scan ${activeTab === 'scan' ? 'admin-tab--active' : ''}`}
+              onClick={() => setActiveTab('scan')}
+            >
+              Scan Presensi QR
+            </button>
+          </div>
+        </div>
+        <button className="admin-btn admin-btn--ghost" onClick={onLogout}>
+          Keluar
+        </button>
       </header>
 
-      {/* Ringkasan */}
-      <section className="admin-summary">
-        <div className="admin-stat">
-          <span className="admin-stat__num">{rows.length}</span>
-          <span className="admin-stat__label">Total pendaftar</span>
-        </div>
-        <div className="admin-stat">
-          <span className="admin-stat__num">{rows.reduce((s, r) => s + r.attendee_count, 0)}</span>
-          <span className="admin-stat__label">Total akan hadir</span>
-        </div>
-        <div className="admin-stat admin-stat--sources">
-          <span className="admin-stat__label">Per sumber</span>
-          <ul className="admin-source-list">
-            {Object.entries(sourceSummary).sort((a, b) => b[1] - a[1]).map(([src, count]) => (
-              <li key={src}><strong>{src}</strong> {count}</li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      {/* Filter dan aksi */}
-      <div className="admin-toolbar">
-        <input
-          className="admin-search"
-          type="search"
-          placeholder="Cari nama anak atau nomor…"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+      {/* Tampilan Tab Scan Presensi */}
+      {activeTab === 'scan' ? (
+        <ScannerTab
+          rows={rows}
+          onCheckInSuccess={handleCheckInSuccess}
+          onSelectRegistration={handleSelect}
         />
-        <select
-          className="admin-select"
-          value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value)}
-        >
-          <option value="">Semua status</option>
-          {(Object.keys(STATUS_LABELS) as FollowupStatus[]).map((s) => (
-            <option key={s} value={s}>{STATUS_LABELS[s]}</option>
-          ))}
-        </select>
-        {assignees.length > 0 && (
-          <select
-            className="admin-select"
-            value={filterAssigned}
-            onChange={(e) => setFilterAssigned(e.target.value)}
-          >
-            <option value="">Semua PJ</option>
-            {assignees.map((a) => <option key={a} value={a}>{a}</option>)}
-          </select>
-        )}
-        <button className="admin-btn" onClick={handleExport}>
-          Ekspor CSV ({filtered.length})
-        </button>
-      </div>
+      ) : (
+        <>
+          {/* Ringkasan Statistik Presensi & Pendaftaran */}
+          <section className="admin-summary">
+            <div className="admin-stat">
+              <span className="admin-stat__num">{totalRegistered}</span>
+              <span className="admin-stat__label">Total Pendaftar</span>
+            </div>
+            <div className="admin-stat admin-stat--attended">
+              <span className="admin-stat__num">{totalAttended}</span>
+              <span className="admin-stat__label">Hadir ({totalAttendedPersons} orang)</span>
+            </div>
+            <div className="admin-stat admin-stat--absent">
+              <span className="admin-stat__num">{totalAbsent}</span>
+              <span className="admin-stat__label">Belum Hadir</span>
+            </div>
+            <div className="admin-stat">
+              <span className="admin-stat__num">{totalExpectedPersons}</span>
+              <span className="admin-stat__label">Target Total Hadir</span>
+            </div>
+            <div className="admin-stat admin-stat--sources">
+              <span className="admin-stat__label">Per Sumber</span>
+              <ul className="admin-source-list">
+                {Object.entries(sourceSummary)
+                  .sort((a, b) => b[1] - a[1])
+                  .map(([src, count]) => (
+                    <li key={src}>
+                      <strong>{src}</strong> {count}
+                    </li>
+                  ))}
+              </ul>
+            </div>
+          </section>
 
-      {loading && <p className="admin-msg">Memuat…</p>}
-      {loadError && <p className="admin-msg admin-msg--error">{loadError}</p>}
-
-      {!loading && !loadError && (
-        <div className="admin-table-wrap">
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Waktu</th>
-                <th>Nama anak</th>
-                <th>Kota</th>
-                <th>Sekolah</th>
-                <th>Hadir</th>
-                <th>Status</th>
-                <th>PJ</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.length === 0 && (
-                <tr><td colSpan={7} className="admin-table__empty">Tidak ada data.</td></tr>
-              )}
-              {filtered.map((r) => (
-                <tr
-                  key={r.id}
-                  className="admin-table__row"
-                  onClick={() => handleSelect(r)}
-                  tabIndex={0}
-                  onKeyDown={(e) => e.key === 'Enter' && handleSelect(r)}
-                >
-                  <td>{new Date(r.created_at).toLocaleDateString('id-ID')}</td>
-                  <td>{r.child_name}</td>
-                  <td>{r.city}</td>
-                  <td>{r.school}</td>
-                  <td>{r.attendee_count}</td>
-                  <td>{STATUS_LABELS[r.followup_status] ?? r.followup_status}</td>
-                  <td>{r.assigned_to ?? '—'}</td>
-                </tr>
+          {/* Filter dan aksi */}
+          <div className="admin-toolbar">
+            <input
+              className="admin-search"
+              type="search"
+              placeholder="Cari nama, tiket (OH-...), nomor..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <select
+              className="admin-select"
+              value={filterAttendance}
+              onChange={(e) => setFilterAttendance(e.target.value as 'all' | 'attended' | 'absent')}
+            >
+              <option value="all">Semua Presensi</option>
+              <option value="attended">Sudah Hadir ({totalAttended})</option>
+              <option value="absent">Belum Hadir ({totalAbsent})</option>
+            </select>
+            <select
+              className="admin-select"
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+            >
+              <option value="">Semua Status Tindak Lanjut</option>
+              {(Object.keys(STATUS_LABELS) as FollowupStatus[]).map((s) => (
+                <option key={s} value={s}>
+                  {STATUS_LABELS[s]}
+                </option>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </select>
+            {assignees.length > 0 && (
+              <select
+                className="admin-select"
+                value={filterAssigned}
+                onChange={(e) => setFilterAssigned(e.target.value)}
+              >
+                <option value="">Semua PJ</option>
+                {assignees.map((a) => (
+                  <option key={a} value={a}>
+                    {a}
+                  </option>
+                ))}
+              </select>
+            )}
+            <button className="admin-btn" onClick={handleExport}>
+              Ekspor CSV ({filtered.length})
+            </button>
+          </div>
+
+          {loading && <p className="admin-msg">Memuat data pendaftar…</p>}
+          {loadError && <p className="admin-msg admin-msg--error">{loadError}</p>}
+
+          {!loading && !loadError && (
+            <div className="admin-table-wrap">
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Presensi</th>
+                    <th>Kode Tiket</th>
+                    <th>Nama Anak</th>
+                    <th>Asal Kota</th>
+                    <th>Asal Sekolah</th>
+                    <th>Hadir</th>
+                    <th>Status Tindak Lanjut</th>
+                    <th>PJ</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.length === 0 && (
+                    <tr>
+                      <td colSpan={8} className="admin-table__empty">
+                        Tidak ada data yang sesuai filter.
+                      </td>
+                    </tr>
+                  )}
+                  {filtered.map((r) => (
+                    <tr
+                      key={r.id}
+                      className="admin-table__row"
+                      onClick={() => handleSelect(r)}
+                      tabIndex={0}
+                      onKeyDown={(e) => e.key === 'Enter' && handleSelect(r)}
+                    >
+                      <td>
+                        {r.attended_at ? (
+                          <span className="badge badge--attended" title={`Hadir: ${new Date(r.attended_at).toLocaleString('id-ID')}`}>
+                            Hadir ({new Date(r.attended_at).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })})
+                          </span>
+                        ) : (
+                          <span className="badge badge--absent">Belum Hadir</span>
+                        )}
+                      </td>
+                      <td>
+                        <code className="admin-code">{r.ticket_code || '—'}</code>
+                      </td>
+                      <td>
+                        <strong>{r.child_name}</strong>
+                      </td>
+                      <td>{r.city}</td>
+                      <td>{r.school}</td>
+                      <td>{r.attendee_count} Orang</td>
+                      <td>{STATUS_LABELS[r.followup_status] ?? r.followup_status}</td>
+                      <td>{r.assigned_to ?? '—'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
@@ -404,9 +514,11 @@ function ListScreen({
 function DetailScreen({
   registration: initial,
   onBack,
+  onUpdateRow,
 }: {
   registration: Registration;
   onBack: () => void;
+  onUpdateRow: (r: Registration) => void;
 }) {
   const [reg, setReg] = useState(initial);
   const [status, setStatus] = useState<FollowupStatus>(initial.followup_status);
@@ -428,7 +540,39 @@ function DetailScreen({
       })
       .eq('id', reg.id);
     setSaving(false);
-    setSaveMsg(error ? 'Gagal menyimpan.' : 'Tersimpan.');
+    if (!error) {
+      const updated = {
+        ...reg,
+        followup_status: status,
+        assigned_to: assignedTo || null,
+        followup_note: note || null,
+      };
+      setReg(updated);
+      onUpdateRow(updated);
+      setSaveMsg('Perubahan tersimpan.');
+    } else {
+      setSaveMsg('Gagal menyimpan.');
+    }
+  }
+
+  async function toggleAttendance() {
+    if (!supabase) return;
+    setSaving(true);
+    setSaveMsg('');
+    const nextAttended = reg.attended_at ? null : new Date().toISOString();
+    const { error } = await supabase
+      .from('registrations')
+      .update({ attended_at: nextAttended })
+      .eq('id', reg.id);
+    setSaving(false);
+    if (!error) {
+      const updated = { ...reg, attended_at: nextAttended };
+      setReg(updated);
+      onUpdateRow(updated);
+      setSaveMsg(nextAttended ? 'Presensi berhasil dicatat (Hadir).' : 'Presensi dibatalkan (Belum Hadir).');
+    } else {
+      setSaveMsg('Gagal memperbarui status kehadiran.');
+    }
   }
 
   function buildWaMessage() {
@@ -450,15 +594,26 @@ function DetailScreen({
     <div className="admin-wrap">
       <header className="admin-header">
         <button className="admin-btn admin-btn--ghost" onClick={onBack}>← Kembali</button>
-        <h1>Detail pendaftar</h1>
+        <h1>Detail Pendaftar</h1>
       </header>
 
       <div className="admin-detail">
         <dl className="admin-dl">
+          <dt>Status Presensi</dt>
+          <dd>
+            {reg.attended_at ? (
+              <span className="badge badge--attended">
+                Hadir ({new Date(reg.attended_at).toLocaleString('id-ID')})
+              </span>
+            ) : (
+              <span className="badge badge--absent">Belum Hadir</span>
+            )}
+          </dd>
+          <dt>Kode Tiket</dt><dd><strong>{reg.ticket_code || '—'}</strong></dd>
           <dt>Nama anak</dt><dd>{reg.child_name}</dd>
           <dt>Nomor HP</dt><dd>{reg.parent_phone}</dd>
           <dt>Nama orang tua</dt><dd>{reg.parent_name ?? '—'}</dd>
-          <dt>Jumlah hadir</dt><dd>{reg.attendee_count}</dd>
+          <dt>Jumlah hadir</dt><dd>{reg.attendee_count} Orang</dd>
           <dt>Kota</dt><dd>{reg.city}</dd>
           <dt>Sekolah</dt><dd>{reg.school}</dd>
           <dt>Minat jurusan</dt><dd>{reg.interest_major ?? '—'}</dd>
@@ -469,8 +624,20 @@ function DetailScreen({
         </dl>
 
         <div className="admin-edit">
+          <div className="admin-edit__section">
+            <span className="admin-edit__title">Aksi Presensi Acara:</span>
+            <button
+              type="button"
+              className={`admin-btn ${reg.attended_at ? 'admin-btn--ghost' : 'admin-btn--attended'}`}
+              onClick={toggleAttendance}
+              disabled={saving}
+            >
+              {reg.attended_at ? 'Batalkan Presensi Hadir' : 'Tandai Hadir Sekarang'}
+            </button>
+          </div>
+
           <label>
-            <span>Status</span>
+            <span>Status Tindak Lanjut</span>
             <select value={status} onChange={(e) => setStatus(e.target.value as FollowupStatus)}>
               {(Object.keys(STATUS_LABELS) as FollowupStatus[]).map((s) => (
                 <option key={s} value={s}>{STATUS_LABELS[s]}</option>
@@ -509,6 +676,274 @@ function DetailScreen({
 
       <style>{adminStyles}</style>
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Komponen Tab Pemindai Presensi (Scanner)
+// ---------------------------------------------------------------------------
+function ScannerTab({
+  rows,
+  onCheckInSuccess,
+  onSelectRegistration,
+}: {
+  rows: Registration[];
+  onCheckInSuccess: (id: string, attendedAt: string) => void;
+  onSelectRegistration: (r: Registration) => void;
+}) {
+  const [manualCode, setManualCode] = useState('');
+  const [isScanning, setIsScanning] = useState(false);
+  const [cameraError, setCameraError] = useState('');
+  const [processing, setProcessing] = useState(false);
+  const [scanResult, setScanResult] = useState<{
+    type: 'success' | 'duplicate' | 'error';
+    message: string;
+    item?: Registration;
+  } | null>(null);
+
+  const scannerRef = useRef<Html5Qrcode | null>(null);
+  const readerElementId = 'admin-qr-reader';
+
+  async function handleProcessCode(rawCode: string) {
+    if (processing) return;
+    const code = rawCode.trim();
+    if (!code) return;
+
+    setProcessing(true);
+
+    // Ambil string kode jika di-format sebagai query string URL
+    let cleanCode = code;
+    try {
+      if (code.startsWith('http://') || code.startsWith('https://')) {
+        const u = new URL(code);
+        cleanCode = u.searchParams.get('scan') || u.searchParams.get('code') || code;
+      }
+    } catch {
+      /* abaikan parsing URL */
+    }
+
+    // 1. Cari di local rows
+    let target = rows.find(
+      (r) =>
+        (r.ticket_code && r.ticket_code.toLowerCase() === cleanCode.toLowerCase()) ||
+        r.id === cleanCode ||
+        r.parent_phone.includes(cleanCode),
+    );
+
+    // 2. Jika tidak ada di local, cari via Supabase
+    if (!target && supabase) {
+      const { data } = await supabase
+        .from('registrations')
+        .select('*')
+        .or(`ticket_code.eq.${cleanCode},id.eq.${cleanCode}`)
+        .maybeSingle();
+      if (data) target = data as Registration;
+    }
+
+    if (!target) {
+      setScanResult({
+        type: 'error',
+        message: `Tiket "${cleanCode}" tidak ditemukan dalam sistem pendaftaran.`,
+      });
+      setProcessing(false);
+      return;
+    }
+
+    // 3. Jika sudah hadir
+    if (target.attended_at) {
+      const jam = new Date(target.attended_at).toLocaleTimeString('id-ID', {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+      setScanResult({
+        type: 'duplicate',
+        message: `${target.child_name} (${target.school}) sudah tercatat hadir pada pukul ${jam} WIB.`,
+        item: target,
+      });
+      setProcessing(false);
+      return;
+    }
+
+    // 4. Catat kehadiran baru
+    const now = new Date().toISOString();
+    if (supabase) {
+      await supabase.from('registrations').update({ attended_at: now }).eq('id', target.id);
+    }
+    const updated = { ...target, attended_at: now };
+    onCheckInSuccess(target.id, now);
+    setScanResult({
+      type: 'success',
+      message: `Presensi Berhasil! ${target.child_name} (${target.school}) hadir bersama ${target.attendee_count} orang.`,
+      item: updated,
+    });
+    setManualCode('');
+    setProcessing(false);
+  }
+
+  async function startCamera() {
+    setCameraError('');
+    try {
+      if (!scannerRef.current) {
+        scannerRef.current = new Html5Qrcode(readerElementId);
+      }
+      await scannerRef.current.start(
+        { facingMode: 'environment' },
+        { fps: 10, qrbox: { width: 250, height: 250 } },
+        (decodedText) => {
+          handleProcessCode(decodedText);
+        },
+        () => {
+          // ignore scan frame misses
+        },
+      );
+      setIsScanning(true);
+    } catch (err) {
+      console.error('Kamera gagal dibuka:', err);
+      setCameraError('Kamera tidak dapat diakses. Pastikan izin kamera telah disetujui di browser.');
+      setIsScanning(false);
+    }
+  }
+
+  async function stopCamera() {
+    if (scannerRef.current && isScanning) {
+      try {
+        await scannerRef.current.stop();
+      } catch (err) {
+        console.error('Kamera stop error:', err);
+      }
+      setIsScanning(false);
+    }
+  }
+
+  useEffect(() => {
+    return () => {
+      if (scannerRef.current) {
+        scannerRef.current.stop().catch(() => {});
+      }
+    };
+  }, []);
+
+  const recentlyAttended = rows
+    .filter((r) => !!r.attended_at)
+    .sort((a, b) => (b.attended_at! > a.attended_at! ? 1 : -1))
+    .slice(0, 5);
+
+  return (
+    <section className="admin-scanner-tab">
+      <div className="admin-scanner-grid">
+        {/* Kolom Kamera & Input */}
+        <div className="admin-scanner-card">
+          <h2>Pemindai QR Code Tiket</h2>
+          <p className="admin-scanner-desc">
+            Arahkan kamera ke QR Code di layar HP peserta atau ketik kode tiket pendaftaran.
+          </p>
+
+          <div className="admin-scanner-controls">
+            {!isScanning ? (
+              <button type="button" className="admin-btn admin-btn--attended" onClick={startCamera}>
+                📷 Buka Kamera Scanner
+              </button>
+            ) : (
+              <button type="button" className="admin-btn admin-btn--ghost" onClick={stopCamera}>
+                ⏹️ Tutup Kamera
+              </button>
+            )}
+          </div>
+
+          {cameraError && <p className="admin-msg admin-msg--error">{cameraError}</p>}
+
+          <div
+            id={readerElementId}
+            className={`admin-reader-box ${isScanning ? 'admin-reader-box--active' : ''}`}
+          />
+
+          <form
+            className="admin-manual-form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleProcessCode(manualCode);
+            }}
+          >
+            <label htmlFor="manual-ticket-input">Atau Masukkan Kode Tiket / Nomor HP:</label>
+            <div className="admin-manual-input-wrap">
+              <input
+                id="manual-ticket-input"
+                type="text"
+                placeholder="Contoh: OH-A7B8C9"
+                value={manualCode}
+                onChange={(e) => setManualCode(e.target.value)}
+              />
+              <button type="submit" className="admin-btn" disabled={processing || !manualCode.trim()}>
+                Check-in
+              </button>
+            </div>
+          </form>
+
+          {/* Banner Hasil Scan */}
+          {scanResult && (
+            <div className={`admin-scan-alert admin-scan-alert--${scanResult.type}`} role="alert">
+              <div className="admin-scan-alert__icon">
+                {scanResult.type === 'success' && '✅'}
+                {scanResult.type === 'duplicate' && '⚠️'}
+                {scanResult.type === 'error' && '❌'}
+              </div>
+              <div className="admin-scan-alert__content">
+                <strong>
+                  {scanResult.type === 'success' && 'Presensi Berhasil Dicatat'}
+                  {scanResult.type === 'duplicate' && 'Sudah Hadir Sebelumnya'}
+                  {scanResult.type === 'error' && 'Verifikasi Gagal'}
+                </strong>
+                <p>{scanResult.message}</p>
+                {scanResult.item && (
+                  <button
+                    type="button"
+                    className="admin-scan-alert__link"
+                    onClick={() => onSelectRegistration(scanResult.item!)}
+                  >
+                    Buka Detail Data Peserta →
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Kolom Riwayat Check-in Terkini */}
+        <div className="admin-scanner-card">
+          <h2>Riwayat Presensi Terbaru</h2>
+          <p className="admin-scanner-desc">5 Peserta terakhir yang baru saja melakukan presensi:</p>
+
+          {recentlyAttended.length === 0 ? (
+            <p className="admin-empty-note">Belum ada peserta yang hadir.</p>
+          ) : (
+            <ul className="admin-recent-list">
+              {recentlyAttended.map((item) => (
+                <li
+                  key={item.id}
+                  className="admin-recent-item"
+                  onClick={() => onSelectRegistration(item)}
+                  tabIndex={0}
+                >
+                  <div className="admin-recent-main">
+                    <strong>{item.child_name}</strong>
+                    <span>{item.school} • {item.attendee_count} Orang</span>
+                  </div>
+                  <div className="admin-recent-time">
+                    <span className="badge badge--attended">
+                      {new Date(item.attended_at!).toLocaleTimeString('id-ID', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </span>
+                    <code className="admin-code">{item.ticket_code}</code>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -574,14 +1009,49 @@ const adminStyles = `
   .admin-header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 16px;
     margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .admin-header__brand {
+    display: flex;
+    align-items: center;
+    gap: 20px;
     flex-wrap: wrap;
   }
   .admin-header h1 {
     font-size: 1.4rem;
     margin: 0;
-    flex: 1;
+  }
+  .admin-tabs {
+    display: flex;
+    gap: 8px;
+    background: #e9e3d3;
+    padding: 4px;
+    border-radius: 8px;
+  }
+  .admin-tab {
+    padding: 6px 14px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: #5b6068;
+    transition: all 0.2s ease;
+  }
+  .admin-tab:hover {
+    color: #22262a;
+  }
+  .admin-tab--active {
+    background: #22262a;
+    color: #f4efe4;
+  }
+  .admin-tab--scan.admin-tab--active {
+    background: #1b9a94;
+    color: #ffffff;
   }
   .admin-summary {
     display: flex;
@@ -603,7 +1073,13 @@ const adminStyles = `
     font-size: 2rem;
     font-weight: 700;
     line-height: 1;
-    color: #1b9a94;
+    color: #22262a;
+  }
+  .admin-stat--attended .admin-stat__num {
+    color: #1a7a3b;
+  }
+  .admin-stat--absent .admin-stat__num {
+    color: #d97706;
   }
   .admin-stat__label { font-size: 0.8rem; color: #5b6068; }
   .admin-stat--sources { flex: 1; }
@@ -615,6 +1091,33 @@ const adminStyles = `
     flex-wrap: wrap;
     gap: 4px 16px;
     font-size: 0.85rem;
+  }
+  .badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .badge--attended {
+    background: #e8f5e9;
+    color: #1a7a3b;
+    border: 1px solid #c8e6c9;
+  }
+  .badge--absent {
+    background: #f4f4f0;
+    color: #6b7280;
+    border: 1px solid #e5e7eb;
+  }
+  .admin-code {
+    font-family: monospace;
+    font-size: 0.85rem;
+    background: #eae5d7;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    color: #1e3a8a;
   }
   .admin-toolbar {
     display: flex;
@@ -658,6 +1161,11 @@ const adminStyles = `
     background: #1a7a3b;
     border-color: #1a7a3b;
   }
+  .admin-btn--attended {
+    background: #1a7a3b;
+    color: #ffffff;
+    border-color: #1a7a3b;
+  }
   .admin-btn:disabled { opacity: 0.6; cursor: not-allowed; }
   .admin-table-wrap { overflow-x: auto; }
   .admin-table {
@@ -675,7 +1183,7 @@ const adminStyles = `
   .admin-table td {
     padding: 8px 10px;
     border-bottom: 1px solid #e3dccb;
-    vertical-align: top;
+    vertical-align: middle;
   }
   .admin-table__row { cursor: pointer; }
   .admin-table__row:hover td { background: #f0ebe0; }
@@ -698,16 +1206,31 @@ const adminStyles = `
   .admin-dl {
     display: grid;
     grid-template-columns: auto 1fr;
-    gap: 4px 16px;
+    gap: 8px 16px;
     font-size: 0.9rem;
     margin: 0;
   }
-  .admin-dl dt { color: #5b6068; white-space: nowrap; }
+  .admin-dl dt { color: #5b6068; white-space: nowrap; font-weight: 600; }
   .admin-dl dd { margin: 0; word-break: break-word; }
   .admin-edit {
     display: flex;
     flex-direction: column;
+    gap: 16px;
+  }
+  .admin-edit__section {
+    padding: 12px;
+    background: #f4efe4;
+    border: 1px solid #e3dccb;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     gap: 12px;
+    flex-wrap: wrap;
+  }
+  .admin-edit__title {
+    font-weight: 600;
+    font-size: 0.9rem;
   }
   .admin-edit label {
     display: flex;
@@ -730,4 +1253,172 @@ const adminStyles = `
     gap: 8px;
     flex-wrap: wrap;
   }
+
+  /* Scanner Tab Styles */
+  .admin-scanner-tab {
+    margin-top: 8px;
+  }
+  .admin-scanner-grid {
+    display: grid;
+    gap: 20px;
+  }
+  @media (min-width: 840px) {
+    .admin-scanner-grid {
+      grid-template-columns: 1.2fr 0.8fr;
+    }
+  }
+  .admin-scanner-card {
+    background: #f9f6ef;
+    border: 2px solid #e3dccb;
+    border-radius: 8px;
+    padding: 20px;
+  }
+  .admin-scanner-card h2 {
+    font-size: 1.25rem;
+    margin: 0 0 4px;
+    color: #22262a;
+  }
+  .admin-scanner-desc {
+    font-size: 0.85rem;
+    color: #5b6068;
+    margin: 0 0 16px;
+  }
+  .admin-scanner-controls {
+    margin-bottom: 16px;
+  }
+  .admin-reader-box {
+    width: 100%;
+    max-width: 440px;
+    min-height: 10px;
+    margin-inline: auto;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .admin-reader-box--active {
+    min-height: 280px;
+    margin-bottom: 16px;
+    background: #000000;
+  }
+  .admin-manual-form {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px dashed #d6cfbf;
+  }
+  .admin-manual-form label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #22262a;
+  }
+  .admin-manual-input-wrap {
+    display: flex;
+    gap: 8px;
+  }
+  .admin-manual-input-wrap input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 2px solid #22262a;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    background: #ffffff;
+  }
+  .admin-scan-alert {
+    display: flex;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 8px;
+    margin-top: 16px;
+    font-size: 0.9rem;
+    animation: fadeIn 0.3s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .admin-scan-alert__icon {
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+  .admin-scan-alert__content strong {
+    display: block;
+    margin-bottom: 2px;
+  }
+  .admin-scan-alert__content p {
+    margin: 0 0 6px;
+  }
+  .admin-scan-alert__link {
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+    text-decoration: underline;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .admin-scan-alert--success {
+    background: #e8f5e9;
+    color: #1b5e20;
+    border: 1px solid #a5d6a7;
+  }
+  .admin-scan-alert--duplicate {
+    background: #fff8e1;
+    color: #b78103;
+    border: 1px solid #ffe082;
+  }
+  .admin-scan-alert--error {
+    background: #ffebee;
+    color: #b71c1c;
+    border: 1px solid #ef9a9a;
+  }
+  .admin-recent-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .admin-recent-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 12px;
+    background: #ffffff;
+    border: 1px solid #e3dccb;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .admin-recent-item:hover {
+    background: #f4efe4;
+  }
+  .admin-recent-main {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .admin-recent-main strong {
+    font-size: 0.9rem;
+    color: #22262a;
+  }
+  .admin-recent-main span {
+    font-size: 0.8rem;
+    color: #5b6068;
+  }
+  .admin-recent-time {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+  }
+  .admin-empty-note {
+    font-size: 0.85rem;
+    color: #6b7280;
+    font-style: italic;
+    padding: 16px 0;
+  }
+
 `;
