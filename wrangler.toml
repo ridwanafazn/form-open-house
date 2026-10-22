@@ -1,7 +1,7 @@
 # Konfigurasi Cloudflare Pages untuk Astro + @astrojs/cloudflare.
 # File ini menjadi sumber tunggal compatibility settings saat diketahui Cloudflare Pages,
 # sehingga flag nodejs_compat selalu aktif meskipun pengaturan dashboard berubah.
-name = "form-open-house"
+name = "smkit-assyifa-ohs"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = "dist"
