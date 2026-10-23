@@ -6,6 +6,14 @@ import tailwindcss from '@tailwindcss/vite';
 
 // Halaman publik dibuat statis (default). Hanya /api/register yang dijalankan
 // di server lewat `export const prerender = false` di berkas endpoint.
+// Pisahkan folder cache optimizer Vite untuk dev dan build. Keduanya dulu
+// menulis ke node_modules/.vite yang sama, sehingga menjalankan `pnpm build`
+// saat dev server hidup bisa menimpa file optimizer (deps / deps_ssr) dan
+// membuat halaman island melempar error "The file does not exist ... which
+// is in the optimize deps directory". defineConfig Astro hanya menerima
+// objek, jadi mode dev dideteksi dari argumen CLI (`astro dev`).
+const isDevServer = process.argv.includes('dev');
+
 export default defineConfig({
   adapter: cloudflare({
     // Prerender berjalan di Node saat build agar konfigurasi Pages di wrangler.toml
@@ -13,6 +21,7 @@ export default defineConfig({
     prerenderEnvironment: 'node',
   }),
   vite: {
+    cacheDir: isDevServer ? 'node_modules/.vite-dev' : 'node_modules/.vite-build',
     plugins: [tailwindcss()],
     server: {
       // Jangan biarkan browser menyimpan modul dev. Vite memberi URL modul
