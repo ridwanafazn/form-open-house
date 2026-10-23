@@ -1,5 +1,5 @@
 // src/components/admin/LoginScreen.tsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface LoginScreenProps {
   onLogin: (email: string, pass: string) => void;
@@ -10,6 +10,18 @@ export default function LoginScreen({ onLogin, error }: LoginScreenProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
+
+  // Sembunyikan top navbar dan hapus padding-top body khusus di halaman login
+  useEffect(() => {
+    const nav = document.querySelector('.floating-nav') as HTMLElement;
+    if (nav) nav.style.display = 'none';
+    document.body.style.paddingTop = '0px';
+
+    return () => {
+      if (nav) nav.style.display = '';
+      document.body.style.paddingTop = '';
+    };
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -27,6 +39,22 @@ export default function LoginScreen({ onLogin, error }: LoginScreenProps) {
           min-height: 100vh;
           background-color: #FFFFFF;
           font-family: 'DM Sans', sans-serif;
+          color: #0F172A;
+        }
+
+        /* Tautan Kembali ke Beranda */
+        .back-to-home {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          color: #64748B;
+          text-decoration: none;
+          font-size: 0.9rem;
+          font-weight: 500;
+          margin-bottom: 20px;
+          transition: color 0.2s;
+        }
+        .back-to-home:hover {
           color: #0F172A;
         }
 
@@ -55,7 +83,6 @@ export default function LoginScreen({ onLogin, error }: LoginScreenProps) {
           overflow: hidden;
         }
 
-        /* Hamparan gelap transparan di atas gambar */
         .login-visual-overlay {
           position: absolute;
           inset: 0;
@@ -99,17 +126,17 @@ export default function LoginScreen({ onLogin, error }: LoginScreenProps) {
 
         .login-logo {
           height: 56px;
-          margin-bottom: 40px;
+          margin-bottom: 32px;
           object-fit: contain;
         }
 
         .login-header {
-          margin-bottom: 40px;
+          margin-bottom: 32px;
         }
 
         .login-header h1 {
           font-family: 'Space Grotesk', sans-serif;
-          font-size: 3rem;
+          font-size: 2.8rem;
           font-weight: 700;
           color: #0F172A;
           margin: 0 0 8px 0;
@@ -167,7 +194,7 @@ export default function LoginScreen({ onLogin, error }: LoginScreenProps) {
           margin-top: 12px;
           width: 100%;
           padding: 16px;
-          background-color: #0F172A; /* Matte Dark Slate */
+          background-color: #0F172A;
           color: #FFFFFF;
           border: none;
           border-radius: 12px;
@@ -200,7 +227,6 @@ export default function LoginScreen({ onLogin, error }: LoginScreenProps) {
       `}</style>
 
       <div className="login-layout">
-        
         <div className="login-visual">
           <div className="login-visual-inner">
             <div className="login-visual-overlay">
@@ -215,6 +241,14 @@ export default function LoginScreen({ onLogin, error }: LoginScreenProps) {
         <div className="login-form-area">
           <div className="login-form-container">
             
+            {/* Tautan Kembali ke Beranda */}
+            <a href="/" className="back-to-home">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="m15 18-6-6 6-6"/>
+              </svg>
+              Beranda
+            </a>
+
             <img 
               src="/images/logo.png" 
               alt="Logo SMKIT As-Syifa" 
@@ -265,7 +299,6 @@ export default function LoginScreen({ onLogin, error }: LoginScreenProps) {
             
           </div>
         </div>
-
       </div>
     </>
   );
