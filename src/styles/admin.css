@@ -29,6 +29,43 @@ body {
   font-family: 'DM Sans', sans-serif;
 }
 
+.admin-error-card {
+  width: 100%;
+  max-width: 480px;
+  padding: 32px;
+  background-color: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-lg);
+}
+
+.admin-error-card h1 {
+  margin: 0 0 12px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 24px;
+  line-height: 1.25;
+  color: var(--admin-text-main);
+}
+
+.admin-error-card p {
+  margin: 0 0 24px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--admin-text-muted);
+}
+
+.admin-error-card__detail {
+  margin: 20px 0 0;
+  padding: 12px;
+  background-color: var(--admin-bg);
+  border: 1px solid var(--admin-border);
+  border-radius: var(--radius-md);
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--admin-text-muted);
+  overflow-wrap: anywhere;
+}
+
 .admin-wrap {
   max-width: 1200px;
   margin-inline: auto;
