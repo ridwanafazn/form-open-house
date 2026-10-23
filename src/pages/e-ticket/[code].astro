@@ -16,8 +16,10 @@ const code = Astro.params.code ?? '';
 </Base>
 
 <style>
+  /* Latar dan tipografi mengikuti token admin.css, sudah diimpor via PublicTicket. */
   .ticket-page { padding-block: 20px 64px; }
-  .ticket-page__back { margin: 0 auto; max-width: 620px; font-size: .9rem; }
-  .ticket-page__back a { color: var(--teal-dark); }
-  .ticket-page__footnote { max-width: 620px; margin: 18px auto; color: var(--ink-soft); font-size: .85rem; text-align: center; }
+  .ticket-page__back { max-width: 620px; margin: 0 auto; font-size: .9rem; font-family: 'DM Sans', sans-serif; }
+  .ticket-page__back a { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border: 1px solid var(--admin-border, #E2E8F0); border-radius: var(--radius-md, 10px); background: var(--admin-surface, #FFFFFF); color: var(--admin-text-main, #1E293B); text-decoration: none; transition: all .2s; }
+  .ticket-page__back a:hover { background: #F1F5F9; color: var(--admin-primary, #0F172A); }
+  .ticket-page__footnote { max-width: 620px; margin: 18px auto; color: var(--admin-text-muted, #64748B); font-family: 'DM Sans', sans-serif; font-size: .85rem; text-align: center; }
 </style>
