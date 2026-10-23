@@ -8,6 +8,28 @@ import ListScreen from './admin/ListScreen';
 import '../styles/admin.css';
 
 // Manipulasi DOM ke Astro Navbar
+// Avatar inisial dibuat lokal (SVG data URI) supaya tidak bergantung CDN pihak ketiga
+// seperti dicebear — domain tersebut diblokir CSP (img-src 'self' data:) dan
+// menyebabkan gambar rusak di navbar.
+function buildInitialsAvatar(displayName: string): string {
+  const initials =
+    displayName
+      .split(/[\s@.]+/)
+      .filter(Boolean)
+      .map((word) => word[0])
+      .join('')
+      .slice(0, 2)
+      .toUpperCase() || 'A';
+
+  const svg =
+    '<svg xmlns="http://www.w3.org/2000/svg" width="52" height="52" viewBox="0 0 52 52">' +
+    '<rect width="52" height="52" rx="13" fill="#064E3B"/>' +
+    `<text x="26" y="33" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#FFFFFF">${initials}</text>` +
+    '</svg>';
+
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+}
+
 function showAdminProfile(user: {
   id: string;
   email?: string | null;
@@ -21,7 +43,7 @@ function showAdminProfile(user: {
   const displayName =
     user.user_metadata?.full_name || user.user_metadata?.name || user.email || 'Admin';
   name.textContent = displayName;
-  avatar.src = `https://api.dicebear.com/9.x/dice/svg?seed=${encodeURIComponent(user.id || displayName)}`;
+  avatar.src = buildInitialsAvatar(displayName);
   wrap.hidden = false;
 
   try {

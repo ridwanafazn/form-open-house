@@ -485,6 +485,43 @@ body {
   margin-bottom: 20px;
 }
 
+/* Tombol kamera memenuhi lebar kartunya agar tidak menyisakan ruang kosong */
+.admin-scanner-controls .admin-btn {
+  display: block;
+  width: 100%;
+}
+
+/* --- Pagination Daftar Peserta (10 per halaman) --- */
+.admin-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--admin-border);
+}
+
+.admin-pagination__info {
+  margin: 0;
+  color: var(--admin-text-muted);
+  font-size: 0.85rem;
+}
+
+.admin-pagination__controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.admin-pagination__page {
+  color: var(--admin-text-muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
 .admin-reader-box {
   width: 100%;
   max-width: 480px;

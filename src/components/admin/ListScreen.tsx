@@ -24,6 +24,8 @@ export default function ListScreen({ setScreen }: ListScreenProps) {
   const [filterAttendance, setFilterAttendance] = useState<'all' | 'attended' | 'absent'>('all');
   const [filterAssigned, setFilterAssigned] = useState('');
   const [selected, setSelected] = useState<Registration | null>(null);
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 10;
 
   function fetchRegistrations() {
     if (!supabase) return;
@@ -55,6 +57,11 @@ export default function ListScreen({ setScreen }: ListScreenProps) {
     return () => window.removeEventListener('hashchange', syncHash);
   }, []);
 
+  // Kembali ke halaman pertama setiap kali filter/pencarian berubah
+  useEffect(() => {
+    setPage(1);
+  }, [search, filterStatus, filterAttendance, filterAssigned]);
+
   const assignees = Array.from(new Set(rows.map((r) => r.assigned_to).filter(Boolean))) as string[];
 
   const filtered = rows.filter((r) => {
@@ -75,6 +82,14 @@ export default function ListScreen({ setScreen }: ListScreenProps) {
 
     return matchSearch && matchStatus && matchAssigned && matchAttendance;
   });
+
+  // Pagination 10 data per halaman, urutan tetap terbaru dulu (created_at DESC di query).
+  // Data lama hanya muncul lewat tombol halaman selanjutnya.
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const safePage = Math.min(page, pageCount);
+  const startIndex = (safePage - 1) * PAGE_SIZE;
+  const endIndex = Math.min(startIndex + PAGE_SIZE, filtered.length);
+  const visibleRows = filtered.slice(startIndex, endIndex);
 
   const totalRegisteredFamilies = rows.length;
   const attendedRows = rows.filter((r) => !!r.attended_at);
@@ -293,7 +308,7 @@ export default function ListScreen({ setScreen }: ListScreenProps) {
                       </td>
                     </tr>
                   )}
-                  {filtered.map((r) => (
+                  {visibleRows.map((r) => (
                     <tr
                       key={r.id}
                       className="admin-table__row"
@@ -332,6 +347,35 @@ export default function ListScreen({ setScreen }: ListScreenProps) {
                   ))}
                 </tbody>
               </table>
+            </div>
+          )}
+
+          {!loading && !loadError && filtered.length > 0 && (
+            <div className="admin-pagination">
+              <p className="admin-pagination__info">
+                Menampilkan {startIndex + 1}–{endIndex} dari {filtered.length} pendaftar
+              </p>
+              <div className="admin-pagination__controls">
+                <button
+                  type="button"
+                  className="admin-btn admin-btn--outline"
+                  disabled={safePage <= 1}
+                  onClick={() => setPage(safePage - 1)}
+                >
+                  Sebelumnya
+                </button>
+                <span className="admin-pagination__page">
+                  Halaman {safePage} dari {pageCount}
+                </span>
+                <button
+                  type="button"
+                  className="admin-btn admin-btn--outline"
+                  disabled={safePage >= pageCount}
+                  onClick={() => setPage(safePage + 1)}
+                >
+                  Berikutnya
+                </button>
+              </div>
             </div>
           )}
         </>
