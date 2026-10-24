@@ -68,6 +68,9 @@
 
   /* Lebar isi */
   --max-width: 1120px;
+
+  /* Floating nav offset for anchor scrolling */
+  --nav-offset: 104px;
 }
 
 /* Bahasa desain halaman publik: pil tegas, matte, tanpa gradien/bayangan.
@@ -109,11 +112,9 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
-  scroll-padding-top: 104px;
-}
-
-[id] {
-  scroll-margin-top: 104px;
+  /* Floating nav: 20px top offset + 68px min-height + 16px breathing room.
+     Single mechanism: only scroll-padding here, no per-id scroll-margin. */
+  scroll-padding-top: var(--nav-offset);
 }
 
 body {
