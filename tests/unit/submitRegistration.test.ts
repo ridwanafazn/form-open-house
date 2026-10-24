@@ -87,6 +87,18 @@ describe('submitRegistration', () => {
     expect(r.status).toBe(200);
   });
 
+  it('konflik 409 mengembalikan kode tiket lama yang tersimpan', async () => {
+    const f = makeFetch({
+      'https://proj.supabase.co/rest/v1/registrations': { status: 409 },
+      'https://proj.supabase.co/rest/v1/registrations?select=id,ticket_code&parent_phone=eq.%2B6281234567890&child_name_key=eq.ahmad&order=created_at.desc&limit=1': {
+        status: 200,
+        body: [{ id: 'row-1', ticket_code: 'OH-ABC123' }],
+      },
+    });
+    const r = await submitRegistration(valid, env(), f);
+    expect(r).toMatchObject({ kind: 'conflict', status: 200, id: 'row-1', ticket_code: 'OH-ABC123' });
+  });
+
   it('gagal server -> 500 tanpa rincian', async () => {
     const f = makeFetch({
       'https://proj.supabase.co/rest/v1/registrations': { status: 500 },

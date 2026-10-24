@@ -24,9 +24,7 @@ export async function sendRegistrationWhatsApp(notification: RegistrationNotific
     `3. 🎟️ Kode tiket: ${notification.ticketCode}`,
     '',
     'Mohon simpan pesan dan gambar tiket ini. Tunjukkan QR Code kepada panitia saat registrasi di lokasi.',
-    // URL dibungkus < > supaya WhatsApp tidak membuat kartu pratinjau tautan;
-    // pesan tetap murni teks seperti diinginkan pemilik.
-    ticketUrl ? `🔗 Tiket digital:\n<${ticketUrl}>` : '',
+    ticketUrl ? `🔗 Tiket digital:\n${ticketUrl}` : '',
     '',
     'Sampai bertemu di Open House.',
     'Wassalamualaikum.',
@@ -145,7 +143,30 @@ export async function submitRegistration(
     return { kind: 'error', status: 500, code: 'server' };
   }
 
-  if (writeRes.status === 409) return { kind: 'conflict', status: 200, ticket_code: ticketCode };
+  // Konflik unik (parent_phone, child_name_key): pendaftaran sudah ada
+  // sebelumnya. Kembalikan kode tiket yang benar-benar tersimpan di database
+  // agar tautan e-tiket tetap valid (bukan kode baru yang tidak pernah disimpan),
+  // dan kirim ulang notifikasi WhatsApp memakai kode lama tersebut.
+  if (writeRes.status === 409) {
+    const existing = await fetchExistingRegistration(
+      env,
+      fetchImpl,
+      result.value.parent_phone,
+      result.value.child_name,
+    );
+    const realCode = existing?.ticket_code || ticketCode;
+    if (env.fonnteApiToken && existing && existing.ticket_code) {
+      await sendRegistrationWhatsApp({
+        parentPhone: result.value.parent_phone,
+        childName: result.value.child_name,
+        attendeeCount: result.value.attendee_count,
+        ticketCode: existing.ticket_code,
+        publicSiteUrl: env.publicSiteUrl,
+        fonnteToken: env.fonnteApiToken,
+      });
+    }
+    return { kind: 'conflict', status: 200, id: existing?.id, ticket_code: realCode };
+  }
   if (!writeRes.ok) {
     const errBody = await writeRes.text().catch(() => '');
     console.error('[submitRegistration] Supabase responded with error:', writeRes.status, errBody);
@@ -184,4 +205,41 @@ export function bodyTooLarge(rawBodyLength: number): boolean {
 
 function emptyToNull(value: string): string | null {
   return value ? value : null;
+}
+
+/**
+ * Ambil pendaftaran yang sudah ada ketika write memicu konflik unik
+ * (parent_phone, child_name_key). child_name_key di database adalah
+ * lower(btrim(child_name)); dicocokkan dengan kunci yang sama di JS.
+ */
+async function fetchExistingRegistration(
+  env: SubmitEnv,
+  fetchImpl: Fetcher,
+  parentPhone: string,
+  childName: string,
+): Promise<{ id?: string; ticket_code?: string } | null> {
+  if (!env.supabaseUrl || !env.supabaseServiceRoleKey) return null;
+  const childNameKey = childName.trim().toLowerCase();
+  const url =
+    `${env.supabaseUrl}/rest/v1/registrations` +
+    `?select=id,ticket_code` +
+    `&parent_phone=eq.${encodeURIComponent(parentPhone)}` +
+    `&child_name_key=eq.${encodeURIComponent(childNameKey)}` +
+    `&order=created_at.desc&limit=1`;
+  try {
+    const res = await fetchImpl(url, {
+      headers: {
+        apikey: env.supabaseServiceRoleKey,
+        Authorization: `Bearer ${env.supabaseServiceRoleKey}`,
+      },
+    });
+    if (!res.ok) return null;
+    const rows = (await res.json().catch(() => [])) as Array<{
+      id?: string;
+      ticket_code?: string;
+    }>;
+    return rows[0] ?? null;
+  } catch {
+    return null;
+  }
 }

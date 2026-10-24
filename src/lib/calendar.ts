@@ -38,3 +38,20 @@ export function buildCalendar(fileName = 'open-house.ics'): { href: string; down
   const url = URL.createObjectURL(blob);
   return { href: url, download: fileName };
 }
+
+/**
+ * Tautan "Tambah ke kalender" yang membuka Google Calendar langsung (tanpa
+ * mengunduh berkas). Waktu memakai zona Asia/Jakarta via parameter ctz.
+ */
+export function buildGoogleCalendarUrl(): string {
+  const start = dateTimeToISO(eventConfig.dateISO, eventConfig.startTime);
+  const end = dateTimeToISO(eventConfig.dateISO, eventConfig.endTime);
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: eventConfig.name,
+    dates: `${start}/${end}`,
+    ctz: eventConfig.timezone,
+    location: eventConfig.locationAddress,
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}

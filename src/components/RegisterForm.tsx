@@ -161,6 +161,7 @@ export default function RegisterForm() {
     if (e.attendee_count) m.attendee_count = content.errors.attendee_count;
     if (e.city) m.city = content.errors.required;
     if (e.school) m.school = content.errors.required;
+    if (e.interest_major) m.interest_major = content.errors.required;
     if (e.consent_wa) m.consent_wa = content.errors.consent;
     return m;
   }
@@ -234,7 +235,12 @@ export default function RegisterForm() {
               </div>
 
               <div className="field">
-                <label htmlFor="f-parent_name">{stepOne[2].label}</label>
+                <label htmlFor="f-parent_name">
+                  {stepOne[2].label}{' '}
+                  <span className="req" aria-hidden="true">
+                    *
+                  </span>
+                </label>
                 <input
                   id="f-parent_name"
                   name="parent_name"
@@ -315,7 +321,12 @@ export default function RegisterForm() {
               </div>
 
               <fieldset className="field">
-                <legend>{stepTwo[3].label}</legend>
+                <legend>
+                  {stepTwo[3].label}{' '}
+                  <span className="req" aria-hidden="true">
+                    *
+                  </span>
+                </legend>
                 <div className="chips">
                   {stepTwo[3].options?.map((label) => {
                     const val = label.toLowerCase().replace(/\s+/g, '_');
@@ -335,6 +346,7 @@ export default function RegisterForm() {
                   })}
                 </div>
                 <p className="hint">{stepTwo[3].helper}</p>
+                {errorFor('interest_major') && <p className="err">{errorFor('interest_major')}</p>}
               </fieldset>
 
               <div className="field">

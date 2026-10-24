@@ -4,14 +4,14 @@
 
 export const content = {
   meta: {
-    title: 'Open House SMKIT As Syifa Boarding School',
+    title: 'Open House',
     description:
       'Datang, lihat langsung, dan coba sendiri. Daftar hadir open house SMKIT As Syifa Boarding School, Jalancagak, Subang.',
   },
 
   home: {
     hero: {
-      title: 'Open House SMKIT As Syifa',
+      title: 'Open House SMKIT As-Syifa',
       tagline: 'Datang, lihat langsung, dan coba sendiri.',
       info: 'Sabtu, 07 November 2026, 08.00 sampai 15.00 WIB, Jalancagak, Subang. Gratis.',
       cta: 'Daftar Hadir Open House',
@@ -44,7 +44,7 @@ export const content = {
       heading: 'Daftar saat open house, biayanya lebih ringan',
       text: 'Biaya pendaftaran seleksi normalnya Rp500 ribu. Jika mendaftar langsung saat open house, biayanya Rp100 ribu. Jika hadir tetapi mendaftar belakangan, biayanya Rp300 ribu.',
       laterNote: 'Jika hadir tetapi mendaftar belakangan, biayanya Rp300 ribu.',
-      note: 'Ini adalah biaya pendaftaran seleksi, bukan biaya pendidikan.',
+      note: 'Biaya seleksi PMB SMKIT As-Syifa',
     },
 
     eventInfo: {
@@ -116,7 +116,7 @@ export const content = {
       {
         id: 'parent_name',
         label: 'Nama orang tua atau wali',
-        helper: 'Boleh dikosongkan.',
+        helper: 'Nama ayah, bunda, atau wali calon siswa.',
       },
     ],
     stepTwo: [
@@ -139,7 +139,7 @@ export const content = {
         id: 'interest_major',
         label: 'Minat jurusan',
         options: ['RPL', 'DKV', 'Belum tahu'],
-        helper: 'Boleh dikosongkan.',
+        helper: 'Pilih salah satu.',
       },
     ],
     consent: {

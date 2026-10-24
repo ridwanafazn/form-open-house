@@ -36,11 +36,11 @@ export default function TicketCard() {
       canvasRef.current,
       ticketCode,
       {
-        width: 200,
+        width: 280,
         margin: 2,
         color: {
-          dark: '#1c1c1a',
-          light: '#ffffff',
+          dark: '#0F172A',
+          light: '#FFFFFF',
         },
       },
       (err) => {
@@ -63,54 +63,69 @@ export default function TicketCard() {
       `3. 🎟️ Kode tiket: ${ticketCode}`,
       '',
       'Mohon simpan pesan dan gambar tiket ini. Tunjukkan QR Code kepada panitia saat registrasi di lokasi.',
-      // URL dibungkus < > supaya WhatsApp tidak membuat kartu pratinjau tautan.
-      `🔗 Tiket digital:\n<${ticketUrl}>`,
+      `🔗 Tiket digital:\n${ticketUrl}`,
       '',
       'Sampai bertemu di Open House.',
       'Wassalamualaikum.',
     ].join('\n');
   }
 
+  // Gambar tiket dibuat identik dengan unduhan di halaman e-tiket
+  // (PublicTicket): permukaan putih, teks slate, aksen emerald matte.
+  function paintTicketImage(context: CanvasRenderingContext2D) {
+    context.fillStyle = '#FFFFFF';
+    context.fillRect(0, 0, 1000, 1260);
+    context.strokeStyle = '#E2E8F0';
+    context.lineWidth = 6;
+    context.strokeRect(28, 28, 944, 1204);
+    context.fillStyle = '#64748B';
+    context.font = "700 30px 'Space Grotesk', Arial";
+    context.fillText('TIKET DIGITAL', 76, 116);
+    context.fillStyle = '#064E3B';
+    context.fillRect(76, 136, 220, 6);
+    context.fillStyle = '#0F172A';
+    context.font = "700 46px 'Space Grotesk', Arial";
+    context.fillText('Open House SMKIT As Syifa', 76, 200);
+    context.fillStyle = '#FFFFFF';
+    context.fillRect(76, 236, 262, 44);
+    context.strokeStyle = '#E2E8F0';
+    context.lineWidth = 3;
+    context.strokeRect(76, 236, 262, 44);
+    context.fillStyle = '#166534';
+    context.font = "600 24px 'Space Grotesk', Arial";
+    context.fillText('TERDAFTAR ✓', 96, 266);
+    if (canvasRef.current) {
+      context.drawImage(canvasRef.current, 332, 320, 336, 336);
+    }
+    const child = data?.child_name || 'Calon Siswa';
+    const count = data?.attendee_count || 1;
+    context.fillStyle = '#0F172A';
+    context.font = "700 42px 'Space Grotesk', Arial";
+    context.fillText(child, 76, 732);
+    context.font = "400 26px 'DM Sans', Arial";
+    context.fillStyle = '#64748B';
+    context.fillText(`${count} peserta`, 76, 778);
+    context.fillStyle = '#0F172A';
+    context.font = "700 40px 'DM Mono', monospace";
+    context.fillText(ticketCode, 76, 902);
+    context.fillStyle = '#64748B';
+    context.font = "400 25px 'DM Sans', Arial";
+    context.fillText('Sabtu, 07 November 2026 · 08.00–15.00 WIB', 76, 966);
+    context.fillText('Tunjukkan tiket ini kepada panitia saat registrasi.', 76, 1018);
+    context.fillText('SMKIT As Syifa Boarding School, Jalancagak, Subang', 76, 1056);
+  }
+
   function createTicketFile(): Promise<File> {
     return new Promise((resolve, reject) => {
-      if (!canvasRef.current) {
-        reject(new Error('Canvas tiket belum siap'));
-        return;
-      }
       const canvas = document.createElement('canvas');
-      canvas.width = 900;
-      canvas.height = 1120;
+      canvas.width = 1000;
+      canvas.height = 1260;
       const context = canvas.getContext('2d');
       if (!context) {
         reject(new Error('Canvas tiket tidak tersedia'));
         return;
       }
-      context.fillStyle = '#fffdf8';
-      context.fillRect(0, 0, canvas.width, canvas.height);
-      context.strokeStyle = '#b7d6cf';
-      context.lineWidth = 6;
-      context.strokeRect(24, 24, canvas.width - 48, canvas.height - 48);
-      context.fillStyle = '#1d2c2b';
-      context.font = '700 36px Arial';
-      context.fillText('OPEN HOUSE SMKIT AS SYIFA', 68, 94);
-      context.fillStyle = '#526363';
-      context.font = '24px Arial';
-      context.fillText('Tiket masuk', 68, 132);
-      context.drawImage(canvasRef.current, 300, 180, 300, 300);
-      context.fillStyle = '#1d2c2b';
-      context.font = '700 32px Arial';
-      context.fillText(data?.child_name || 'Calon siswa', 68, 570);
-      context.fillStyle = '#526363';
-      context.font = '23px Arial';
-      context.fillText(`${data?.attendee_count || 1} peserta`, 68, 610);
-      context.font = '700 32px monospace';
-      context.fillStyle = '#1d2c2b';
-      context.fillText(ticketCode, 68, 720);
-      context.fillStyle = '#526363';
-      context.font = '22px Arial';
-      context.fillText('Sabtu, 07 November 2026 · 08.00–15.00 WIB', 68, 790);
-      context.fillText('SMKIT As Syifa Boarding School, Jalancagak, Subang', 68, 830);
-      context.fillText('Tunjukkan tiket ini kepada panitia saat registrasi.', 68, 900);
+      paintTicketImage(context);
       canvas.toBlob((blob) => {
         if (!blob) {
           reject(new Error('Gambar tiket gagal dibuat'));
@@ -122,43 +137,15 @@ export default function TicketCard() {
   }
 
   function handleDownloadImage() {
-    if (!canvasRef.current) return;
-    const source = canvasRef.current;
-    const ticketCanvas = document.createElement('canvas');
-    ticketCanvas.width = 900;
-    ticketCanvas.height = 1120;
-    const context = ticketCanvas.getContext('2d');
+    const canvas = document.createElement('canvas');
+    canvas.width = 1000;
+    canvas.height = 1260;
+    const context = canvas.getContext('2d');
     if (!context) return;
-
-    context.fillStyle = '#fffdf8';
-    context.fillRect(0, 0, ticketCanvas.width, ticketCanvas.height);
-    context.strokeStyle = '#b7d6cf';
-    context.lineWidth = 6;
-    context.strokeRect(24, 24, ticketCanvas.width - 48, ticketCanvas.height - 48);
-    context.fillStyle = '#1d2c2b';
-    context.font = '700 36px Arial';
-    context.fillText('OPEN HOUSE SMKIT AS SYIFA', 68, 94);
-    context.fillStyle = '#526363';
-    context.font = '24px Arial';
-    context.fillText('Tiket masuk', 68, 132);
-    context.drawImage(source, 300, 180, 300, 300);
-    context.fillStyle = '#1d2c2b';
-    context.font = '700 32px Arial';
-    context.fillText(data?.child_name || 'Calon siswa', 68, 570);
-    context.fillStyle = '#526363';
-    context.font = '23px Arial';
-    context.fillText(`${data?.attendee_count || 1} peserta`, 68, 610);
-    context.font = '700 32px monospace';
-    context.fillStyle = '#1d2c2b';
-    context.fillText(ticketCode, 68, 720);
-    context.fillStyle = '#526363';
-    context.font = '22px Arial';
-    context.fillText('Sabtu, 07 November 2026 · 08.00–15.00 WIB', 68, 790);
-    context.fillText('SMKIT As Syifa Boarding School, Jalancagak, Subang', 68, 830);
-    context.fillText('Tunjukkan tiket ini kepada panitia saat registrasi.', 68, 900);
+    paintTicketImage(context);
 
     const a = document.createElement('a');
-    a.href = ticketCanvas.toDataURL('image/png');
+    a.href = canvas.toDataURL('image/png');
     a.download = `Tiket-OpenHouse-${ticketCode}.png`;
     document.body.appendChild(a);
     a.click();

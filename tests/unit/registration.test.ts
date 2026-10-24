@@ -36,6 +36,7 @@ describe('isValidPhone', () => {
 const validBase = {
   child_name: 'Ahmad',
   parent_phone: '081234567890',
+  parent_name: 'Budi',
   city: 'Subang',
   school: 'SMP Negeri 1 Subang',
   attendee_count: 2,
@@ -61,8 +62,9 @@ describe('validateRegistration', () => {
     expect(validateRegistration({ ...validBase, parent_phone: 'abc' }).errors.parent_phone).toBe('phone');
     expect(validateRegistration(validBase).errors.parent_phone).toBeUndefined();
   });
-  it('name_short untuk parent_name yang terlalu pendek, kosong boleh', () => {
-    expect(validateRegistration({ ...validBase, parent_name: '' }).ok).toBe(true);
+  it('parent_name wajib: kosong atau terlalu pendek ditolak', () => {
+    expect(validateRegistration({ ...validBase, parent_name: '' }).ok).toBe(false);
+    expect(validateRegistration({ ...validBase, parent_name: '' }).errors.parent_name).toBe('name_short');
     expect(validateRegistration({ ...validBase, parent_name: 'A' }).errors.parent_name).toBe('name_short');
     expect(validateRegistration(validBase).errors.parent_name).toBeUndefined();
   });
@@ -76,10 +78,11 @@ describe('validateRegistration', () => {
     expect(validateRegistration({ ...validBase, city: '' }).errors.city).toBe('required');
     expect(validateRegistration({ ...validBase, school: '' }).errors.school).toBe('required');
   });
-  it('interest_major hanya rpl, dkv, belum_tahu', () => {
+  it('interest_major wajib dan hanya rpl, dkv, belum_tahu', () => {
     expect(validateRegistration({ ...validBase, interest_major: 'dkv' }).value.interest_major).toBe('dkv');
     expect(validateRegistration({ ...validBase, interest_major: 'mipa' }).value.interest_major).toBe('');
-    expect(validateRegistration({ ...validBase, interest_major: '' }).ok).toBe(true);
+    expect(validateRegistration({ ...validBase, interest_major: '' }).ok).toBe(false);
+    expect(validateRegistration({ ...validBase, interest_major: '' }).errors.interest_major).toBe('required');
   });
   it('consent_wa wajib true', () => {
     expect(validateRegistration({ ...validBase, consent_wa: false }).errors.consent_wa).toBe('consent');

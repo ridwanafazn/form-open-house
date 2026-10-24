@@ -65,7 +65,7 @@ export function validateRegistration(
   }
 
   const parent_name = clean(input.parent_name);
-  if (parent_name && (parent_name.length < 2 || parent_name.length > 100)) {
+  if (parent_name.length < 2 || parent_name.length > 100) {
     errors.parent_name = 'name_short';
   }
   value.parent_name = parent_name;
@@ -92,6 +92,8 @@ export function validateRegistration(
   const interest_major = (MAJORS.has(rawMajor as MajorInterest) ? rawMajor : '') as
     | MajorInterest
     | '';
+  // Seluruh field wajib: minat jurusan harus dipilih salah satu.
+  if (!interest_major) errors.interest_major = 'required';
   value.interest_major = interest_major;
 
   const consent_wa = input.consent_wa === true;
