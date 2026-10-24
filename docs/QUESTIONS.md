@@ -25,6 +25,10 @@ Atas permintaan langsung pemilik proyek, `@fontsource-variable/plus-jakarta-sans
 
 Atas keputusan final pemilik proyek: Caveat Brush dihapus, `@fontsource/lora` ditambahkan. Peran: `--font-heading` → Plus Jakarta Sans Variable (sans-serif, tegas, w700), `--font-body` → Lora (serif, mudah dibaca untuk paragraf). Bobot heading diubah dari 400 ke 700 agar Plus Jakarta Sans tampak proporsional. Font self-hosted tanpa CDN tetap terpenuhi. Keputusan sketsa: semua doodle dihapus dari tampilan kecuali PaperPlane di halaman terima kasih.
 
+## Q06 pasangan font diganti ke DM Sans × Space Grotesk (2026-10-24)
+
+Atas permintaan pemilik proyek, kombinasi Fraunces × Plus Jakarta Sans dari rancangan awal diganti dengan kombinasi yang dipakai halaman admin: `--font-heading` → Space Grotesk, `--font-body` → DM Sans, berlaku untuk seluruh halaman (beranda, terima kasih, privasi, e-ticket, dan admin). Font tetap self-hosted tanpa CDN dan tanpa paket baru: empat berkas woff2 (latin + latin-ext untuk masing-masing keluarga) disimpan di `public/fonts` dan dimuat lewat `@font-face` di `src/styles/global.css`. Impor `@fontsource/fraunces` dan `@fontsource-variable/plus-jakarta-sans` dihapus dari `Base.astro`, kedua paket juga dihapus dari dependensi, sehingga CSP bisa kembali ketat (`font-src 'self' data:`, tanpa domain Google Fonts). Lisensi OFL kedua font disertakan di `public/fonts`.
+
 
 
 

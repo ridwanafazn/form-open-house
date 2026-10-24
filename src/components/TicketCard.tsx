@@ -274,7 +274,7 @@ export default function TicketCard() {
           margin-bottom: var(--space-2);
         }
         .ticket-card__title {
-          font-family: var(--font-display, serif);
+          font-family: var(--font-heading);
           font-size: 1.25rem;
           margin: 0 0 var(--space-1);
           color: var(--ink);

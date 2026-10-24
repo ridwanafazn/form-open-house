@@ -63,9 +63,9 @@ Aturan pemakaian warna:
 
 ## Tipografi
 
-1. Judul pendek memakai Caveat Brush, hanya satu atau dua kata per judul, ukuran fluid dengan `clamp`.
-2. Semua teks lain memakai Public Sans. Ukuran isi minimal 16 piksel, tinggi baris 1,5.
-3. Label isian memakai Public Sans miring. Isian dan teks panjang tidak pernah memakai font tulisan tangan.
+1. Judul memakai Space Grotesk, ukuran fluid dengan `clamp`.
+2. Semua teks lain memakai DM Sans. Ukuran isi minimal 16 piksel, tinggi baris 1,5.
+3. Label isian memakai DM Sans miring. Isian dan teks panjang tidak pernah memakai font tulisan tangan.
 
 ## Tata letak
 

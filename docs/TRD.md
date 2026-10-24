@@ -11,7 +11,7 @@ Paket yang diizinkan, selain itu tidak boleh ditambah tanpa izin:
 3. `motion`, diimpor dari `motion/react`
 4. `typescript`
 5. `@supabase/supabase-js`, hanya dipakai di halaman admin
-6. `@fontsource/caveat-brush` dan `@fontsource-variable/public-sans`. Jika salah satu tidak tersedia, pakai font sistem sebagai cadangan dan catat di `docs/QUESTIONS.md`.
+6. Tidak ada paket font tambahan. DM Sans (isi) dan Space Grotesk (judul) di-host sendiri sebagai berkas woff2 di `public/fonts` dan dimuat lewat `@font-face` di `src/styles/global.css`, tanpa CDN.
 7. `vitest`, `@playwright/test`, `eslint`, `prettier`
 8. `tailwindcss`, `@tailwindcss/vite`
 
