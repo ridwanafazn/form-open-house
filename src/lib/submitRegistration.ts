@@ -15,16 +15,18 @@ export async function sendRegistrationWhatsApp(notification: RegistrationNotific
     ? `${notification.publicSiteUrl.replace(/\/$/, '')}/e-ticket/${encodeURIComponent(notification.ticketCode)}`
     : '';
   const message = [
-    'Assalamualaikum Bapak/Ibu.',
+    'Assalamualaikum Ayah/Bunda.',
     '',
-    'Pendaftaran Open House SMKIT As Syifa berhasil kami terima.',
+    'Pendaftaran Open House SMKIT As-Syifa berhasil kami terima.',
     '',
-    `👤 Calon siswa: ${notification.childName}`,
-    `👥 Jumlah peserta: ${notification.attendeeCount} orang`,
-    `🎟️ Kode tiket: ${notification.ticketCode}`,
+    `1. 👤 Calon siswa: ${notification.childName}`,
+    `2. 👥 Jumlah peserta: ${notification.attendeeCount} orang`,
+    `3. 🎟️ Kode tiket: ${notification.ticketCode}`,
     '',
     'Mohon simpan pesan dan gambar tiket ini. Tunjukkan QR Code kepada panitia saat registrasi di lokasi.',
-    ticketUrl ? `🔗 Tiket digital:\n${ticketUrl}` : '',
+    // URL dibungkus < > supaya WhatsApp tidak membuat kartu pratinjau tautan;
+    // pesan tetap murni teks seperti diinginkan pemilik.
+    ticketUrl ? `🔗 Tiket digital:\n<${ticketUrl}>` : '',
     '',
     'Sampai bertemu di Open House.',
     'Wassalamualaikum.',

@@ -52,7 +52,23 @@ export default function TicketCard() {
   function buildTicketMessage() {
     const child = data?.child_name || 'Calon Siswa';
     const count = data?.attendee_count || 1;
-    return `Assalamualaikum. Ini adalah bukti pendaftaran dan tiket masuk Open House SMKIT As Syifa Boarding School untuk calon siswa: ${child} (Jumlah hadir: ${count} orang). Kode Tiket: ${ticketCode}. Tunjukkan pesan atau QR Code ini kepada panitia di meja registrasi pada Sabtu, 07 November 2026. Sampai jumpa!`;
+    const ticketUrl = `${window.location.origin}/e-ticket/${encodeURIComponent(ticketCode)}`;
+    return [
+      'Assalamualaikum Ayah/Bunda.',
+      '',
+      'Pendaftaran Open House SMKIT As-Syifa berhasil kami terima.',
+      '',
+      `1. 👤 Calon siswa: ${child}`,
+      `2. 👥 Jumlah peserta: ${count} orang`,
+      `3. 🎟️ Kode tiket: ${ticketCode}`,
+      '',
+      'Mohon simpan pesan dan gambar tiket ini. Tunjukkan QR Code kepada panitia saat registrasi di lokasi.',
+      // URL dibungkus < > supaya WhatsApp tidak membuat kartu pratinjau tautan.
+      `🔗 Tiket digital:\n<${ticketUrl}>`,
+      '',
+      'Sampai bertemu di Open House.',
+      'Wassalamualaikum.',
+    ].join('\n');
   }
 
   function createTicketFile(): Promise<File> {
