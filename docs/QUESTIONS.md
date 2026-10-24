@@ -38,6 +38,10 @@ Atas keputusan final pemilik proyek: Caveat Brush dihapus, `@fontsource/lora` di
 
 Atas permintaan pemilik proyek, kombinasi Fraunces × Plus Jakarta Sans dari rancangan awal diganti dengan kombinasi yang dipakai halaman admin: `--font-heading` → Space Grotesk, `--font-body` → DM Sans, berlaku untuk seluruh halaman (beranda, terima kasih, privasi, e-ticket, dan admin). Font tetap self-hosted tanpa CDN dan tanpa paket baru: empat berkas woff2 (latin + latin-ext untuk masing-masing keluarga) disimpan di `public/fonts` dan dimuat lewat `@font-face` di `src/styles/global.css`. Impor `@fontsource/fraunces` dan `@fontsource-variable/plus-jakarta-sans` dihapus dari `Base.astro`, kedua paket juga dihapus dari dependensi, sehingga CSP bisa kembali ketat (`font-src 'self' data:`, tanpa domain Google Fonts). Lisensi OFL kedua font disertakan di `public/fonts`.
 
+## Q09 Fraunces kembali sebagai font display publik + keputusan referensi SMILE FEST (2026-10-24)
+
+Pemilik proyek membawa referensi desain smile-festival.pages.dev (screenshot) dan meminta bahasa desain halaman publik mengikuti referensi itu, kecuali teks "Sustainable Muslim Living" (dianggap AI slop, tidak disalin). Keputusan yang disepakati: (1) matte penuh — tanpa bayangan, elemen melayang memakai border 1px ala navbar (opsi a); (2) Fraunces (self-hosted OFL, woff2 normal + italic di `public/fonts`) kembali sebagai `--font-display` untuk judul halaman publik dan brand navbar — Q06 di atas tetap berlaku untuk body (DM Sans) dan heading admin (Space Grotesk); (3) tombol primer publik menjadi pil gelap netral (`--ink`), tombol primer di footer gelap memakai varian emas; (4) halaman `/e-ticket` dan admin tetap memakai bahasa visual admin (slate), tidak diubah ke tema kertas — pemilik proyek belum memberi keberatan; ubah jika diminta.
+
 
 
 
