@@ -24,11 +24,13 @@ export async function sendRegistrationWhatsApp(notification: RegistrationNotific
     `3. 🎟️ Kode tiket: ${notification.ticketCode}`,
     '',
     'Mohon simpan pesan dan gambar tiket ini. Tunjukkan QR Code kepada panitia saat registrasi di lokasi.',
-    ticketUrl ? `🔗 Tiket digital:\n${ticketUrl}` : '',
+    '',
+    ticketUrl ? `🔗 Tiket digital:\n${ticketUrl}` : null,
     '',
     'Sampai bertemu di Open House.',
     'Wassalamualaikum.',
-  ].filter(Boolean).join('\n');
+    // Hanya null yang dibuang; baris kosong ('') sengaja dipertahankan.
+  ].filter((line) => line !== null).join('\n');
 
   // Fonnte dikirim setelah pendaftaran sukses. Kegagalan notifikasi tidak membatalkan pendaftaran.
   return sendWhatsAppViaFonnte({

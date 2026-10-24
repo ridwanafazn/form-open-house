@@ -63,6 +63,7 @@ export default function TicketCard() {
       `3. 🎟️ Kode tiket: ${ticketCode}`,
       '',
       'Mohon simpan pesan dan gambar tiket ini. Tunjukkan QR Code kepada panitia saat registrasi di lokasi.',
+      '',
       `🔗 Tiket digital:\n${ticketUrl}`,
       '',
       'Sampai bertemu di Open House.',
