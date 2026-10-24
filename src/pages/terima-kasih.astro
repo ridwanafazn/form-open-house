@@ -5,7 +5,6 @@ import TicketCard from '../components/TicketCard';
 import AddCalendar from '../components/AddCalendar';
 import { eventConfig } from '../config/event';
 import { content } from '../config/content';
-import PaperPlane from '../components/doodles/PaperPlane.astro';
 
 const isGroup = eventConfig.waJoinKind === 'group';
 const waNote = isGroup
@@ -21,10 +20,10 @@ const chatAdmisi = `https://wa.me/${eventConfig.admissionWhatsApp}?text=${encode
   <meta slot="head" name="robots" content="noindex" />
   <main class="container">
     <section class="ty" aria-labelledby="ty-title">
-      <div class="ty__doodle" aria-hidden="true">
-        <PaperPlane size="72" />
-      </div>
-      <h1 id="ty-title">{content.thankyou.title}</h1>
+      <header class="ty__head">
+        <p class="ty__kicker">Pendaftaran berhasil</p>
+        <h1 id="ty-title">{content.thankyou.title}</h1>
+      </header>
       <ThankYouSummary client:idle />
 
       <!-- Kartu Tiket Masuk Digital & QR Code -->
@@ -32,26 +31,30 @@ const chatAdmisi = `https://wa.me/${eventConfig.admissionWhatsApp}?text=${encode
 
       <p class="ty__note">{content.thankyou.note}</p>
 
-      <div class="ty__actions">
-        {waJoinHref && (
-          <>
-            <a class="button button--primary" href={waJoinHref} rel="noopener" target="_blank">
-              {content.thankyou.nextSteps.joinWa}
-            </a>
-            <p class="ty__wa-note">{waNote}</p>
-          </>
-        )}
+      {waJoinHref && (
+        <div class="ty__block">
+          <h2 class="ty__sub">Sebelum hari acara</h2>
+          <a class="button button--primary" href={waJoinHref} rel="noopener" target="_blank">
+            {content.thankyou.nextSteps.joinWa}
+          </a>
+          <p class="ty__wa-note">{waNote}</p>
+        </div>
+      )}
+
+      <div class="ty__block">
+        <h2 class="ty__sub">Simpan dan siapkan</h2>
+        <div class="ty__actions">
+          <AddCalendar client:idle />
+          <a class="button button--secondary" href={chatAdmisi} rel="noopener" target="_blank">
+            {content.thankyou.nextSteps.chatAdmisi}
+          </a>
+          <a class="button button--secondary" href={eventConfig.pmbPortalUrl} rel="noopener" target="_blank">
+            {content.thankyou.nextSteps.pmbLink}
+          </a>
+        </div>
       </div>
 
-      <div class="ty__actions">
-        <AddCalendar client:idle />
-        <a class="button button--secondary" href={chatAdmisi} rel="noopener" target="_blank">
-          {content.thankyou.nextSteps.chatAdmisi}
-        </a>
-        <a class="button button--secondary" href={eventConfig.pmbPortalUrl} rel="noopener" target="_blank">
-          {content.thankyou.nextSteps.pmbLink}
-        </a>
-      </div>
+      <p class="ty__back"><a href="/">Kembali ke halaman utama</a></p>
     </section>
   </main>
 </Base>
@@ -60,27 +63,50 @@ const chatAdmisi = `https://wa.me/${eventConfig.admissionWhatsApp}?text=${encode
   .ty {
     max-width: 640px;
     margin-inline: auto;
-    padding-block: var(--space-16);
-    text-align: left;
+    padding-block: var(--space-12) var(--space-16);
   }
-  .ty__doodle {
-    margin-bottom: var(--space-4);
+  .ty__head {
+    margin-bottom: var(--space-6);
+  }
+  .ty__kicker {
+    color: var(--teal-dark);
+    font-family: var(--font-heading);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .ty__head h1 {
+    margin-top: var(--space-2);
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
   }
   .ty__note {
     color: var(--ink-soft);
-    margin-block: var(--space-4);
+    margin-block: var(--space-6) var(--space-8);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--paper-grid);
+  }
+  .ty__block {
+    margin-block: var(--space-6);
+  }
+  .ty__sub {
+    font-size: 1.05rem;
+    margin-bottom: var(--space-3);
+    color: var(--ink);
   }
   .ty__actions {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-3);
     align-items: center;
-    margin-block: var(--space-4);
   }
   .ty__wa-note {
-    flex-basis: 100%;
-    font-size: 0.9rem;
+    margin-top: var(--space-2);
+    font-size: 0.85rem;
     color: var(--ink-soft);
-    margin: 0;
+  }
+  .ty__back {
+    margin-top: var(--space-8);
+    font-size: 0.9rem;
   }
 </style>

@@ -12,67 +12,95 @@ export const content = {
   home: {
     hero: {
       title: 'Open House SMKIT As Syifa',
-      tagline: 'Datang, lihat langsung, dan coba sendiri.',
-      info: `Sabtu, 07 November 2026, 08.00 sampai 15.00 WIB, Jalancagak, Subang. Gratis.`,
-      cta: 'Daftar Hadir Open House',
+      kicker: 'Boarding School · Jalancagak, Subang',
+      tagline: 'Lihat langsung. Coba sendiri. Tanya sepuasnya.',
+      info: 'Sabtu, 07 November 2026 · 08.00–15.00 WIB · Gratis',
+      cta: 'Daftar Hadir Sekarang',
+      ctaNote: 'Tiket masuk dikirim langsung ke WhatsApp Bapak/Ibu.',
     },
 
     story: [
       {
         id: 'jurusan',
-        heading: 'Jurusan',
-        text: 'Dengar langsung pemaparan jurusan RPL dan DKV di aula.',
+        heading: 'Kenalan dengan jurusannya',
+        text: 'RPL dan DKV dipaparkan langsung di aula — biar anak tahu apa yang dipelajari sebelum memilih.',
       },
       {
         id: 'kelas-dan-lab',
-        heading: 'Kelas dan lab',
-        text: 'Lihat ruang belajarnya dan coba sendiri di lab.',
+        heading: 'Coba sendiri di lab',
+        text: 'Bukan sekadar lihat lewat pintu. Anak bisa mencoba langsung perangkat lab komputer dan desain.',
       },
       {
         id: 'asrama',
-        heading: 'Asrama',
-        text: 'Keliling asrama bersama panitia dan lihat tempat anak tinggal dan beristirahat.',
+        heading: 'Lihat hidup di asrama',
+        text: 'Tur asrama bersama panitia: inilah tempat anak nanti tinggal, belajar, dan beristirahat.',
       },
       {
         id: 'konsultasi',
-        heading: 'Konsultasi',
-        text: 'Tanyakan langsung kepada guru dan panitia, mulai dari jurusan sampai pendaftaran.',
+        heading: 'Tanya langsung, sepuasnya',
+        text: 'Guru dan tim admisi siap di meja konsultasi — mulai dari jurusan, biaya, sampai cara mendaftar.',
       },
     ],
 
     incentive: {
-      heading: 'Daftar saat open house, biayanya lebih ringan',
-      text: 'Biaya pendaftaran seleksi normalnya Rp500 ribu. Jika mendaftar langsung saat open house, biayanya Rp100 ribu. Jika hadir tetapi mendaftar belakangan, biayanya Rp300 ribu.',
-      note: 'Ini adalah biaya pendaftaran seleksi, bukan biaya pendidikan.',
+      heading: 'Daftar di hari itu juga, biayanya jauh lebih ringan',
+      text: 'Biaya pendaftaran seleksi normalnya Rp500 ribu. Bapak/Ibu mendaftar langsung saat open house, cukup Rp100 ribu.',
+      laterNote:
+        'Sudah hadir tapi baru mendaftar belakangan? Biayanya Rp300 ribu — masih lebih ringan dari normal.',
+      note: 'Yang dimaksud di sini biaya pendaftaran seleksi, bukan biaya pendidikan.',
     },
 
     eventInfo: {
-      openMap: 'Buka Google Maps',
-      addCalendar: 'Tambah ke kalender',
+      openMap: 'Buka di Google Maps',
+      addCalendar: 'Simpan ke kalender',
     },
 
     rundown: {
       heading: 'Susunan Acara',
-      tagline: 'Jadwal kegiatan open house dari pagi hingga selesai.',
+      tagline: 'Satu hari penuh, dari sambutan pagi sampai ramah tamah sore.',
       items: [
-        { time: '08:00 - 08:30', title: 'Registrasi dan Penyambutan', desc: 'Registrasi ulang kehadiran peserta serta pembagian panduan open house.' },
-        { time: '08:30 - 09:30', title: 'Pemaparan Sekolah dan Jurusan', desc: 'Pengenalan kurikulum boarding school serta keunggulan jurusan RPL dan DKV di aula.' },
-        { time: '09:30 - 11:30', title: 'Tur Kampus dan Praktik Lab', desc: 'Kunjungan langsung ke ruang kelas, laboratorium komputer dan desain, serta asrama santri.' },
-        { time: '11:30 - 13:00', title: 'Ishoma', desc: 'Salat berjamaah di masjid kampus dan istirahat siang bersama.' },
-        { time: '13:00 - 14:30', title: 'Konsultasi PMB dan Pendaftaran', desc: 'Konsultasi langsung dengan tim admisi dan guru, serta layanan pendaftaran seleksi berinsentif.' },
-        { time: '14:30 - 15:00', title: 'Ramah Tamah dan Penutupan', desc: 'Sesi penutupan open house dan pembagian cinderamata.' },
+        {
+          time: '08:00 - 08:30',
+          title: 'Registrasi dan Penyambutan',
+          desc: 'Registrasi ulang kehadiran peserta serta pembagian panduan open house.',
+        },
+        {
+          time: '08:30 - 09:30',
+          title: 'Pemaparan Sekolah dan Jurusan',
+          desc: 'Pengenalan kurikulum boarding school serta keunggulan jurusan RPL dan DKV di aula.',
+        },
+        {
+          time: '09:30 - 11:30',
+          title: 'Tur Kampus dan Praktik Lab',
+          desc: 'Kunjungan langsung ke ruang kelas, laboratorium komputer dan desain, serta asrama santri.',
+        },
+        {
+          time: '11:30 - 13:00',
+          title: 'Ishoma',
+          desc: 'Salat berjamaah di masjid kampus dan istirahat siang bersama.',
+        },
+        {
+          time: '13:00 - 14:30',
+          title: 'Konsultasi PMB dan Pendaftaran',
+          desc: 'Konsultasi langsung dengan tim admisi dan guru, serta layanan pendaftaran seleksi berinsentif.',
+        },
+        {
+          time: '14:30 - 15:00',
+          title: 'Ramah Tamah dan Penutupan',
+          desc: 'Sesi penutupan open house dan pembagian cinderamata.',
+        },
       ],
     },
 
     form: {
-      heading: 'Daftar hadir',
-      tagline: 'Cukup dua langkah, tidak sampai satu menit.',
+      heading: 'Amankan tempat Bapak/Ibu',
+      tagline: 'Dua langkah, kurang dari satu menit. Tiket masuk langsung sampai ke WhatsApp.',
       progress: ['Data anak', 'Kehadiran'],
     },
 
     footer: {
-      text: 'Ada pertanyaan sebelum datang? Hubungi admisi lewat WhatsApp.',
-      cta: 'Chat admisi',
+      text: 'Masih ada yang ingin ditanyakan sebelum datang? Admisi kami siap menjawab lewat WhatsApp.',
+      cta: 'Chat Admisi',
     },
   },
 
@@ -147,12 +175,13 @@ export const content = {
 
   thankyou: {
     title: 'Terima kasih, pendaftaran sudah kami terima',
-    withSummary: 'Kami tunggu {nama anak} dan {jumlah hadir} orang di open house pada Sabtu 07 November 2026, pukul 08.00 sampai 15.00 WIB.',
-    withoutSummary: 'Kami tunggu Bapak dan Ibu di open house pada Sabtu 07 November 2026, pukul 08.00 sampai 15.00 WIB.',
+    withSummary:
+      'Kami tunggu {nama anak} dan {jumlah hadir} orang di open house pada Sabtu 07 November 2026, pukul 08.00 sampai 15.00 WIB.',
+    withoutSummary:
+      'Kami tunggu Bapak dan Ibu di open house pada Sabtu 07 November 2026, pukul 08.00 sampai 15.00 WIB.',
     nextSteps: {
       joinWa: 'Gabung WhatsApp Open House',
-      waChannelNote:
-        'Saluran ini satu arah, nomor Bapak atau Ibu tidak terlihat oleh orang lain.',
+      waChannelNote: 'Saluran ini satu arah, nomor Bapak atau Ibu tidak terlihat oleh orang lain.',
       waGroupNote:
         'Di grup, anggota lain dapat melihat nomor Bapak atau Ibu. Bergabung bersifat pilihan.',
       addCalendar: 'Tambah ke kalender',
@@ -174,6 +203,7 @@ export const content = {
   },
 
   waMessage: {
-    greeting: 'Assalamualaikum {sapaan}. Kami dari panitia Open House SMKIT As Syifa Boarding School. Terima kasih sudah mendaftarkan {nama anak}. Kami ingin memastikan data pendaftaran dan membantu jika ada yang ingin ditanyakan. Apakah ada yang bisa kami bantu?',
+    greeting:
+      'Assalamualaikum {sapaan}. Kami dari panitia Open House SMKIT As Syifa Boarding School. Terima kasih sudah mendaftarkan {nama anak}. Kami ingin memastikan data pendaftaran dan membantu jika ada yang ingin ditanyakan. Apakah ada yang bisa kami bantu?',
   },
 };

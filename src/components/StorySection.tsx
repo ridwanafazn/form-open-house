@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import {
   LazyMotion,
   domAnimation,
@@ -13,12 +13,6 @@ const stories = content.home.story;
 
 export default function StorySection() {
   const prefersReduced = useReducedMotion();
-
-  // Sembunyikan fallback statis saat island ini mount
-  useEffect(() => {
-    const el = document.getElementById('story-static');
-    if (el) el.style.display = 'none';
-  }, []);
 
   return (
     <LazyMotion features={domAnimation}>
@@ -61,22 +55,17 @@ function ScrollScene({
   });
 
   // Nomor adegan: geser ke atas saat scroll
-  const numY = useTransform(
-    scrollYProgress,
-    [0, 1],
-    prefersReduced ? [0, 0] : [-16, 16],
-  );
+  const numY = useTransform(scrollYProgress, [0, 1], prefersReduced ? [0, 0] : [-16, 16]);
   // Teks: geser lebih lambat (parallax ringan)
-  const textY = useTransform(
-    scrollYProgress,
-    [0, 1],
-    prefersReduced ? [0, 0] : [-8, 8],
-  );
+  const textY = useTransform(scrollYProgress, [0, 1], prefersReduced ? [0, 0] : [-8, 8]);
 
   const isEven = index % 2 === 0;
 
   return (
-    <div ref={ref} className={`story-scene story-scene--scroll ${isEven ? '' : 'story-scene--flip'}`}>
+    <div
+      ref={ref}
+      className={`story-scene story-scene--scroll ${isEven ? '' : 'story-scene--flip'}`}
+    >
       <m.div className="story-scene__num" style={{ y: numY }}>
         {String(index + 1).padStart(2, '0')}
       </m.div>

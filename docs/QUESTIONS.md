@@ -13,6 +13,15 @@ Agent menulis di sini setiap kali memakai nilai bawaan, menemukan hal yang tidak
 
 Prettier bawaan tidak punya parser untuk `.astro`; biasanya ditangani `prettier-plugin-astro`. Plugin itu tidak ada dalam daftar izin di `docs/TRD.md`. Sesuai AGENTS.md butir 6, saya tidak menambah paket itu dan mengecualikan `src/**/*.astro` dari prettier lewat `.prettierignore`. Pemilik proyek boleh mengizinkan plugin ini jika ingin .astro ikut terformat.
 
+## Q07 paket `leaflet` untuk peta halaman utama (2026-10-24)
+
+Atas permintaan langsung pemilik proyek ("sajikan maps lebih clean dan dewasa dengan leaflet js map"), iframe Google Maps di bagian info acara diganti peta Leaflet: paket `leaflet@1.9.4` (dan `@types/leaflet` sebagai devDependency) ditambahkan di luar daftar izin `docs/TRD.md`. Peta memakai tile OpenStreetMap, CSS Leaflet di-bundle lewat `import 'leaflet/dist/leaflet.css'`, dan CSP `img-src` diperluas dengan `https://*.tile.openstreetmap.org`. `frame-src` Google dihapus karena tidak ada lagi iframe. Peta diinisialisasi malas (IntersectionObserver) agar tidak membebani pemuatan awal.
+
+## Q08 koordinat kampus untuk peta (2026-10-24)
+
+`eventConfig.mapsLat = -6.660045` dan `mapsLng = 107.73521` diambil dari data tempat publik untuk alamat `Jalan Kumpay Kasomalang RT.006/RW.002, Kumpay, Jalancagak` — sama dengan alamat resmi di `eventConfig.locationAddress`. Mohon diverifikasi pemilik; bila pin kurang tepat, cukup ubah dua nilai ini di `src/config/event.ts`.
+
+
 ## Q03 halaman pratinjau sketsa memakai nama `doodles.astro`, bukan `_doodles.astro` (2026-10-20)
 
 T04 meminta halaman sementara bernama `src/pages/_doodles.astro`, tetapi Astro mengabaikan berkas di `src/pages` yang diawali garis bawah, sehingga halaman itu tidak ikut di-build. Agar pratinjau sketsa benar-benar tampil, berkas saya beri nama `src/pages/doodles.astro` (tanpa garis bawah). Halaman ini dihapus di tugas berikutnya setelah sketsa terpasang di hero.

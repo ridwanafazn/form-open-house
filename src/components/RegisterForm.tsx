@@ -96,7 +96,8 @@ export default function RegisterForm() {
     setErrors({});
     setStatus('sending');
 
-    const device = window.innerWidth < 768 ? 'mobile' : window.innerWidth < 1024 ? 'tablet' : 'desktop';
+    const device =
+      window.innerWidth < 768 ? 'mobile' : window.innerWidth < 1024 ? 'tablet' : 'desktop';
     const tracking = trackingForSubmit();
     const payload = {
       child_name: r.value.child_name,
@@ -185,26 +186,62 @@ export default function RegisterForm() {
               exit={{ opacity: 0, x: -8 }}
               transition={{ duration: 0.25 }}
             >
-              <input type="text" hidden aria-hidden="true" tabIndex={-1} autoComplete="off" value={fields.website} onChange={(e) => set('website', e.target.value)} />
+              <input
+                type="text"
+                hidden
+                aria-hidden="true"
+                tabIndex={-1}
+                autoComplete="off"
+                value={fields.website}
+                onChange={(e) => set('website', e.target.value)}
+              />
 
               <div className="field">
-                <label htmlFor="f-child_name">{stepOne[0].label} <span className="req" aria-hidden="true">*</span></label>
-                <input id="f-child_name" name="child_name" value={fields.child_name}
-                  onChange={(e) => set('child_name', e.target.value)} placeholder={stepOne[0].helper} />
+                <label htmlFor="f-child_name">
+                  {stepOne[0].label}{' '}
+                  <span className="req" aria-hidden="true">
+                    *
+                  </span>
+                </label>
+                <input
+                  id="f-child_name"
+                  name="child_name"
+                  value={fields.child_name}
+                  onChange={(e) => set('child_name', e.target.value)}
+                  placeholder={stepOne[0].helper}
+                />
                 {errorFor('child_name') && <p className="err">{errorFor('child_name')}</p>}
               </div>
 
               <div className="field">
-                <label htmlFor="f-parent_phone">{stepOne[1].label} <span className="req" aria-hidden="true">*</span></label>
-                <input id="f-parent_phone" name="parent_phone" type="tel" inputMode="tel" autoComplete="tel"
-                  value={fields.parent_phone} onChange={(e) => set('parent_phone', e.target.value)} placeholder={stepOne[1].helper} />
+                <label htmlFor="f-parent_phone">
+                  {stepOne[1].label}{' '}
+                  <span className="req" aria-hidden="true">
+                    *
+                  </span>
+                </label>
+                <input
+                  id="f-parent_phone"
+                  name="parent_phone"
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  value={fields.parent_phone}
+                  onChange={(e) => set('parent_phone', e.target.value)}
+                  placeholder={stepOne[1].helper}
+                />
                 {errorFor('parent_phone') && <p className="err">{errorFor('parent_phone')}</p>}
               </div>
 
               <div className="field">
                 <label htmlFor="f-parent_name">{stepOne[2].label}</label>
-                <input id="f-parent_name" name="parent_name" value={fields.parent_name}
-                  onChange={(e) => set('parent_name', e.target.value)} placeholder={stepOne[2].helper} />
+                <input
+                  id="f-parent_name"
+                  name="parent_name"
+                  value={fields.parent_name}
+                  onChange={(e) => set('parent_name', e.target.value)}
+                  placeholder={stepOne[2].helper}
+                />
                 {errorFor('parent_name') && <p className="err">{errorFor('parent_name')}</p>}
               </div>
 
@@ -223,23 +260,57 @@ export default function RegisterForm() {
               <fieldset className="field">
                 <legend>{stepTwo[0].label}</legend>
                 <div className="stepper">
-                  <button type="button" aria-label="Kurangi jumlah" onClick={() => set('attendee_count', Math.max(1, fields.attendee_count - 1))}>-</button>
+                  <button
+                    type="button"
+                    aria-label="Kurangi jumlah"
+                    onClick={() => set('attendee_count', Math.max(1, fields.attendee_count - 1))}
+                  >
+                    -
+                  </button>
                   <span className="stepper__value">{fields.attendee_count}</span>
-                  <button type="button" aria-label="Tambah jumlah" onClick={() => set('attendee_count', Math.min(10, fields.attendee_count + 1))}>+</button>
+                  <button
+                    type="button"
+                    aria-label="Tambah jumlah"
+                    onClick={() => set('attendee_count', Math.min(10, fields.attendee_count + 1))}
+                  >
+                    +
+                  </button>
                 </div>
                 <p className="hint">{stepTwo[0].helper}</p>
                 {errorFor('attendee_count') && <p className="err">{errorFor('attendee_count')}</p>}
               </fieldset>
 
               <div className="field">
-                <label htmlFor="f-city">{stepTwo[1].label} <span className="req" aria-hidden="true">*</span></label>
-                <input id="f-city" name="city" value={fields.city} onChange={(e) => set('city', e.target.value)} placeholder={stepTwo[1].example} />
+                <label htmlFor="f-city">
+                  {stepTwo[1].label}{' '}
+                  <span className="req" aria-hidden="true">
+                    *
+                  </span>
+                </label>
+                <input
+                  id="f-city"
+                  name="city"
+                  value={fields.city}
+                  onChange={(e) => set('city', e.target.value)}
+                  placeholder={stepTwo[1].example}
+                />
                 {errorFor('city') && <p className="err">{errorFor('city')}</p>}
               </div>
 
               <div className="field">
-                <label htmlFor="f-school">{stepTwo[2].label} <span className="req" aria-hidden="true">*</span></label>
-                <input id="f-school" name="school" value={fields.school} onChange={(e) => set('school', e.target.value)} placeholder={stepTwo[2].example} />
+                <label htmlFor="f-school">
+                  {stepTwo[2].label}{' '}
+                  <span className="req" aria-hidden="true">
+                    *
+                  </span>
+                </label>
+                <input
+                  id="f-school"
+                  name="school"
+                  value={fields.school}
+                  onChange={(e) => set('school', e.target.value)}
+                  placeholder={stepTwo[2].example}
+                />
                 {errorFor('school') && <p className="err">{errorFor('school')}</p>}
               </div>
 
@@ -254,7 +325,9 @@ export default function RegisterForm() {
                         type="button"
                         aria-pressed={fields.interest_major === val}
                         className={fields.interest_major === val ? 'chip chip--on' : 'chip'}
-                        onClick={() => set('interest_major', fields.interest_major === val ? '' : val)}
+                        onClick={() =>
+                          set('interest_major', fields.interest_major === val ? '' : val)
+                        }
                       >
                         {label}
                       </button>
@@ -266,7 +339,11 @@ export default function RegisterForm() {
 
               <div className="field">
                 <label className="consent">
-                  <input type="checkbox" checked={fields.consent_wa} onChange={(e) => set('consent_wa', e.target.checked)} />
+                  <input
+                    type="checkbox"
+                    checked={fields.consent_wa}
+                    onChange={(e) => set('consent_wa', e.target.checked)}
+                  />
                   <span>{consent.text}</span>
                 </label>
                 <a href={consent.linkHref}>{consent.linkText}</a>
@@ -276,10 +353,18 @@ export default function RegisterForm() {
               {submitError && <p className="err submit-err">{submitError}</p>}
 
               <div className="actions">
-                <button type="button" className="button button--secondary" onClick={() => setStep(1)}>
+                <button
+                  type="button"
+                  className="button button--secondary"
+                  onClick={() => setStep(1)}
+                >
                   {buttons.back}
                 </button>
-                <button type="submit" className="button button--primary" disabled={status === 'sending'}>
+                <button
+                  type="submit"
+                  className="button button--primary"
+                  disabled={status === 'sending'}
+                >
                   {status === 'sending' ? buttons.submitting : buttons.submit}
                 </button>
               </div>
@@ -291,36 +376,38 @@ export default function RegisterForm() {
       <style>{`
         .form { display: flex; flex-direction: column; gap: var(--space-6); }
         .progress { display: flex; gap: var(--space-6); list-style: none; padding: 0; margin: 0; }
-        .progress li { color: var(--ink-soft); }
-        .progress li.active { color: var(--ink); font-weight: 600; }
+        .progress li { color: var(--ink-soft); font-family: var(--font-heading); font-size: 0.85rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+        .progress li.active { color: var(--ink); }
         .progress li.done { color: var(--teal-dark); }
         .field { display: flex; flex-direction: column; gap: var(--space-1); }
-        .field label { font-style: italic; }
+        .field label { font-weight: 600; }
         .req { color: var(--maroon); }
         .field input, .field select {
           width: 100%; min-height: 44px; padding: var(--space-2) 0;
-          border: 0; border-bottom: var(--line) solid var(--ink);
+          border: 0; border-bottom: var(--line) solid var(--paper-grid);
           background: transparent; font-size: 1rem;
         }
-        .field input:focus { outline: none; border-bottom-color: var(--teal-dark); }
+        .field input:focus { outline: none; border-bottom-color: var(--teal); }
         .err { color: var(--error); font-size: 0.9rem; }
         .hint { color: var(--ink-soft); font-size: 0.9rem; margin: 0; }
         .submit-err { margin: 0; }
         .stepper { display: flex; align-items: center; gap: var(--space-4); }
         .stepper button {
           width: 44px; height: 44px; border: var(--line) solid var(--ink);
-          border-radius: var(--radius); background: var(--paper); font-size: 1.2rem; cursor: pointer;
+          border-radius: 999px; background: transparent; font-size: 1.2rem; cursor: pointer;
         }
-        .stepper__value { min-width: 28px; text-align: center; font-size: 1.2rem; }
+        .stepper button:hover { border-color: var(--teal-dark); color: var(--teal-dark); }
+        .stepper__value { min-width: 28px; text-align: center; font-size: 1.2rem; font-weight: 700; }
         .chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
         .chip {
-          min-height: 44px; padding: var(--space-2) var(--space-4);
-          border: var(--line) solid var(--ink); border-radius: var(--radius);
-          background: var(--paper); cursor: pointer;
+          min-height: 44px; padding: var(--space-2) var(--space-6);
+          border: var(--line) solid var(--paper-grid); border-radius: 999px;
+          background: #ffffff; cursor: pointer; font-weight: 600;
         }
-        .chip--on { background: var(--teal-pale); border-color: var(--teal-dark); color: var(--teal-dark); }
+        .chip:hover { border-color: var(--teal); }
+        .chip--on { background: var(--teal-dark); border-color: var(--teal-dark); color: #ffffff; }
         .consent { display: flex; gap: var(--space-2); align-items: flex-start; font-style: normal; }
-        .consent input { width: auto; margin-top: 4px; }
+        .consent input { width: auto; margin-top: 4px; accent-color: var(--teal-dark); }
         .form-notice { max-width: 46ch; }
         .actions { display: flex; gap: var(--space-3); flex-wrap: wrap; }
         @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }

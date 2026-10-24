@@ -7,125 +7,159 @@ const p = content.privacy;
 const deleteWa = `https://wa.me/${eventConfig.admissionWhatsApp}?text=${encodeURIComponent(
   'Halo tim Admisi, saya ingin meminta penghapusan data pendaftaran Open House saya.'
 )}`;
+
+const rows: Array<[string, string]> = [
+  ['Pengelola data', p.collector],
+  ['Data yang dikumpulkan', p.dataCollected],
+  ['Tujuan penggunaan', p.purpose],
+  ['Akses data', p.viewers],
+  ['Lama penyimpanan', p.storageDuration],
+  ['Distribusi pihak ketiga', p.noSharing],
+];
 ---
 
 <Base title="Kebijakan Privasi | Open House SMKIT As-Syifa">
-  <!-- Hapus background warna di sini agar background grid bawaan Base.astro turun merata -->
-  <main class="min-h-screen pt-12 pb-24 text-gray-800 font-sans">
-    <div class="max-w-6xl mx-auto px-6 md:px-12 lg:px-16 lg:grid lg:grid-cols-12 lg:gap-16">
+  <main class="privacy container">
+    <header class="privacy__head">
+      <p class="privacy__kicker">Transparansi</p>
+      <h1>Kebijakan Privasi</h1>
+      <p class="privacy__lede">
+        Kami menghargai privasi Anda. Ringkasan ini menjelaskan bagaimana kami
+        mengelola data pendaftaran Open House secara aman dan terbatas pada
+        keperluannya.
+      </p>
+    </header>
 
-      <!-- KIRI: Header & Navigasi -->
-      <aside class="lg:col-span-4 mb-10 lg:mb-0 lg:sticky lg:top-28 h-fit">
-        <a href="/" class="inline-flex items-center text-sm font-semibold text-teal-700 hover:text-teal-900 bg-teal-50/80 hover:bg-teal-100 px-5 py-2.5 rounded-full transition-all mb-8 border border-teal-100 backdrop-blur-sm group">
-          <svg class="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-          Kembali
-        </a>
-        
-        <!-- Menggunakan class !important untuk mencegah override dari CSS global -->
-        <h1 class="!text-4xl md:!text-5xl !font-bold text-gray-900 tracking-tight leading-tight mb-4">
-          Kebijakan Privasi
-        </h1>
-        <p class="text-gray-600 text-base leading-relaxed">
-          Dokumen transparansi pengelolaan data pendaftaran Open House {p.collector}.
+    <dl class="privacy-table">
+      {rows.map(([term, value]) => (
+        <div class="privacy-row">
+          <dt>{term}</dt>
+          <dd>{value}</dd>
+        </div>
+      ))}
+    </dl>
+
+    <div class="privacy-delete">
+      <div>
+        <h2>Hak penghapusan data</h2>
+        <p>
+          Anda berhak meminta kami menghapus seluruh data pendaftaran Anda dari
+          sistem kami secara permanen.
         </p>
-      </aside>
-
-      <!-- KANAN: Konten Utama -->
-      <div class="lg:col-span-8 flex flex-col gap-6">
-        
-        <!-- Kartu Intro -->
-        <div class="bg-white/80 backdrop-blur-md p-6 md:p-8 rounded-3xl border border-gray-200/60 shadow-sm">
-          <p class="text-lg text-gray-700 leading-relaxed">
-            Kami menghargai privasi Anda. Ringkasan di bawah ini menjelaskan bagaimana kami mengelola data pendaftaran secara aman dan transparan.
-          </p>
-        </div>
-
-        <!-- KOTAK TABEL PRIVASI -->
-        <div class="bg-white/90 backdrop-blur-md rounded-3xl overflow-hidden border border-gray-200/60 shadow-sm">
-          
-          <!-- Baris 1 -->
-          <div class="grid grid-cols-1 md:grid-cols-12 border-b border-gray-100 last:border-0 hover:bg-gray-50/50 transition-colors">
-            <!-- Tag H2 diganti DIV agar tidak hancur oleh CSS Global -->
-            <div class="md:col-span-4 p-5 md:p-6 md:border-r border-gray-100 flex items-start">
-              <div class="!text-xs !font-bold text-teal-800 uppercase tracking-widest">Pengelola Data</div>
-            </div>
-            <div class="md:col-span-8 p-5 md:p-6 flex items-start">
-              <p class="text-gray-700 leading-relaxed text-sm md:text-base">{p.collector}</p>
-            </div>
-          </div>
-
-          <!-- Baris 2 -->
-          <div class="grid grid-cols-1 md:grid-cols-12 border-b border-gray-100 last:border-0 hover:bg-gray-50/50 transition-colors">
-            <div class="md:col-span-4 p-5 md:p-6 md:border-r border-gray-100 flex items-start">
-              <div class="!text-xs !font-bold text-teal-800 uppercase tracking-widest">Data yang dikumpulkan</div>
-            </div>
-            <div class="md:col-span-8 p-5 md:p-6 flex items-start">
-              <p class="text-gray-700 leading-relaxed text-sm md:text-base">{p.dataCollected}</p>
-            </div>
-          </div>
-
-          <!-- Baris 3 -->
-          <div class="grid grid-cols-1 md:grid-cols-12 border-b border-gray-100 last:border-0 hover:bg-gray-50/50 transition-colors">
-            <div class="md:col-span-4 p-5 md:p-6 md:border-r border-gray-100 flex items-start">
-              <div class="!text-xs !font-bold text-teal-800 uppercase tracking-widest">Tujuan penggunaan</div>
-            </div>
-            <div class="md:col-span-8 p-5 md:p-6 flex items-start">
-              <p class="text-gray-700 leading-relaxed text-sm md:text-base">{p.purpose}</p>
-            </div>
-          </div>
-
-          <!-- Baris 4 -->
-          <div class="grid grid-cols-1 md:grid-cols-12 border-b border-gray-100 last:border-0 hover:bg-gray-50/50 transition-colors">
-            <div class="md:col-span-4 p-5 md:p-6 md:border-r border-gray-100 flex items-start">
-              <div class="!text-xs !font-bold text-teal-800 uppercase tracking-widest">Akses data</div>
-            </div>
-            <div class="md:col-span-8 p-5 md:p-6 flex items-start">
-              <p class="text-gray-700 leading-relaxed text-sm md:text-base">{p.viewers}</p>
-            </div>
-          </div>
-
-          <!-- Baris 5 -->
-          <div class="grid grid-cols-1 md:grid-cols-12 border-b border-gray-100 last:border-0 hover:bg-gray-50/50 transition-colors">
-            <div class="md:col-span-4 p-5 md:p-6 md:border-r border-gray-100 flex items-start">
-              <div class="!text-xs !font-bold text-teal-800 uppercase tracking-widest">Lama penyimpanan</div>
-            </div>
-            <div class="md:col-span-8 p-5 md:p-6 flex items-start">
-              <p class="text-gray-700 leading-relaxed text-sm md:text-base">{p.storageDuration}</p>
-            </div>
-          </div>
-
-          <!-- Baris 6 -->
-          <div class="grid grid-cols-1 md:grid-cols-12 border-b border-gray-100 last:border-0 hover:bg-gray-50/50 transition-colors">
-            <div class="md:col-span-4 p-5 md:p-6 md:border-r border-gray-100 flex items-start">
-              <div class="!text-xs !font-bold text-teal-800 uppercase tracking-widest">Distribusi pihak ketiga</div>
-            </div>
-            <div class="md:col-span-8 p-5 md:p-6 flex items-start">
-              <p class="text-gray-700 leading-relaxed text-sm md:text-base">{p.noSharing}</p>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- Kartu Call to Action: Penghapusan Data -->
-        <div class="mt-4 flex flex-col md:flex-row md:items-center justify-between p-6 md:p-8 border border-red-100/50 bg-red-50/30 rounded-3xl shadow-sm gap-6">
-          <div class="flex-1">
-            <div class="!text-sm !font-bold text-red-800 mb-2">HAK PENGHAPUSAN DATA</div>
-            <p class="text-sm text-gray-700 leading-relaxed">
-              Anda berhak meminta kami menghapus seluruh data pendaftaran Anda dari sistem kami secara permanen.
-            </p>
-          </div>
-          <a
-            href={deleteWa}
-            rel="noopener noreferrer"
-            target="_blank"
-            class="shrink-0 inline-flex items-center justify-center px-6 py-3 bg-white border border-gray-200 text-gray-800 hover:text-red-700 hover:border-red-200 font-semibold rounded-2xl transition-all shadow-sm"
-          >
-            <svg class="w-5 h-5 mr-3 text-green-500" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
-            Hubungi Admisi
-          </a>
-        </div>
-
       </div>
+      <a href={deleteWa} rel="noopener noreferrer" target="_blank" class="button button--secondary">
+        Hubungi Admisi
+      </a>
     </div>
+
+    <p class="privacy__back"><a href="/">Kembali ke halaman utama</a></p>
   </main>
 </Base>
+
+<style>
+  .privacy {
+    max-width: 760px;
+    padding-block: var(--space-12) var(--space-16);
+  }
+
+  .privacy__head {
+    margin-bottom: var(--space-8);
+  }
+
+  .privacy__kicker {
+    color: var(--teal-dark);
+    font-family: var(--font-heading);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .privacy__head h1 {
+    margin-top: var(--space-2);
+  }
+
+  .privacy__lede {
+    max-width: 52ch;
+    margin-top: var(--space-4);
+    color: var(--ink-soft);
+    font-size: 1.05rem;
+  }
+
+  .privacy-table {
+    margin: 0;
+    border: 1px solid var(--paper-grid);
+    border-radius: 16px;
+    background: #ffffff;
+    overflow: hidden;
+  }
+
+  .privacy-row {
+    display: grid;
+    gap: var(--space-1) var(--space-6);
+    padding: var(--space-4) var(--space-6);
+    border-top: 1px solid var(--paper-grid);
+  }
+
+  .privacy-row:first-child {
+    border-top: 0;
+  }
+
+  .privacy-row dt {
+    color: var(--teal-dark);
+    font-family: var(--font-heading);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .privacy-row dd {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
+  @media (min-width: 640px) {
+    .privacy-row {
+      grid-template-columns: 220px 1fr;
+      align-items: baseline;
+    }
+  }
+
+  .privacy-delete {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    margin-top: var(--space-6);
+    padding: var(--space-6);
+    border: 1px solid var(--paper-grid);
+    border-left: 4px solid var(--maroon);
+    border-radius: 16px;
+    background: var(--paper-card);
+  }
+
+  @media (min-width: 640px) {
+    .privacy-delete {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  .privacy-delete h2 {
+    font-size: 1.05rem;
+    margin-bottom: var(--space-1);
+  }
+
+  .privacy-delete p {
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+    max-width: 48ch;
+  }
+
+  .privacy__back {
+    margin-top: var(--space-8);
+    font-size: 0.9rem;
+  }
+</style>

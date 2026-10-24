@@ -2,92 +2,164 @@
 import { eventConfig } from '../config/event';
 import { content } from '../config/content';
 
-const words = content.home.hero.title.split(' ');
+const hero = content.home.hero;
+// Dua kata pertama ("Open House") mendapat blok warna ala plakat.
+const highlightCount = 2;
+const words = hero.title.split(' ');
 ---
 
 <section class="hero" id="hero">
   <div class="container hero__inner">
+    <p class="hero__kicker">{hero.kicker}</p>
     <h1 class="hero__title">
       {words.map((word, i) => (
-        <span class="hero__word" style={`--i:${i}`}>{word}</span>
+        <span
+          class={`hero__word${i < highlightCount ? ' hero__word--hl' : ''}`}
+          style={`--i:${i}`}
+        >{word}</span>
       ))}
     </h1>
-    <p class="hero__tagline">{content.home.hero.tagline}</p>
-    <p class="hero__info">{eventConfig.dateText}, {eventConfig.startTime} sampai {eventConfig.endTime} WIB, Jalancagak, Subang. Gratis.</p>
-    <a class="button button--primary hero__cta" href="#form">{content.home.hero.cta}</a>
+    <p class="hero__tagline">{hero.tagline}</p>
+
+    <ul class="hero__chips" role="list">
+      <li class="hero__chip">{eventConfig.dateText}</li>
+      <li class="hero__chip">{eventConfig.startTime}&ndash;{eventConfig.endTime} WIB</li>
+      <li class="hero__chip">Jalancagak, Subang</li>
+      <li class="hero__chip hero__chip--gold">Gratis</li>
+    </ul>
+
+    <a class="button button--primary hero__cta" href="#form">{hero.cta}</a>
+    <p class="hero__cta-note">{hero.ctaNote}</p>
   </div>
 </section>
 
 <style>
   .hero {
     position: relative;
-    min-height: min(620px, calc(100vh - 88px));
     display: grid;
     align-items: center;
-    margin-inline: var(--space-4);
-    padding-block: clamp(72px, 12vw, 144px);
-    border: 1px solid var(--teal-dark);
-    border-radius: 24px;
-    background: var(--teal-pale);
+    min-height: min(600px, calc(100vh - 88px));
+    padding-block: clamp(64px, 10vw, 120px);
+    text-align: center;
     overflow: hidden;
   }
 
+  /* Lingkaran garis tipis sebagai penanda taman kampus: datar, tanpa efek. */
   .hero::before,
   .hero::after {
     position: absolute;
     content: '';
     pointer-events: none;
-    border: 1px solid rgba(15, 111, 106, 0.22);
+    border: 1px solid rgba(15, 111, 106, 0.18);
     border-radius: 50%;
   }
 
   .hero::before {
-    width: 360px;
-    height: 360px;
-    right: -130px;
+    width: 380px;
+    height: 380px;
+    right: -140px;
     top: -120px;
   }
 
   .hero::after {
-    width: 220px;
-    height: 220px;
-    right: 80px;
-    bottom: -140px;
+    width: 240px;
+    height: 240px;
+    left: -110px;
+    bottom: -130px;
   }
 
   .hero__inner {
     position: relative;
     z-index: 1;
-    max-width: 900px;
   }
-  .hero__title {
+
+  .hero__kicker {
+    color: var(--teal-dark);
     font-family: var(--font-heading);
-    font-size: clamp(2.2rem, 8vw, 4rem);
-    line-height: 1.05;
-    margin: 0;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
   }
+
+  .hero__title {
+    max-width: 18ch;
+    margin-inline: auto;
+    font-size: clamp(2.4rem, 8vw, 4.6rem);
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+  }
+
   .hero__word {
     display: inline-block;
     overflow: hidden;
-    margin-right: 0.25em;
+    margin-right: 0.22em;
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(14px);
     animation: word-in 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
     animation-delay: calc(var(--i) * 60ms);
   }
+
+  /* Blok warna penuh ala plakat: bidang teal datar, teks putih. */
+  .hero__word--hl {
+    padding: 0 0.18em;
+    background: var(--teal-dark);
+    color: #ffffff;
+    border-radius: 0.12em;
+  }
+
   @keyframes word-in {
     to {
       opacity: 1;
       transform: translateY(0);
     }
   }
+
   .hero__tagline {
-    font-size: 1.25rem;
-    margin-block: var(--space-4);
-  }
-  .hero__info {
+    max-width: 34ch;
+    margin: var(--space-4) auto 0;
     color: var(--ink-soft);
-    margin-block: 0 var(--space-6);
+    font-size: clamp(1.05rem, 2.5vw, 1.3rem);
+  }
+
+  .hero__chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: 0;
+    margin: var(--space-6) 0 0;
+    list-style: none;
+  }
+
+  .hero__chip {
+    padding: 8px 18px;
+    border: 1px solid var(--paper-grid);
+    border-radius: 999px;
+    background: var(--paper-card);
+    font-family: var(--font-heading);
+    font-size: 0.88rem;
+    font-weight: 700;
+  }
+
+  .hero__chip--gold {
+    border-color: var(--gold);
+    background: var(--gold);
+    color: #3d2c0d;
+  }
+
+  .hero__cta {
+    min-width: min(320px, 100%);
+    margin-top: var(--space-6);
+    padding-inline: var(--space-8);
+    min-height: 52px;
+  }
+
+  .hero__cta-note {
+    margin-top: var(--space-3);
+    color: var(--ink-soft);
+    font-size: 0.85rem;
   }
 
   @media (prefers-reduced-motion: reduce) {

@@ -37,6 +37,7 @@
   /* Warna */
   --paper: #f4efe4;
   --paper-grid: #e3dccb;
+  --paper-card: #faf6ec;
   --ink: #22262a;
   --ink-soft: #5b6068;
   --teal: #1b9a94;
@@ -67,6 +68,35 @@
 
   /* Lebar isi */
   --max-width: 1120px;
+}
+
+/* Bahasa desain halaman publik: pil tegas, matte, tanpa gradien/bayangan.
+   Primer teal-gelap agar teks putihnya kontras; sekunder outline ink. */
+.button {
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.button--primary {
+  border-color: var(--teal-dark);
+  background: var(--teal-dark);
+  color: #ffffff;
+}
+
+.button--primary:hover {
+  background: #0c5c58;
+  border-color: #0c5c58;
+}
+
+.button--secondary {
+  border-color: var(--ink);
+  background: transparent;
+  color: var(--ink);
+}
+
+.button--secondary:hover {
+  border-color: var(--teal-dark);
+  color: var(--teal-dark);
 }
 
 /* Reset sederhana */
