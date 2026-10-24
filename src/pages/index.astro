@@ -118,19 +118,36 @@ import 'leaflet/dist/leaflet.css';
     </section>
 
     <footer class="site-footer">
-      <div class="container site-footer__inner">
-        <div>
-          <p class="site-footer__eyebrow">SMKIT As Syifa Boarding School</p>
-          <p>{content.home.footer.text}</p>
+      <div class="container">
+        <div class="site-footer__grid">
+          <div class="site-footer__brand">
+            <img class="site-footer__logo" src="/images/logo.png" alt="Logo SMKIT As Syifa" width="40" height="40" />
+            <div>
+              <p class="site-footer__eyebrow">SMKIT As Syifa Boarding School</p>
+              <p class="site-footer__text">{content.home.footer.text}</p>
+            </div>
+          </div>
+          <nav class="site-footer__col" aria-label="Tautan footer">
+            <p class="site-footer__title">Tautan</p>
+            <a href="/#event-info">Info Acara</a>
+            <a href="/#rundown">Rundown</a>
+            <a href="/#form">Daftar Hadir</a>
+            <a href="/privasi">Kebijakan privasi</a>
+          </nav>
+          <div class="site-footer__col">
+            <p class="site-footer__title">Kontak</p>
+            <p class="site-footer__text">Admisi: {eventConfig.admissionWhatsApp.replace(/^62/, '0')}</p>
+            <a
+              class="button button--primary"
+              href={`https://wa.me/${eventConfig.admissionWhatsApp}?text=${encodeURIComponent('Assalamualaikum. Saya ingin bertanya tentang Open House SMKIT As Syifa.')}`}
+              rel="noopener"
+              target="_blank"
+            >{content.home.footer.cta}</a>
+          </div>
         </div>
-        <div class="site-footer__actions">
-          <a
-            class="button button--primary"
-            href={`https://wa.me/${eventConfig.admissionWhatsApp}?text=${encodeURIComponent('Assalamualaikum. Saya ingin bertanya tentang Open House SMKIT As Syifa.')}`}
-            rel="noopener"
-            target="_blank"
-          >{content.home.footer.cta}</a>
-          <a class="site-footer__legal" href="/privasi">Kebijakan privasi</a>
+        <div class="site-footer__bottom">
+          <p>&copy; 2026 SMKIT As Syifa Boarding School</p>
+          <a href="/privasi">Kebijakan privasi</a>
         </div>
       </div>
     </footer>
@@ -522,24 +539,43 @@ import 'leaflet/dist/leaflet.css';
     max-width: 640px;
   }
 
-  /* --- Footer --- */
+  /* --- Footer: tiga kolom + bar bawah di atas ink gelap --- */
   .site-footer {
     margin-top: var(--space-12);
-    padding-block: var(--space-12);
+    padding-block: var(--space-12) var(--space-6);
     background: var(--ink);
     color: var(--paper);
   }
-  .site-footer__inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  .site-footer__grid {
+    display: grid;
     gap: var(--space-8);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 760px) {
+    .site-footer__grid {
+      grid-template-columns: 2fr 1fr 1fr;
+      align-items: start;
+    }
+  }
+  .site-footer__brand {
+    display: flex;
+    gap: var(--space-4);
+    align-items: flex-start;
+  }
+  .site-footer__logo {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-control);
+    background: #ffffff;
+    padding: 4px;
+    object-fit: contain;
+    flex: none;
   }
   .site-footer p {
-    margin-bottom: var(--space-2);
     color: #dce5df;
   }
   .site-footer__eyebrow {
+    margin-bottom: var(--space-2) !important;
     color: var(--gold) !important;
     font-family: var(--font-heading);
     font-size: 0.78rem;
@@ -547,18 +583,68 @@ import 'leaflet/dist/leaflet.css';
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
-  .site-footer__actions {
+  .site-footer__text {
+    max-width: 42ch;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  .site-footer__col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    align-items: flex-start;
+  }
+  .site-footer__title {
+    margin-bottom: var(--space-2) !important;
+    font-family: var(--font-heading);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .site-footer__col a:not(.button) {
+    color: #dce5df;
+    font-size: 0.95rem;
+    text-decoration: none;
+  }
+  .site-footer__col a:not(.button):hover {
+    color: #ffffff;
+    text-decoration: underline;
+  }
+  /* Primer di atas ink: pil emas agar kontras dengan latar gelap. */
+  .site-footer .button--primary {
+    border-color: var(--gold);
+    background: var(--gold);
+    color: #2d2413;
+  }
+  .site-footer .button--primary:hover {
+    background: #c49a55;
+    border-color: #c49a55;
+  }
+  .site-footer__bottom {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: var(--space-4);
     flex-wrap: wrap;
+    margin-top: var(--space-8);
+    padding-top: var(--space-4);
+    border-top: 1px solid rgba(244, 239, 228, 0.2);
+    font-size: 0.85rem;
   }
-  .site-footer__legal {
+  .site-footer__bottom p {
+    margin: 0;
     color: #dce5df;
-    font-size: 0.875rem;
+  }
+  .site-footer__bottom a {
+    color: #dce5df;
+    text-decoration: none;
+  }
+  .site-footer__bottom a:hover {
+    color: #ffffff;
   }
   @media (max-width: 640px) {
-    .site-footer__inner { align-items: flex-start; flex-direction: column; }
+    .site-footer__bottom { flex-direction: column; align-items: flex-start; }
   }
 
   /* --- CTA menempel (mobile): pil gelap ala tombol primer --- */
