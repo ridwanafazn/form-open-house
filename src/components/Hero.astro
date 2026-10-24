@@ -10,7 +10,6 @@ const words = hero.title.split(' ');
 
 <section class="hero" id="hero">
   <div class="container hero__inner">
-    <p class="hero__kicker">{hero.kicker}</p>
     <h1 class="hero__title">
       {words.map((word, i) => (
         <span
@@ -29,7 +28,6 @@ const words = hero.title.split(' ');
     </ul>
 
     <a class="button button--primary hero__cta" href="#form">{hero.cta}</a>
-    <p class="hero__cta-note">{hero.ctaNote}</p>
   </div>
 </section>
 
@@ -71,15 +69,6 @@ const words = hero.title.split(' ');
   .hero__inner {
     position: relative;
     z-index: 1;
-  }
-
-  .hero__kicker {
-    color: var(--teal-dark);
-    font-family: var(--font-heading);
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
   }
 
   .hero__title {
@@ -154,12 +143,6 @@ const words = hero.title.split(' ');
     margin-top: var(--space-6);
     padding-inline: var(--space-8);
     min-height: 52px;
-  }
-
-  .hero__cta-note {
-    margin-top: var(--space-3);
-    color: var(--ink-soft);
-    font-size: 0.85rem;
   }
 
   @media (prefers-reduced-motion: reduce) {

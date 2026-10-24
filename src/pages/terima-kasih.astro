@@ -21,7 +21,6 @@ const chatAdmisi = `https://wa.me/${eventConfig.admissionWhatsApp}?text=${encode
   <main class="container">
     <section class="ty" aria-labelledby="ty-title">
       <header class="ty__head">
-        <p class="ty__kicker">Pendaftaran berhasil</p>
         <h1 id="ty-title">{content.thankyou.title}</h1>
       </header>
       <ThankYouSummary client:idle />
@@ -67,14 +66,6 @@ const chatAdmisi = `https://wa.me/${eventConfig.admissionWhatsApp}?text=${encode
   }
   .ty__head {
     margin-bottom: var(--space-6);
-  }
-  .ty__kicker {
-    color: var(--teal-dark);
-    font-family: var(--font-heading);
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
   }
   .ty__head h1 {
     margin-top: var(--space-2);

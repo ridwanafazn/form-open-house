@@ -18,7 +18,6 @@ import 'leaflet/dist/leaflet.css';
     <section class="section" id="story" aria-labelledby="story-title">
       <div class="container">
         <header class="section-head">
-          <p class="section-head__kicker">Program acara</p>
           <h2 id="story-title">Apa yang bisa dilihat dan dicoba</h2>
         </header>
         <!-- StorySection sudah di-SSR Astro, jadi konten tampil tanpa JS.
@@ -32,7 +31,6 @@ import 'leaflet/dist/leaflet.css';
     <section class="section section--card" id="incentiv" aria-labelledby="incentiv-title">
       <div class="container">
         <header class="section-head">
-          <p class="section-head__kicker">Insentif pendaftaran</p>
           <h2 id="incentiv-title">{content.home.incentive.heading}</h2>
         </header>
 
@@ -60,7 +58,6 @@ import 'leaflet/dist/leaflet.css';
     <section class="section" id="event-info" aria-labelledby="event-info-title">
       <div class="container">
         <header class="section-head">
-          <p class="section-head__kicker">Waktu dan tempat</p>
           <h2 id="event-info-title">{eventConfig.name}</h2>
         </header>
 
@@ -93,7 +90,6 @@ import 'leaflet/dist/leaflet.css';
     <section class="section section--card" id="rundown" aria-labelledby="rundown-title">
       <div class="container">
         <header class="section-head">
-          <p class="section-head__kicker">Jadwal</p>
           <h2 id="rundown-title">{content.home.rundown.heading}</h2>
           <p class="section-head__tagline">{content.home.rundown.tagline}</p>
         </header>
@@ -114,7 +110,6 @@ import 'leaflet/dist/leaflet.css';
     <section class="section" id="form" aria-labelledby="form-title">
       <div class="container form-wrap">
         <header class="section-head">
-          <p class="section-head__kicker">Pendaftaran hadir</p>
           <h2 id="form-title">{content.home.form.heading}</h2>
           <p class="section-head__tagline">{content.home.form.tagline}</p>
         </header>
@@ -222,20 +217,11 @@ import 'leaflet/dist/leaflet.css';
     padding-block: var(--space-12);
   }
 
-  /* Kepala bagian: kicker kecil di atas judul. */
+  /* Kepala bagian. */
   .section-head {
     max-width: 640px;
     margin: 0 auto var(--space-8);
     text-align: center;
-  }
-
-  .section-head__kicker {
-    color: var(--teal-dark);
-    font-family: var(--font-heading);
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
   }
 
   .section-head h2 {

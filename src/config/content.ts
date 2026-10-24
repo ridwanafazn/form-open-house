@@ -12,52 +12,49 @@ export const content = {
   home: {
     hero: {
       title: 'Open House SMKIT As Syifa',
-      kicker: 'Boarding School · Jalancagak, Subang',
-      tagline: 'Lihat langsung. Coba sendiri. Tanya sepuasnya.',
-      info: 'Sabtu, 07 November 2026 · 08.00–15.00 WIB · Gratis',
-      cta: 'Daftar Hadir Sekarang',
-      ctaNote: 'Tiket masuk dikirim langsung ke WhatsApp Bapak/Ibu.',
+      tagline: 'Datang, lihat langsung, dan coba sendiri.',
+      info: 'Sabtu, 07 November 2026, 08.00 sampai 15.00 WIB, Jalancagak, Subang. Gratis.',
+      cta: 'Daftar Hadir Open House',
     },
 
     story: [
       {
         id: 'jurusan',
-        heading: 'Kenalan dengan jurusannya',
-        text: 'RPL dan DKV dipaparkan langsung di aula — biar anak tahu apa yang dipelajari sebelum memilih.',
+        heading: 'Jurusan',
+        text: 'Dengar langsung pemaparan jurusan RPL dan DKV di aula.',
       },
       {
         id: 'kelas-dan-lab',
-        heading: 'Coba sendiri di lab',
-        text: 'Bukan sekadar lihat lewat pintu. Anak bisa mencoba langsung perangkat lab komputer dan desain.',
+        heading: 'Kelas dan lab',
+        text: 'Lihat ruang belajarnya dan coba sendiri di lab.',
       },
       {
         id: 'asrama',
-        heading: 'Lihat hidup di asrama',
-        text: 'Tur asrama bersama panitia: inilah tempat anak nanti tinggal, belajar, dan beristirahat.',
+        heading: 'Asrama',
+        text: 'Keliling asrama bersama panitia dan lihat tempat anak tinggal dan beristirahat.',
       },
       {
         id: 'konsultasi',
-        heading: 'Tanya langsung, sepuasnya',
-        text: 'Guru dan tim admisi siap di meja konsultasi — mulai dari jurusan, biaya, sampai cara mendaftar.',
+        heading: 'Konsultasi',
+        text: 'Tanyakan langsung kepada guru dan panitia, mulai dari jurusan sampai pendaftaran.',
       },
     ],
 
     incentive: {
-      heading: 'Daftar di hari itu juga, biayanya jauh lebih ringan',
-      text: 'Biaya pendaftaran seleksi normalnya Rp500 ribu. Bapak/Ibu mendaftar langsung saat open house, cukup Rp100 ribu.',
-      laterNote:
-        'Sudah hadir tapi baru mendaftar belakangan? Biayanya Rp300 ribu — masih lebih ringan dari normal.',
-      note: 'Yang dimaksud di sini biaya pendaftaran seleksi, bukan biaya pendidikan.',
+      heading: 'Daftar saat open house, biayanya lebih ringan',
+      text: 'Biaya pendaftaran seleksi normalnya Rp500 ribu. Jika mendaftar langsung saat open house, biayanya Rp100 ribu. Jika hadir tetapi mendaftar belakangan, biayanya Rp300 ribu.',
+      laterNote: 'Jika hadir tetapi mendaftar belakangan, biayanya Rp300 ribu.',
+      note: 'Ini adalah biaya pendaftaran seleksi, bukan biaya pendidikan.',
     },
 
     eventInfo: {
-      openMap: 'Buka di Google Maps',
-      addCalendar: 'Simpan ke kalender',
+      openMap: 'Buka Google Maps',
+      addCalendar: 'Tambah ke kalender',
     },
 
     rundown: {
       heading: 'Susunan Acara',
-      tagline: 'Satu hari penuh, dari sambutan pagi sampai ramah tamah sore.',
+      tagline: 'Jadwal kegiatan open house dari pagi hingga selesai.',
       items: [
         {
           time: '08:00 - 08:30',
@@ -93,14 +90,14 @@ export const content = {
     },
 
     form: {
-      heading: 'Amankan tempat Bapak/Ibu',
-      tagline: 'Dua langkah, kurang dari satu menit. Tiket masuk langsung sampai ke WhatsApp.',
+      heading: 'Daftar hadir',
+      tagline: 'Cukup dua langkah, tidak sampai satu menit.',
       progress: ['Data anak', 'Kehadiran'],
     },
 
     footer: {
-      text: 'Masih ada yang ingin ditanyakan sebelum datang? Admisi kami siap menjawab lewat WhatsApp.',
-      cta: 'Chat Admisi',
+      text: 'Ada pertanyaan sebelum datang? Hubungi admisi lewat WhatsApp.',
+      cta: 'Chat admisi',
     },
   },
 
