@@ -156,51 +156,42 @@ import 'leaflet/dist/leaflet.css';
 </Base>
 
 <script>
-  // Peta Leaflet: inisialisasi malas saat bagian peta pertama kali terlihat,
-  // supaya tidak membebani pemuatan awal halaman.
+  // Peta Leaflet: inisialisasi langsung begitu halaman terbuka. Versi lama
+  // menunggu IntersectionObserver dan di sebagian lingkungan pengamat tidak
+  // pernah memicu sehingga peta tampil kosong (0 tile). Muatan tile kecil,
+  // jadi inisialisasi dini tidak memberatkan.
   import L from 'leaflet';
   import { eventConfig } from '../config/event';
 
   const container = document.getElementById('map');
-  if (container) {
-    const init = () => {
-      const map = L.map(container, {
-        scrollWheelZoom: false,
-        attributionControl: true,
-      }).setView([eventConfig.mapsLat, eventConfig.mapsLng], 15);
+  if (container && !container.classList.contains('leaflet-container')) {
+    const map = L.map(container, {
+      scrollWheelZoom: false,
+      attributionControl: true,
+    }).setView([eventConfig.mapsLat, eventConfig.mapsLng], 15);
 
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      }).addTo(map);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    }).addTo(map);
 
-      const marker = L.circleMarker([eventConfig.mapsLat, eventConfig.mapsLng], {
-        radius: 10,
-        color: '#0f6f6a',
-        weight: 3,
-        fillColor: '#1b9a94',
-        fillOpacity: 1,
-      }).addTo(map);
+    const marker = L.circleMarker([eventConfig.mapsLat, eventConfig.mapsLng], {
+      radius: 10,
+      color: '#0f6f6a',
+      weight: 3,
+      fillColor: '#1b9a94',
+      fillOpacity: 1,
+    }).addTo(map);
 
-      marker.bindPopup(`<strong>${eventConfig.locationName}</strong>`);
-      // Popup terbuka sejak awal supaya lokasi langsung jelas.
-      marker.openPopup();
-    };
+    marker.bindPopup(`<strong>${eventConfig.locationName}</strong>`);
+    // Popup terbuka sejak awal supaya lokasi langsung jelas.
+    marker.openPopup();
 
-    if ('IntersectionObserver' in window) {
-      const seen = new IntersectionObserver(
-        (entries) => {
-          if (entries.some((e) => e.isIntersecting)) {
-            seen.disconnect();
-            init();
-          }
-        },
-        { rootMargin: '200px' },
-      );
-      seen.observe(container);
-    } else {
-      init();
-    }
+    // Pastikan ukuran peta benar setelah layout selesai dan saat viewport
+    // berubah (rotasi ponsel, panel admin terbuka, dsb.).
+    const fit = () => map.invalidateSize();
+    setTimeout(fit, 0);
+    window.addEventListener('resize', fit);
   }
 </script>
 
