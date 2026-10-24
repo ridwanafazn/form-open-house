@@ -225,7 +225,10 @@ import 'leaflet/dist/leaflet.css';
   }
 
   .section-head h2 {
-    margin-top: var(--space-2);
+    margin-top: 0;
+    font-family: var(--font-display);
+    font-weight: 600;
+    text-transform: none;
   }
 
   .section-head__tagline {
@@ -558,7 +561,7 @@ import 'leaflet/dist/leaflet.css';
     .site-footer__inner { align-items: flex-start; flex-direction: column; }
   }
 
-  /* --- CTA menempel (mobile) --- */
+  /* --- CTA menempel (mobile): pil gelap ala tombol primer --- */
   .sticky-cta {
     position: fixed;
     left: var(--space-4);
@@ -569,17 +572,17 @@ import 'leaflet/dist/leaflet.css';
     align-items: center;
     justify-content: center;
     padding: var(--space-3);
-    border: var(--line) solid var(--teal-dark);
+    border: 1px solid var(--ink);
     border-radius: 999px;
-    background: var(--teal-dark);
+    background: var(--ink);
     color: #ffffff;
     text-decoration: none;
     font-weight: 700;
     min-height: 48px;
-    transition: transform 0.06s ease;
+    transition: background 0.2s ease;
   }
-  .sticky-cta:active {
-    transform: translateY(2px);
+  .sticky-cta:hover {
+    background: #3a3f45;
   }
   .sticky-cta.is-hidden {
     display: none;
