@@ -136,13 +136,12 @@ import 'leaflet/dist/leaflet.css';
           </nav>
           <div class="site-footer__col">
             <p class="site-footer__title">Kontak</p>
-            <p class="site-footer__text">Admisi: {eventConfig.admissionWhatsApp.replace(/^62/, '0')}</p>
             <a
-              class="button button--primary"
-              href={`https://wa.me/${eventConfig.admissionWhatsApp}?text=${encodeURIComponent('Assalamualaikum. Saya ingin bertanya tentang Open House SMKIT As Syifa.')}`}
+              class="site-footer__contact"
+              href={`https://wa.me/${eventConfig.admissionWhatsApp}`}
               rel="noopener"
               target="_blank"
-            >{content.home.footer.cta}</a>
+            >Admisi {eventConfig.admissionWhatsApp.replace(/^62/, '0')}</a>
           </div>
         </div>
         <div class="site-footer__bottom">
@@ -243,8 +242,8 @@ import 'leaflet/dist/leaflet.css';
 
   .section-head h2 {
     margin-top: 0;
-    font-family: var(--font-display);
-    font-weight: 600;
+    font-family: var(--font-heading);
+    font-weight: 700;
     text-transform: none;
   }
 
@@ -259,67 +258,55 @@ import 'leaflet/dist/leaflet.css';
     background: var(--paper-card);
   }
 
-  /* --- Adegan cerita --- */
+  /* --- Adegan cerita: panel kartu matte, baris bernomor konsisten --- */
   :global(.story-list) {
     display: flex;
     flex-direction: column;
-    gap: var(--space-8);
+    max-width: 820px;
+    margin-inline: auto;
+    padding: var(--space-2);
+    border: 1px solid var(--paper-grid);
+    border-radius: var(--radius-card);
+    background: #ffffff;
   }
 
   :global(.story-scene) {
     display: grid;
-    grid-template-columns: 4.5rem 1fr;
+    grid-template-columns: 4rem 1fr;
     gap: var(--space-4) var(--space-6);
     align-items: start;
-    padding-block: var(--space-6);
+    padding: var(--space-6);
+  }
+
+  :global(.story-scene + .story-scene) {
     border-top: 1px solid var(--paper-grid);
   }
 
   :global(.story-scene__num) {
     font-family: var(--font-heading);
-    font-size: 2.8rem;
+    font-size: 1.6rem;
     font-weight: 700;
     line-height: 1;
-    color: var(--teal);
-    will-change: transform;
-  }
-
-  /* Nomor adegan genap memakai emas: selang-seling ala plakat. */
-  :global(.story-scene--flip .story-scene__num) {
-    color: var(--gold);
+    color: var(--teal-dark);
   }
 
   :global(.story-scene__heading) {
-    font-size: clamp(1.2rem, 3vw, 1.5rem);
     margin: 0 0 var(--space-2);
+    font-size: clamp(1.2rem, 3vw, 1.5rem);
   }
 
   :global(.story-scene__text) {
     max-width: 52ch;
+    margin: 0;
     color: var(--ink-soft);
     font-size: 1rem;
-    will-change: transform;
   }
 
   @media (min-width: 720px) {
-    :global(.story-list) {
-      gap: 0;
-    }
-
     :global(.story-scene) {
       grid-template-columns: 5rem 1fr;
       gap: var(--space-6);
-      padding-block: var(--space-8);
-    }
-
-    /* Adegan genap: nomor pindah ke kanan lewat arah RTL. */
-    :global(.story-scene--flip) {
-      grid-template-columns: 1fr 5rem;
-      direction: rtl;
-    }
-
-    :global(.story-scene--flip > *) {
-      direction: ltr;
+      padding: var(--space-8);
     }
   }
 
@@ -611,15 +598,16 @@ import 'leaflet/dist/leaflet.css';
     color: #ffffff;
     text-decoration: underline;
   }
-  /* Primer di atas ink: pil emas agar kontras dengan latar gelap. */
-  .site-footer .button--primary {
-    border-color: var(--gold);
-    background: var(--gold);
-    color: #2d2413;
+  .site-footer__contact {
+    color: #dce5df;
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
   }
-  .site-footer .button--primary:hover {
-    background: #c49a55;
-    border-color: #c49a55;
+  .site-footer__contact:hover {
+    color: #ffffff;
+    text-decoration: underline;
   }
   .site-footer__bottom {
     display: flex;

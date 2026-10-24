@@ -245,7 +245,7 @@ export default function RegisterForm() {
                 {errorFor('parent_name') && <p className="err">{errorFor('parent_name')}</p>}
               </div>
 
-              <button type="button" className="button button--primary" onClick={goToTwo}>
+              <button type="button" className="button button--primary form-next" onClick={goToTwo}>
                 {buttons.next}
               </button>
             </m.div>
@@ -397,6 +397,7 @@ export default function RegisterForm() {
         .progress li.done { color: var(--teal-dark); }
         .progress li.done::after { background: var(--teal-dark); }
         .field { display: flex; flex-direction: column; gap: 6px; }
+        .form-next { margin-top: var(--space-4); }
         .field label, .field legend {
           padding: 0; font-weight: 600; font-size: 0.92rem; color: var(--ink);
         }
@@ -426,7 +427,7 @@ export default function RegisterForm() {
         .stepper button:hover { border-color: var(--teal-dark); color: var(--teal-dark); }
         .stepper__value {
           min-width: 44px; text-align: center;
-          font-family: var(--font-display); font-size: 1.5rem; font-weight: 600;
+          font-family: var(--font-heading); font-size: 1.5rem; font-weight: 700;
         }
         /* Selectable chips: same recipe, selected = dark pill like the primary button. */
         .chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }

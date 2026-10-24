@@ -3,20 +3,13 @@ import { eventConfig } from '../config/event';
 import { content } from '../config/content';
 
 const hero = content.home.hero;
-// Two-tone display: "Open House" upright ink, school name italic teal-dark.
-const uprightWords = 2;
 const words = hero.title.split(' ');
-const titleUpright = words.slice(0, uprightWords).join(' ');
-const titleItalic = words.slice(uprightWords).join(' ');
 ---
 
 <section class="hero" id="hero">
   <div class="container hero__inner">
-    <p class="hero__badge"><span class="hero__badge-dot" aria-hidden="true"></span>Boarding School · Jalancagak, Subang</p>
-
     <h1 class="hero__title">
-      <span class="hero__title-upright">{titleUpright}</span>
-      <span class="hero__title-italic">{titleItalic}</span>
+      {words.map((word) => <span>{word}</span>)}
     </h1>
 
     <p class="hero__tagline">{hero.tagline}</p>
@@ -62,52 +55,20 @@ const titleItalic = words.slice(uprightWords).join(' ');
     z-index: 1;
   }
 
-  /* Pil kecil ala referensi: titik + label kapital renggang. */
-  .hero__badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    width: fit-content;
-    margin-inline: auto;
-    padding: 9px 20px;
-    border: 1px solid var(--paper-grid);
-    border-radius: 999px;
-    background: #ffffff;
-    color: var(--ink-soft);
-    font-family: var(--font-heading);
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-  }
-
-  .hero__badge-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--teal-dark);
-  }
-
   .hero__title {
-    max-width: 16ch;
-    margin: var(--space-6) auto 0;
-    font-family: var(--font-display);
-    font-size: clamp(2.6rem, 8vw, 5.2rem);
-    font-weight: 600;
+    max-width: 18ch;
+    margin: 0 auto;
+    font-family: var(--font-heading);
+    font-size: clamp(2.4rem, 8vw, 4.6rem);
+    font-weight: 700;
     line-height: 1.04;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
     text-transform: none;
   }
 
-  .hero__title-upright {
-    display: block;
-    color: var(--ink);
-  }
-
-  .hero__title-italic {
-    display: block;
-    color: var(--teal-dark);
-    font-style: italic;
+  .hero__title span {
+    display: inline-block;
+    margin-inline: 0.12em;
   }
 
   .hero__tagline {
