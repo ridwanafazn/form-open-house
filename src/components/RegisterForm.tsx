@@ -374,42 +374,88 @@ export default function RegisterForm() {
       </form>
 
       <style>{`
-        .form { display: flex; flex-direction: column; gap: var(--space-6); }
-        .progress { display: flex; gap: var(--space-6); list-style: none; padding: 0; margin: 0; }
-        .progress li { color: var(--ink-soft); font-family: var(--font-heading); font-size: 0.85rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
-        .progress li.active { color: var(--ink); }
-        .progress li.done { color: var(--teal-dark); }
-        .field { display: flex; flex-direction: column; gap: var(--space-1); }
-        .field label { font-weight: 600; }
-        .req { color: var(--maroon); }
-        .field input, .field select {
-          width: 100%; min-height: 44px; padding: var(--space-2) 0;
-          border: 0; border-bottom: var(--line) solid var(--paper-grid);
-          background: transparent; font-size: 1rem;
+        /* Card container: white surface + 1px border, matte (doff). */
+        .form {
+          display: flex; flex-direction: column; gap: var(--space-6);
+          padding: var(--space-6);
+          border: 1px solid var(--paper-grid); border-radius: var(--radius-card);
+          background: #ffffff;
         }
-        .field input:focus { outline: none; border-bottom-color: var(--teal); }
-        .err { color: var(--error); font-size: 0.9rem; }
-        .hint { color: var(--ink-soft); font-size: 0.9rem; margin: 0; }
+        /* Segmented progress: label above a filled bar per step. */
+        .progress { display: flex; gap: var(--space-2); list-style: none; padding: 0; margin: 0; }
+        .progress li {
+          flex: 1; position: relative; padding-bottom: 12px;
+          color: var(--ink-soft); font-family: var(--font-heading);
+          font-size: 0.78rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+        }
+        .progress li::after {
+          content: ''; position: absolute; left: 0; right: 0; bottom: 0;
+          height: 4px; border-radius: 999px; background: var(--paper-grid);
+        }
+        .progress li.active { color: var(--ink); }
+        .progress li.active::after { background: var(--teal-dark); }
+        .progress li.done { color: var(--teal-dark); }
+        .progress li.done::after { background: var(--teal-dark); }
+        .field { display: flex; flex-direction: column; gap: 6px; }
+        .field label, .field legend {
+          padding: 0; font-weight: 600; font-size: 0.92rem; color: var(--ink);
+        }
+        .field fieldset { border: 0; padding: 0; margin: 0; }
+        .req { color: var(--maroon); }
+        /* Boxed inputs: 48px tall, 12px radius, white surface, 1px border. */
+        .field input {
+          width: 100%; min-height: 48px; padding: 0 14px;
+          border: 1px solid var(--paper-grid); border-radius: var(--radius-control);
+          background: #ffffff; color: var(--ink); font-size: 1rem;
+          transition: border-color 0.2s ease;
+        }
+        .field input::placeholder { color: var(--ink-soft); opacity: 1; }
+        .field input:focus { outline: none; border-color: var(--teal-dark); }
+        .field:has(.err) input { border-color: var(--error); }
+        .err { color: var(--error); font-size: 0.88rem; margin: 0; }
+        .hint { color: var(--ink-soft); font-size: 0.88rem; margin: 0; }
         .submit-err { margin: 0; }
-        .stepper { display: flex; align-items: center; gap: var(--space-4); }
+        /* Stepper: boxed 44px controls around a large count. */
+        .stepper { display: flex; align-items: center; gap: var(--space-3); }
         .stepper button {
-          width: 44px; height: 44px; border: var(--line) solid var(--ink);
-          border-radius: 999px; background: transparent; font-size: 1.2rem; cursor: pointer;
+          width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center;
+          border: 1px solid var(--paper-grid); border-radius: var(--radius-control);
+          background: #ffffff; font-size: 1.2rem; font-weight: 700; cursor: pointer;
+          transition: border-color 0.2s ease, color 0.2s ease;
         }
         .stepper button:hover { border-color: var(--teal-dark); color: var(--teal-dark); }
-        .stepper__value { min-width: 28px; text-align: center; font-size: 1.2rem; font-weight: 700; }
+        .stepper__value {
+          min-width: 44px; text-align: center;
+          font-family: var(--font-display); font-size: 1.5rem; font-weight: 600;
+        }
+        /* Selectable chips: same recipe, selected = dark pill like the primary button. */
         .chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
         .chip {
           min-height: 44px; padding: var(--space-2) var(--space-6);
-          border: var(--line) solid var(--paper-grid); border-radius: 999px;
-          background: #ffffff; cursor: pointer; font-weight: 600;
+          border: 1px solid var(--paper-grid); border-radius: var(--radius-control);
+          background: #ffffff; cursor: pointer; font-weight: 600; font-size: 0.95rem;
+          transition: border-color 0.2s ease, color 0.2s ease;
         }
-        .chip:hover { border-color: var(--teal); }
-        .chip--on { background: var(--teal-dark); border-color: var(--teal-dark); color: #ffffff; }
-        .consent { display: flex; gap: var(--space-2); align-items: flex-start; font-style: normal; }
-        .consent input { width: auto; margin-top: 4px; accent-color: var(--teal-dark); }
+        .chip:hover { border-color: var(--teal-dark); color: var(--teal-dark); }
+        .chip--on { background: var(--ink); border-color: var(--ink); color: #ffffff; }
+        .chip--on:hover { color: #ffffff; }
+        /* Consent: whole row is a bordered card and the tap target. */
+        .consent {
+          display: flex; gap: var(--space-3); align-items: flex-start;
+          padding: 14px; border: 1px solid var(--paper-grid);
+          border-radius: var(--radius-control); background: #ffffff;
+          cursor: pointer; font-size: 0.92rem; line-height: 1.5;
+        }
+        .consent input { width: 18px; height: 18px; margin: 2px 0 0; flex: none; accent-color: var(--ink); }
+        .form a { color: var(--teal-dark); font-size: 0.9rem; }
         .form-notice { max-width: 46ch; }
         .actions { display: flex; gap: var(--space-3); flex-wrap: wrap; }
+        .actions .button--primary { flex: 1; min-width: 200px; }
+        @media (max-width: 640px) {
+          .form { padding: var(--space-4); }
+          .actions { flex-direction: column-reverse; }
+          .actions .button { width: 100%; }
+        }
         @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
       `}</style>
     </LazyMotion>
