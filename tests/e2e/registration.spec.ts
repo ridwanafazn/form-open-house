@@ -28,6 +28,9 @@ async function fillStepOne(page: Page) {
   await page.locator('#f-child_name').pressSequentially('Budi Santoso', { delay: 20 });
   await page.locator('#f-parent_phone').click();
   await page.locator('#f-parent_phone').pressSequentially('081234567890', { delay: 20 });
+  // Nama orang tua termasuk field wajib di langkah satu.
+  await page.locator('#f-parent_name').click();
+  await page.locator('#f-parent_name').pressSequentially('Ayah Budi', { delay: 20 });
 }
 
 // ---------------------------------------------------------------------------
@@ -56,8 +59,18 @@ async function gotoForm(page: Page) {
   await page.evaluate(() => {
     document.getElementById('form')?.scrollIntoView({ behavior: 'instant', block: 'center' });
   });
-  // Tunggu form hydrate — input nama anak harus bisa diisi
+  // Tunggu form hydrate — input nama anak harus bisa diisi.
   await page.locator('#f-child_name').waitFor({ state: 'visible', timeout: 15000 });
+  // Markup form di-SSR, jadi terlihat sebelum React terpasang. Tunggu sampai
+  // tombol Lanjut punya props React agar klik pertama tidak jatuh ke markup mati.
+  await page.waitForFunction(
+    () => {
+      const button = document.querySelector('.form-next');
+      return !!button && Object.keys(button).some((key) => key.startsWith('__reactProps$'));
+    },
+    undefined,
+    { timeout: 15000 },
+  );
 }
 
 // ===========================================================================
@@ -91,7 +104,10 @@ test('nama anak terlalu pendek menampilkan pesan error', async ({ page }) => {
   await page.fill('#f-parent_phone', '081234567890');
   await page.click('button:has-text("Lanjut")');
 
-  const errMsg = page.locator('.err').filter({ hasText: /nama minimal/i });
+  const errMsg = page
+    .locator('.err')
+    .filter({ hasText: /nama minimal/i })
+    .first();
   await expect(errMsg).toBeVisible();
   await expect(page.locator('button:has-text("Lanjut")')).toBeVisible();
 });

@@ -7,20 +7,56 @@ const admissionHref = `https://wa.me/${eventConfig.admissionWhatsApp}?text=${enc
 
 interface Props {
   adminMode?: boolean;
+  variant?: 'default' | 'landing';
 }
 
-const { adminMode = false } = Astro.props;
+const { adminMode = false, variant = 'default' } = Astro.props;
+const isLanding = variant === 'landing';
 ---
 
-<nav class:list={['floating-nav', { 'floating-nav--admin': adminMode }]} aria-label={adminMode ? 'Navigasi admin' : 'Navigasi utama'}>
+<nav
+  class:list={[
+    'floating-nav',
+    {
+      'floating-nav--admin': adminMode,
+      'floating-nav--gate': isLanding,
+    },
+  ]}
+  data-landing-nav={isLanding ? '' : undefined}
+  aria-label={adminMode ? 'Navigasi admin' : 'Navigasi utama'}
+  aria-hidden={isLanding ? 'true' : undefined}
+  inert={isLanding ? true : undefined}
+>
   <div class="floating-nav__container">
-    <a class="floating-nav__brand" href={adminMode ? '/admin' : '/'} aria-label={adminMode ? 'Halaman admin' : 'Beranda Open House SMKIT As Syifa'}>
-      <img class="floating-nav__logo" src="/images/logo.png" alt="Logo SMKIT As Syifa" width="32" height="32" />
-      <span class="floating-nav__brand-text">{adminMode ? 'Admin Portal' : 'Open House As Syifa'}</span>
+    <a
+      class="floating-nav__brand"
+      href={adminMode ? '/admin' : '/'}
+      aria-label={adminMode ? 'Halaman admin' : 'Beranda Open House SMKIT As Syifa'}
+    >
+      <img
+        class="floating-nav__logo"
+        src="/images/logo.png"
+        alt="Logo SMKIT As Syifa"
+        width="32"
+        height="32"
+      />
+      <span class="floating-nav__brand-text">
+        {adminMode ? 'Admin Portal' : 'Open House As Syifa'}
+      </span>
     </a>
 
-    <button class="floating-nav__toggle" type="button" aria-expanded="false" aria-controls="floating-nav-links" aria-label="Toggle Menu">
-      <span class="floating-nav__toggle-lines" aria-hidden="true"><span></span><span></span><span></span></span>
+    <button
+      class="floating-nav__toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="floating-nav-links"
+      aria-label="Toggle Menu"
+    >
+      <span class="floating-nav__toggle-lines" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
     </button>
 
     <div class="floating-nav__links" id="floating-nav-links">
@@ -31,19 +67,74 @@ const { adminMode = false } = Astro.props;
           <a href="/" class="floating-nav__link">Lihat Situs</a>
           <div class="floating-nav__user-group" id="admin-nav-user" hidden>
             <div class="floating-nav__user">
-              <img class="floating-nav__avatar" id="admin-nav-avatar" src="" alt="Avatar" width="26" height="26" />
+              <img
+                class="floating-nav__avatar"
+                id="admin-nav-avatar"
+                src=""
+                alt="Avatar"
+                width="26"
+                height="26"
+              />
               <span class="floating-nav__user-name" id="admin-nav-name"></span>
             </div>
           </div>
-          <button type="button" class="floating-nav__logout" id="admin-nav-logout">Keluar</button>
+          <button type="button" class="floating-nav__logout" id="admin-nav-logout">
+            Keluar
+          </button>
+        </>
+      ) : isLanding ? (
+        <>
+          <a href="#story" class="floating-nav__link">Fasilitas</a>
+          <a href="#rundown" class="floating-nav__link">Rundown</a>
+          <a
+            class="floating-nav__link"
+            href={admissionHref}
+            rel="noopener"
+            target="_blank"
+          >
+            Admisi
+          </a>
+          <a href="#form" class="floating-nav__link floating-nav__admission">
+            <span>Daftar</span>
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M5 12h14" />
+              <path d="m12 5 7 7-7 7" />
+            </svg>
+          </a>
         </>
       ) : (
         <>
           <a href="/#event-info" class="floating-nav__link">Info Acara</a>
           <a href="/#rundown" class="floating-nav__link">Rundown</a>
-          <a class="floating-nav__link floating-nav__admission" href={admissionHref} rel="noopener" target="_blank">
+          <a
+            class="floating-nav__link floating-nav__admission"
+            href={admissionHref}
+            rel="noopener"
+            target="_blank"
+          >
             <span>Admisi</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M5 12h14" />
+              <path d="m12 5 7 7-7 7" />
+            </svg>
           </a>
         </>
       )}
@@ -52,6 +143,39 @@ const { adminMode = false } = Astro.props;
 </nav>
 
 <script>
+  // Landing navbar: tersembunyi sampai pengunjung melewati 70% tinggi hero.
+  const landingNav = document.querySelector<HTMLElement>('[data-landing-nav]');
+  const hero = document.querySelector<HTMLElement>('[data-hero]');
+
+  if (landingNav) {
+    let frame = 0;
+
+    const syncLandingNav = () => {
+      frame = 0;
+      const triggerHeight = hero ? hero.getBoundingClientRect().height * 0.7 : 0;
+      const visible = !hero || window.scrollY > triggerHeight;
+
+      landingNav.classList.toggle('is-visible', visible);
+      if (visible) {
+        landingNav.removeAttribute('inert');
+        landingNav.removeAttribute('aria-hidden');
+      } else {
+        landingNav.setAttribute('inert', '');
+        landingNav.setAttribute('aria-hidden', 'true');
+      }
+    };
+
+    const requestSync = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(syncLandingNav);
+    };
+
+    syncLandingNav();
+    window.addEventListener('scroll', requestSync, { passive: true });
+    window.addEventListener('resize', requestSync);
+  }
+
+  // Navigasi bawaan untuk halaman non-landing dan panel admin.
   const nav = document.querySelector('.floating-nav');
   const toggle = nav?.querySelector('.floating-nav__toggle');
   const links = nav?.querySelector('.floating-nav__links');
@@ -84,6 +208,8 @@ const { adminMode = false } = Astro.props;
 </script>
 
 <style>
+  /* --- Navigasi landing memakai cangkang yang sama, hanya digerbangi skrip. --- */
+  /* --- Navigasi bawaan: halaman non-landing dan panel admin --- */
   .floating-nav {
     position: fixed;
     z-index: 50;
@@ -97,6 +223,28 @@ const { adminMode = false } = Astro.props;
     border-radius: 16px;
     font-family: 'DM Sans', sans-serif;
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Landing: navbar klasik yang sama, tersembunyi sampai 70% tinggi hero. */
+  .floating-nav--gate {
+    opacity: 0;
+    visibility: hidden;
+    translate: 0 calc(-100% - 32px);
+    pointer-events: none;
+    transition:
+      translate 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 0.25s ease,
+      visibility 0s linear 0.5s;
+  }
+
+  .floating-nav--gate.is-visible {
+    opacity: 1;
+    visibility: visible;
+    translate: 0 0;
+    pointer-events: auto;
+    transition:
+      translate 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 0.25s ease;
   }
 
   .floating-nav :focus-visible {
@@ -204,7 +352,9 @@ const { adminMode = false } = Astro.props;
     height: 2px;
     background: currentColor;
     border-radius: 2px;
-    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+    transition:
+      transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 0.25s ease;
   }
 
   /* Admin mode memakai shell visual yang sama; hanya isi tautannya berbeda. */

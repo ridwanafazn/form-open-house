@@ -12,9 +12,15 @@ interface Props {
   title?: string;
   description?: string;
   adminMode?: boolean;
+  landing?: boolean;
 }
 
-const { title: pageTitle, description: pageDescription, adminMode = false } = Astro.props;
+const {
+  title: pageTitle,
+  description: pageDescription,
+  adminMode = false,
+  landing = false,
+} = Astro.props;
 const finalTitle = pageTitle ? `${pageTitle} - Open House SMKIT As Syifa` : title;
 const finalDescription = pageDescription ?? description;
 ---
@@ -32,8 +38,8 @@ const finalDescription = pageDescription ?? description;
     <meta name="og:type" content="website" />
     <slot name="head" />
   </head>
-  <body class:list={{ 'admin-page': adminMode }}>
-    <FloatingNav adminMode={adminMode} />
+  <body class:list={[{ 'admin-page': adminMode, 'landing-page': landing }]}>
+    <FloatingNav adminMode={adminMode} variant={landing ? 'landing' : 'default'} />
     <slot />
     <script is:inline>
       // Tangkap parameter UTM/fbclid dari URL dan simpan di sessionStorage

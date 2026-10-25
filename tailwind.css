@@ -1,3 +1,21 @@
 @import 'tailwindcss';
 
-/* Tailwind is available for new utility-first components. Existing CSS tokens remain the source of truth. */
+/*
+ * Design tokens for the landing hero and floating navigation.
+ * Palette: Vantablack, Cyan/Teal, Gold.
+ * Typography: Oswald for the oversized display headline, JetBrains Mono for
+ * technical labels. Both fonts are self-hosted in /public/fonts.
+ */
+@theme {
+  --color-paper: #f4efe4;
+  --color-paper-grid: #e3dccb;
+  --color-paper-card: #faf6ec;
+  --color-ink: #22262a;
+  --color-ink-soft: #5b6068;
+  --color-teal-dark: #0f6f6a;
+  --color-syifa-bg: #f4efe4;
+  --color-syifa-teal: #1b9a94;
+  --color-syifa-gold: #d4ac6c;
+  --font-syifa-display: 'Oswald', 'Arial Narrow', sans-serif;
+  --font-tech: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}

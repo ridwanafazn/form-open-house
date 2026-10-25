@@ -1,0 +1,58 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<span class:list={['brackets', className]} aria-hidden="true">
+  <span class="brackets__corner brackets__corner--tl"></span>
+  <span class="brackets__corner brackets__corner--tr"></span>
+  <span class="brackets__corner brackets__corner--bl"></span>
+  <span class="brackets__corner brackets__corner--br"></span>
+</span>
+
+<style>
+  .brackets {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .brackets__corner {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    color: var(--bracket-color, rgba(255, 255, 255, 0.22));
+  }
+
+  .brackets__corner--tl {
+    top: 16px;
+    left: 16px;
+    border-top: 2px solid currentColor;
+    border-left: 2px solid currentColor;
+  }
+
+  .brackets__corner--tr {
+    top: 16px;
+    right: 16px;
+    border-top: 2px solid currentColor;
+    border-right: 2px solid currentColor;
+  }
+
+  .brackets__corner--bl {
+    bottom: 16px;
+    left: 16px;
+    border-bottom: 2px solid currentColor;
+    border-left: 2px solid currentColor;
+  }
+
+  .brackets__corner--br {
+    bottom: 16px;
+    right: 16px;
+    border-bottom: 2px solid currentColor;
+    border-right: 2px solid currentColor;
+  }
+</style>

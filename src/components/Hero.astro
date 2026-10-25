@@ -1,148 +1,404 @@
 ---
 import { eventConfig } from '../config/event';
-import { content } from '../config/content';
+import CornerBrackets from './ui/CornerBrackets.astro';
 
-const hero = content.home.hero;
-const words = hero.title.split(' ');
+const monthLabels = [
+  'JAN',
+  'FEB',
+  'MAR',
+  'APR',
+  'MEI',
+  'JUN',
+  'JUL',
+  'AGU',
+  'SEP',
+  'OKT',
+  'NOV',
+  'DES',
+];
+const [year, month, day] = eventConfig.dateISO.split('-');
+const dateLabel = `${day} ${monthLabels[Number(month) - 1]} ${year}`;
+
+const pillars = [
+  {
+    lines: ['LAB APP DEV', 'DKV TABLET'],
+    tone: 'teal',
+    image: '/images/hero/lab-app-dev.jpg',
+  },
+  {
+    lines: ['ASRAMA DAN', 'ISLAMIC CULTURE'],
+    tone: 'ink',
+    image: '/images/hero/asrama.jpg',
+  },
+  {
+    lines: ['LEADERSHIP DAN', 'EKSTRAKURIKULER'],
+    tone: 'ink',
+    image: '/images/hero/leadership.jpg',
+  },
+  {
+    lines: ['AMBIL', 'TIKET'],
+    tone: 'cta',
+    image: '/images/hero/admission.jpg',
+    href: '#form',
+  },
+];
 ---
 
-<section class="hero" id="hero">
-  <div class="container hero__inner">
-    <h1 class="hero__title">
-      {words.map((word) => <span>{word}</span>)}
-    </h1>
+<section
+  id="hero"
+  data-hero
+  class="hero relative isolate flex h-[100svh] min-h-[650px] flex-col justify-end overflow-hidden bg-paper text-ink"
+>
+  <!-- Header statis: hanya logo dan teks kecil. Tidak ada tautan navigasi. -->
+  <header class="absolute inset-x-0 top-0 z-40 flex items-start justify-between p-6 md:px-12 md:py-8">
+    <a class="hero__brand flex items-start gap-3" href="/" aria-label="Beranda Open House SMKIT As Syifa">
+      <img
+        class="h-9 w-9 object-contain md:h-10 md:w-10"
+        src="/images/logo.png"
+        alt="Logo SMKIT As Syifa"
+        width="40"
+        height="40"
+        fetchpriority="high"
+      />
+      <span
+        class="pt-0.5 font-tech text-[9px] font-bold uppercase leading-tight tracking-[0.2em] text-ink/55 md:text-[10px]"
+      >
+        <span class="block">SMKIT AS SYIFA</span>
+        <span class="block">BOARDING SCHOOL</span>
+      </span>
+    </a>
 
-    <p class="hero__tagline">{hero.tagline}</p>
+    <span class="-skew-x-12 pt-1 font-syifa-display text-xl font-bold tracking-[0.12em] text-ink/80 md:text-2xl">
+      2K26
+    </span>
+  </header>
 
-    <div class="hero__cards">
-      <div class="hero-card">
-        <span class="hero-card__icon" aria-hidden="true">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
-        </span>
-        <span class="hero-card__text">
-          <strong>{eventConfig.dateText}</strong>
-          <small>{eventConfig.startTime} - {eventConfig.endTime} WIB</small>
-        </span>
-      </div>
-      <div class="hero-card">
-        <span class="hero-card__icon" aria-hidden="true">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-        </span>
-        <span class="hero-card__text">
-          <strong>Jalancagak, Subang</strong>
-          <small>SMKIT As Syifa Boarding School</small>
-        </span>
-      </div>
+  <!-- Kubah cahaya: gradasi krem ke teal pucat, menyatu dengan latar kertas. -->
+  <div class="hero__dome" aria-hidden="true"></div>
+  <div class="hero__grid" aria-hidden="true"></div>
+  <div class="hero__top-scrim" aria-hidden="true"></div>
+
+  <div class="absolute inset-x-0 top-[27%] z-10 flex flex-col items-center px-4 md:top-[22%]">
+    <p
+      class="hero__eyebrow hidden max-w-[280px] text-center font-tech text-[11px] font-bold uppercase leading-relaxed tracking-[0.18em] text-ink-soft md:block md:max-w-none md:text-sm"
+    >
+      PAMERAN VOKASI DAN BOARDING ECOSYSTEM
+    </p>
+
+    <div
+      class="mb-2 flex w-full max-w-[320px] justify-between px-2 font-tech text-[9px] font-bold uppercase tracking-[0.18em] md:max-w-5xl md:px-8 md:text-xs"
+    >
+      <span class="text-ink-soft">{dateLabel}</span>
+      <span class="text-teal-dark">AS SYIFA</span>
+      <span class="text-right text-ink-soft">SUBANG JAWA BARAT</span>
     </div>
 
-    <a class="button button--primary hero__cta" href="#form">{hero.cta}</a>
+    <h1 class="hero__title font-syifa-display uppercase">
+      <span>OPEN</span>
+      <span>HOUSE</span>
+    </h1>
+  </div>
+
+  <h2 class="sr-only">Fasilitas open house</h2>
+
+  <!-- Empat pilar: grid 2x2 di HP, empat kolom sejajar di desktop. -->
+  <div
+    class="hero__pillars relative z-20 grid w-full grid-cols-2 border-t border-paper-grid bg-paper-card md:grid-cols-4"
+  >
+    {
+      pillars.map((pillar) => (
+        <article
+          class:list={[
+            'pillar group relative flex flex-col items-center justify-center overflow-hidden p-3 text-center md:p-6',
+            `pillar--${pillar.tone}`,
+          ]}
+        >
+          {pillar.image && (
+            <img
+              class="pillar__image"
+              src={pillar.image}
+              alt=""
+              width="1200"
+              height="800"
+              loading="lazy"
+              decoding="async"
+            />
+          )}
+          <span class="pillar__scrim" aria-hidden="true" />
+          <CornerBrackets />
+          <h3 class:list={['pillar__label', `pillar__label--${pillar.tone}`]}>
+            <span class="block">{pillar.lines[0]}</span>
+            <span class="block">{pillar.lines[1]}</span>
+          </h3>
+          {pillar.href && (
+            <a class="pillar__link" href={pillar.href} aria-label="Ambil tiket open house" />
+          )}
+        </article>
+      ))
+    }
   </div>
 </section>
 
 <style>
-  .hero {
-    position: relative;
-    display: grid;
-    align-items: center;
-    min-height: min(620px, calc(100vh - 88px));
-    padding-block: clamp(64px, 10vw, 110px);
-    text-align: center;
-    overflow: hidden;
+  .hero__brand {
+    text-decoration: none;
   }
 
-  .hero__inner {
-    position: relative;
-    z-index: 1;
+  .hero__brand:focus-visible {
+    outline: 2px solid var(--teal-dark);
+    outline-offset: 4px;
+  }
+
+  .hero__dome {
+    position: absolute;
+    left: 50%;
+    bottom: 38vh;
+    z-index: 0;
+    width: 150vw;
+    height: min(85vw, 48vh);
+    transform: translateX(-50%);
+    border-top: 1px solid rgba(212, 172, 108, 0.55);
+    border-radius: 9999px 9999px 0 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(240, 226, 196, 0.95) 0%,
+      rgba(214, 232, 228, 0.9) 46%,
+      rgba(244, 239, 228, 0) 100%
+    );
+  }
+
+  .hero__grid {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image:
+      linear-gradient(to right, rgba(34, 38, 42, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(34, 38, 42, 0.05) 1px, transparent 1px);
+    background-size: 64px 64px;
+    -webkit-mask-image: radial-gradient(ellipse at 50% 52%, #000 0%, transparent 72%);
+    mask-image: radial-gradient(ellipse at 50% 52%, #000 0%, transparent 72%);
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
+  .hero__top-scrim {
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: 5;
+    height: 132px;
+    background: linear-gradient(
+      to bottom,
+      var(--paper) 0%,
+      rgba(244, 239, 228, 0.82) 46%,
+      rgba(244, 239, 228, 0) 100%
+    );
+    pointer-events: none;
+  }
+
+  .hero__eyebrow {
+    margin: 0 0 32px;
   }
 
   .hero__title {
-    max-width: 18ch;
-    margin: 0 auto;
-    font-family: var(--font-heading);
-    font-size: clamp(2.4rem, 8vw, 4.6rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    color: var(--ink);
+    font-size: min(26vw, 16vh);
     font-weight: 700;
-    line-height: 1.04;
-    letter-spacing: -0.02em;
-    text-transform: none;
+    line-height: 0.78;
+    letter-spacing: -0.045em;
+    transform: skewX(-12deg);
+    transform-origin: center;
   }
 
   .hero__title span {
-    display: inline-block;
-    margin-inline: 0.12em;
+    display: block;
+    white-space: nowrap;
   }
 
-  .hero__tagline {
-    max-width: 36ch;
-    margin: var(--space-4) auto 0;
-    color: var(--ink-soft);
-    font-size: clamp(1.05rem, 2.5vw, 1.25rem);
+  .hero__pillars {
+    height: 40vh;
+    min-height: 280px;
   }
 
-  .hero__cards {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: var(--space-3);
-    margin-top: var(--space-8);
+  .pillar {
+    --bracket-color: rgba(34, 38, 42, 0.3);
+    border-right: 1px solid var(--paper-grid);
+    border-bottom: 1px solid var(--paper-grid);
+    background-color: var(--paper-card);
+    isolation: isolate;
   }
 
-  /* Kartu info ala referensi: tile ikon + judul + keterangan, matte. */
-  .hero-card {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-3);
-    padding: 14px 22px 14px 14px;
-    border: 1px solid var(--paper-grid);
-    border-radius: var(--radius-card);
-    background: #ffffff;
-    text-align: left;
+  .pillar:nth-child(2n) {
+    border-right: 0;
   }
 
-  .hero-card__icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 42px;
-    height: 42px;
-    border-radius: var(--radius-control);
-    background: var(--paper);
-    color: var(--teal-dark);
-    flex: none;
+  .pillar:nth-child(n + 3) {
+    border-bottom: 0;
   }
 
-  .hero-card__text {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+  .pillar__image {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.24;
+    filter: grayscale(100%);
+    transition:
+      opacity 0.5s ease,
+      filter 0.5s ease,
+      transform 0.8s ease;
   }
 
-  .hero-card__text strong {
-    font-family: var(--font-heading);
-    font-size: 0.98rem;
+  .pillar__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: rgba(250, 246, 236, 0.55);
+  }
+
+  .pillar__label {
+    position: relative;
+    z-index: 2;
+    margin: 0;
+    font-family: var(--font-tech);
+    font-size: 9px;
     font-weight: 700;
+    line-height: 1.9;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    transition:
+      color 0.3s ease,
+      text-shadow 0.3s ease;
+  }
+
+  .pillar__label--teal {
+    color: var(--teal-dark);
+  }
+
+  .pillar__label--ink {
     color: var(--ink);
   }
 
-  .hero-card__text small {
-    color: var(--ink-soft);
-    font-size: 0.82rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+  .pillar__label--cta {
+    color: #ffffff;
+    font-size: 11px;
+    letter-spacing: 0.22em;
   }
 
-  .hero__cta {
-    min-width: min(320px, 100%);
-    margin-top: var(--space-8);
-    padding-inline: var(--space-8);
-    min-height: 54px;
+  /* Pilar keempat adalah tombol, bukan lapisan yang menutupi teks pilar lain.
+     Seluruh bidang bisa diklik lewat tautan transparan. */
+  .pillar__link {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    text-decoration: none;
   }
 
-  @media (max-width: 640px) {
-    .hero__cards {
-      flex-direction: column;
-      align-items: stretch;
-      max-width: 360px;
-      margin-inline: auto;
+  .pillar__link:focus-visible {
+    outline: 2px solid var(--teal-dark);
+    outline-offset: -6px;
+  }
+
+  .pillar--cta {
+    --bracket-color: rgba(255, 255, 255, 0.55);
+    background-color: var(--teal-dark);
+  }
+
+  .pillar--cta .pillar__image {
+    opacity: 0.3;
+    filter: grayscale(40%);
+  }
+
+  .pillar--cta .pillar__scrim {
+    background: rgba(15, 111, 106, 0.82);
+  }
+
+  .pillar--cta .pillar__link:focus-visible {
+    outline-color: #ffffff;
+  }
+
+  @media (min-width: 768px) {
+    .hero__dome {
+      bottom: 34vh;
+      width: 100vw;
+      height: min(52vw, 50vh);
+    }
+
+    .hero__title {
+      flex-direction: row;
+      gap: 0.1em;
+      font-size: min(18vw, 28vh);
+      line-height: 0.8;
+    }
+
+    .hero__pillars {
+      height: 35vh;
+      min-height: 320px;
+    }
+
+    .pillar {
+      border-right: 1px solid var(--paper-grid);
+      border-bottom: 0;
+    }
+
+    .pillar:nth-child(2n) {
+      border-right: 1px solid var(--paper-grid);
+    }
+
+    .pillar:last-child {
+      border-right: 0;
+    }
+
+    .pillar__label {
+      font-size: 11px;
+    }
+
+    .pillar__label--cta {
+      font-size: 15px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .pillar__label {
+      font-size: 13px;
+    }
+
+    .pillar__label--cta {
+      font-size: 17px;
+    }
+  }
+
+  @media (hover: hover) {
+    .pillar:hover .pillar__image {
+      opacity: 0.45;
+      filter: grayscale(0%);
+      transform: scale(1.04);
+    }
+
+    .pillar--ink:hover .pillar__label,
+    .pillar--teal:hover .pillar__label {
+      color: var(--ink);
+    }
+
+    .pillar--cta:hover .pillar__image {
+      opacity: 0.42;
+      filter: grayscale(0%);
+    }
+
+    .pillar--cta:hover .pillar__label {
+      color: #ffffff;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pillar__image,
+    .pillar__label {
+      transition: none;
     }
   }
 </style>

@@ -43,6 +43,28 @@
     U+A720-A7FF;
 }
 
+/* Font khusus landing hero dan navigasi teknologi. Self-hosted, tanpa CDN. */
+@font-face {
+  font-family: 'Oswald';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/oswald-latin.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-latin.woff2') format('woff2');
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 :root {
   /* Warna */
   --paper: #f4efe4;
@@ -57,6 +79,11 @@
   --maroon: #800000;
   --error: #a32020;
   --success: #1e7a4d;
+
+  /* Palet landing hero dan navigasi teknologi. Mode terang mengikuti kertas. */
+  --syifa-bg: #f4efe4;
+  --syifa-teal: #1b9a94;
+  --syifa-gold: #d4ac6c;
 
   /* Bentuk dan garis */
   --radius: 6px;
@@ -77,6 +104,8 @@
   /* Tipografi situs: hanya dua keluarga self-hosted. */
   --font-body: 'DM Sans', system-ui, sans-serif;
   --font-heading: 'Space Grotesk', system-ui, sans-serif;
+  --font-syifa-display: 'Oswald', 'Arial Narrow', sans-serif;
+  --font-tech: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
   /* Lebar isi */
   --max-width: 1120px;
@@ -170,6 +199,12 @@ body {
 body.admin-page {
   background-color: #eef4f5;
   background-image: none;
+}
+
+/* Landing page: hero menempel ke tepi atas layar. Bagian setelah hero tetap
+   memakai latar kertas, jadi hanya padding atas body yang dilepas. */
+body.landing-page {
+  padding-top: 0;
 }
 
 img,
