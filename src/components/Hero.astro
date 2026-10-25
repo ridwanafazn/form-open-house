@@ -73,8 +73,10 @@ const pillars = [
     </span>
   </header>
 
-  <!-- Kubah cahaya: gradasi krem ke teal pucat, menyatu dengan latar kertas. -->
-  <div class="hero__dome" aria-hidden="true"></div>
+  <!-- Kubah cahaya: gradasi krem ke teal pucat dengan tekstur peta titik. -->
+  <div class="hero__dome" aria-hidden="true">
+    <span class="hero__map"></span>
+  </div>
   <div class="hero__grid" aria-hidden="true"></div>
   <div class="hero__top-scrim" aria-hidden="true"></div>
 
@@ -86,7 +88,7 @@ const pillars = [
     </p>
 
     <div
-      class="mb-2 flex w-full max-w-[320px] justify-between px-2 font-tech text-[9px] font-bold uppercase tracking-[0.18em] md:max-w-5xl md:px-8 md:text-xs"
+      class="hero__meta mb-2 flex w-full max-w-[320px] justify-between px-2 font-tech text-[9px] font-bold uppercase tracking-[0.18em] md:max-w-5xl md:px-8 md:text-xs"
     >
       <span class="text-ink-soft">{dateLabel}</span>
       <span class="text-teal-dark">AS SYIFA</span>
@@ -156,6 +158,7 @@ const pillars = [
     z-index: 0;
     width: 150vw;
     height: min(85vw, 48vh);
+    overflow: hidden;
     transform: translateX(-50%);
     border-top: 1px solid rgba(212, 172, 108, 0.55);
     border-radius: 9999px 9999px 0 0;
@@ -165,6 +168,18 @@ const pillars = [
       rgba(214, 232, 228, 0.9) 46%,
       rgba(244, 239, 228, 0) 100%
     );
+  }
+
+  /* Peta titik samar di dalam kubah. */
+  .hero__map {
+    position: absolute;
+    inset: 0;
+    background-image: url('/images/hero/world-dots.svg');
+    background-position: center 58%;
+    background-repeat: no-repeat;
+    background-size: 95% auto;
+    opacity: 0.3;
+    pointer-events: none;
   }
 
   .hero__grid {
@@ -203,7 +218,7 @@ const pillars = [
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 0;
+    margin: 12px 0 0;
     color: var(--ink);
     font-size: min(26vw, 16vh);
     font-weight: 700;
@@ -332,13 +347,14 @@ const pillars = [
     .hero__title {
       flex-direction: row;
       gap: 0.1em;
+      margin-top: 20px;
       font-size: min(18vw, 28vh);
       line-height: 0.8;
     }
 
     .hero__pillars {
-      height: 35vh;
-      min-height: 320px;
+      height: clamp(220px, 25vh, 300px);
+      min-height: 0;
     }
 
     .pillar {
@@ -370,6 +386,23 @@ const pillars = [
 
     .pillar__label--cta {
       font-size: 17px;
+    }
+  }
+
+  @media (max-width: 767px) {
+    /* Beri jarak: teks meta naik, judul turun, dan judul dipertebal. */
+    .hero__meta {
+      transform: translateY(-18px);
+    }
+
+    .hero__title {
+      -webkit-text-stroke: 1.8px var(--ink);
+      paint-order: stroke fill;
+    }
+
+    .hero__map {
+      background-size: 110% auto;
+      opacity: 0.34;
     }
   }
 

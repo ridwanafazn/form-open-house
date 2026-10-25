@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 520" role="img" aria-label="Peta dunia titik">
+  <defs>
+    <pattern id="dots" width="8" height="8" patternUnits="userSpaceOnUse">
+      <circle cx="1.6" cy="1.6" r="1.35" fill="#0f6f6a" />
+    </pattern>
+  </defs>
+  <g fill="url(#dots)">
+    <!-- Amerika Utara -->
+    <path d="M78 118 L104 84 L156 63 L226 55 L296 64 L344 88 L366 122 L352 155 L323 181 L303 219 L284 250 L254 263 L236 287 L259 301 L266 317 L244 310 L229 288 L209 275 L193 240 L171 213 L146 184 L112 161 Z" />
+    <!-- Greenland -->
+    <path d="M356 51 L401 44 L428 64 L420 92 L393 107 L362 91 Z" />
+    <!-- Amerika Selatan -->
+    <path d="M271 316 L309 306 L341 323 L357 354 L351 391 L337 425 L318 460 L303 497 L289 470 L282 430 L271 391 L260 356 Z" />
+    <!-- Eropa -->
+    <path d="M481 111 L516 94 L546 101 L560 121 L548 147 L526 158 L501 149 L486 132 Z" />
+    <!-- Eurasia -->
+    <path d="M550 96 L611 77 L680 63 L754 64 L815 80 L872 110 L901 143 L883 174 L850 190 L816 205 L784 232 L752 237 L725 263 L693 254 L665 234 L641 243 L621 221 L593 227 L575 206 L552 195 L536 171 L548 148 L566 128 Z" />
+    <!-- India -->
+    <path d="M650 249 L684 246 L699 270 L686 303 L670 328 L655 301 L648 276 Z" />
+    <!-- Asia Tenggara -->
+    <path d="M735 274 L765 267 L793 282 L810 304 L791 318 L763 309 L744 321 L723 305 Z" />
+    <!-- Jepang -->
+    <path d="M823 213 L837 202 L848 215 L842 237 L831 247 L820 232 Z" />
+    <!-- Afrika -->
+    <path d="M493 194 L536 180 L579 185 L607 209 L621 244 L616 285 L599 323 L578 359 L555 392 L531 383 L514 346 L499 305 L488 263 L480 224 Z" />
+    <!-- Madagaskar -->
+    <path d="M625 352 L639 345 L647 363 L640 391 L629 401 L621 379 Z" />
+    <!-- Australia -->
+    <path d="M803 348 L847 331 L893 337 L921 361 L923 391 L899 416 L858 422 L821 405 L800 379 Z" />
+    <!-- Selandia Baru -->
+    <path d="M937 424 L949 417 L956 433 L948 449 L940 443 Z" />
+    <!-- Indonesia -->
+    <path d="M756 324 L782 318 L799 329 L787 340 L763 341 Z" />
+    <path d="M806 334 L836 331 L846 343 L830 351 L809 348 Z" />
+  </g>
+</svg>
