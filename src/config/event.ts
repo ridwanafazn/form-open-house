@@ -13,7 +13,7 @@ export const eventConfig = {
   mapsLat: -6.660045,
   mapsLng: 107.73521,
   admissionWhatsApp: '6281122223934',
-  waJoinUrl: 'https://chat.whatsapp.com/FprHEVnOLrH0jla96VO1Cb',
+  waJoinUrl: 'https://chat.whatsapp.com/FqM8p44kE3H5BFNmYj4fys',
   waJoinKind: 'group', // nilai: 'group' atau 'channel'
   pmbPortalUrl: 'https://registrasi.assyifa.sch.id/registrasi/login.php',
   registrationOpen: true,
