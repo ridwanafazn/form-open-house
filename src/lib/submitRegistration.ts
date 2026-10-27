@@ -25,6 +25,8 @@ export async function sendRegistrationWhatsApp(notification: RegistrationNotific
     '',
     'Mohon simpan pesan dan gambar tiket ini. Tunjukkan QR Code kepada panitia saat registrasi di lokasi.',
     '',
+    '📢Grup peserta: https://chat.whatsapp.com/FqM8p44kE3H5BFNmYj4fys',
+    '',
     ticketUrl ? `🔗 Tiket digital:\n${ticketUrl}` : null,
     '',
     'Sampai bertemu di Open House.',

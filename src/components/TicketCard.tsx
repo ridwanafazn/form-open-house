@@ -64,6 +64,8 @@ export default function TicketCard() {
       '',
       'Mohon simpan pesan dan gambar tiket ini. Tunjukkan QR Code kepada panitia saat registrasi di lokasi.',
       '',
+      '📢Grup peserta: https://chat.whatsapp.com/FqM8p44kE3H5BFNmYj4fys',
+      '',
       `🔗 Tiket digital:\n${ticketUrl}`,
       '',
       'Sampai bertemu di Open House.',
