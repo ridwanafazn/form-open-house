@@ -177,15 +177,24 @@ const pillars = [
     pointer-events: none;
   }
 
+  /* Tinggi grid pilar dipakai juga untuk memusatkan tombol di HP. */
+  .hero {
+    --pillars-h: max(40vh, 280px);
+  }
+
   .hero__content {
-    position: relative;
-    z-index: 10;
+    /* Tanpa `position`, supaya tombol yang mengapung di HP berpatokan pada
+       section hero, bukan pada kotak ini. z-index tetap berlaku karena kotak
+       ini flex item dari .hero. */
+    z-index: 30;
     display: flex;
     flex: 1;
     flex-direction: column;
     align-items: center;
     justify-content: flex-end;
-    padding: 96px var(--space-4) var(--space-4);
+    /* Ruang bawah selebar tombol yang kini mengapung di grid pilar di HP,
+       supaya judul tidak ikut turun. */
+    padding: 96px var(--space-4) calc(var(--space-4) + 72px);
   }
 
   .hero__eyebrow {
@@ -212,21 +221,31 @@ const pillars = [
   }
 
   .hero__cta {
+    /* Di HP: pil tinta mengapung tepat di tengah grid pilar, supaya tetap
+       kontras di atas foto pilar yang terang. */
+    position: absolute;
+    left: 50%;
+    bottom: calc(var(--pillars-h) / 2);
+    z-index: 30;
     display: inline-flex;
+    /* `left: 50%` membatasi lebar shrink-to-fit jadi separuh layar; pakai
+       max-content supaya label tetap satu baris di HP kecil. */
+    width: max-content;
+    max-width: calc(100% - var(--space-8));
     align-items: center;
     justify-content: center;
     min-height: 48px;
-    margin-top: var(--space-6);
     padding: 12px 28px;
-    border: 1px solid var(--paper);
+    border: 1px solid var(--ink);
     border-radius: 999px;
-    background: var(--paper);
-    color: var(--ink);
+    background: var(--ink);
+    color: #ffffff;
     font-family: var(--font-body);
     font-size: 1rem;
     font-weight: 700;
     line-height: 1.2;
     text-decoration: none;
+    transform: translate(-50%, 50%);
     transition:
       background 0.2s ease,
       border-color 0.2s ease,
@@ -234,8 +253,8 @@ const pillars = [
   }
 
   .hero__cta:hover {
-    background: #ffffff;
-    border-color: #ffffff;
+    background: #3a3f45;
+    border-color: #3a3f45;
   }
 
   .hero__cta:focus-visible {
@@ -244,8 +263,7 @@ const pillars = [
   }
 
   .hero__pillars {
-    height: 40vh;
-    min-height: 280px;
+    height: var(--pillars-h);
   }
 
   .pillar {
@@ -314,6 +332,10 @@ const pillars = [
   }
 
   @media (min-width: 768px) {
+    .hero {
+      --pillars-h: clamp(220px, 25vh, 300px);
+    }
+
     .hero__title {
       flex-direction: row;
       gap: 0.1em;
@@ -322,9 +344,27 @@ const pillars = [
       line-height: 0.8;
     }
 
-    .hero__pillars {
-      height: clamp(220px, 25vh, 300px);
-      min-height: 0;
+    .hero__content {
+      padding-bottom: var(--space-4);
+    }
+
+    /* Di desktop tombol kembali ke dalam aliran, di celah antara judul dan
+       pilar, dengan pil kertas di atas foto masjid yang gelap. */
+    .hero__cta {
+      position: static;
+      bottom: auto;
+      transform: none;
+      width: auto;
+      max-width: none;
+      margin-top: var(--space-6);
+      border-color: var(--paper);
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    .hero__cta:hover {
+      background: #ffffff;
+      border-color: #ffffff;
     }
 
     .pillar {

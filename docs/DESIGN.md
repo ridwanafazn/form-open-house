@@ -83,6 +83,7 @@ Aturan pemakaian warna:
 3. Tombol Daftar Hadir Open House menempel di bawah layar HP setelah hero lewat, dan hilang saat bagian form terlihat.
 4. Lebar isi maksimal 1120 piksel, dipusatkan.
 5. Pembatas antar bagian berupa tepi kertas sobek dalam SVG statis, bukan gambar raster.
+6. Tombol hero "Daftar Sekarang": di desktop pil kertas di celah antara judul dan deretan pilar; di HP pil tinta mengapung tepat di tengah grid pilar.
 
 ## Sketsa
 
