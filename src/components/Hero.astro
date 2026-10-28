@@ -284,12 +284,16 @@ const pillars = [
     inset: 0;
     z-index: 1;
     background: rgba(250, 246, 236, 0.52);
+    transition: background-color 0.4s ease;
   }
 
   .pillar__label {
     position: relative;
     z-index: 2;
     margin: 0;
+    padding: 5px 9px;
+    border-radius: 2px;
+    background: transparent;
     font-family: var(--font-tech);
     font-size: 9px;
     font-weight: 700;
@@ -298,7 +302,7 @@ const pillars = [
     text-transform: uppercase;
     transition:
       color 0.3s ease,
-      text-shadow 0.3s ease;
+      background-color 0.3s ease;
   }
 
   .pillar__label--teal {
@@ -356,19 +360,28 @@ const pillars = [
   }
 
   @media (hover: hover) {
+    /* Sorot pilar: foto tampil penuh warna dan tajam. Label memakai plat
+       tinta solid dengan teks emas supaya tetap kontras di atas foto apa pun.
+       Tidak ada gradien, blur, atau bayangan. */
     .pillar:hover .pillar__image {
-      opacity: 0.5;
+      opacity: 1;
       filter: grayscale(0%);
       transform: scale(1.04);
     }
 
+    .pillar:hover .pillar__scrim {
+      background: rgba(15, 19, 23, 0.14);
+    }
+
     .pillar:hover .pillar__label {
-      color: var(--ink);
+      background: rgba(15, 19, 23, 0.94);
+      color: var(--gold);
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .pillar__image,
+    .pillar__scrim,
     .pillar__label,
     .hero__cta {
       transition: none;

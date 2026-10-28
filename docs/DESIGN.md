@@ -26,7 +26,7 @@ Versi terbaru. Arah visual: sketsa pena di atas kertas buku catatan, tetap doff,
 
 1. Foto asli sekolah dipakai di landing: latar hero, empat pilar, dan band suasana sekolah.
 2. Latar hero memakai lapisan gelap datar satu warna, bukan gradien atau blur.
-3. Foto pilar ditampilkan abu-abu dengan lapisan kertas datar; label tetap terbaca.
+3. Foto pilar ditampilkan abu-abu dengan lapisan kertas datar; label tetap terbaca. Saat pilar disorot, foto tampil penuh warna tanpa blur, lapisan kertas memudar, dan label menjadi teks emas di atas plat tinta solid.
 4. Foto band memakai panel teks matte solid. Di HP panel turun ke bawah foto.
 5. Semua foto self-hosted, sisi terpanjang maksimal 1920 piksel, JPEG terkompresi, dan punya teks alternatif yang menyebut isi foto.
 6. Crop mobile memakai `object-position`, bukan mengecilkan seluruh foto.
@@ -66,7 +66,7 @@ Aturan pemakaian warna:
 
 1. Teks dan garis memakai `--ink`. Teks kecil berwarna memakai `--teal-dark` yang kontrasnya sekitar 6 banding 1 di atas kertas.
 2. `--teal` hanya untuk bidang besar dan elemen dekoratif, jangan untuk teks kecil karena kontrasnya kurang.
-3. `--gold` hanya sebagai stabilo dan latar aksen, jangan untuk teks.
+3. `--gold` hanya sebagai stabilo dan latar aksen. Pengecualian: teks emas di atas plat tinta solid, misalnya label pilar saat disorot, karena kontrasnya di atas 7 banding 1.
 4. `--maroon` hanya sedikit, sebagai coretan atau stiker penekanan.
 5. Latar halaman `--paper` dengan kotak buku dari CSS saja, garis `--paper-grid` setiap 24 piksel. Tidak ada gambar tekstur.
 
