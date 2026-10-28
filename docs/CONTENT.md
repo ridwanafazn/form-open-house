@@ -49,8 +49,10 @@ Teks: Kegiatan bersama di halaman sekolah.
 
 Bagian insentif
 Judul: Daftar saat open house, biayanya lebih ringan
-Isi: Biaya pendaftaran seleksi normalnya Rp500 ribu. Jika mendaftar langsung saat open house, biayanya Rp100 ribu. Jika hadir tetapi mendaftar belakangan, biayanya Rp300 ribu.
-Catatan kecil: Ini adalah biaya pendaftaran seleksi, bukan biaya pendidikan.
+Kartu 1: Pendaftaran normal, Rp500 ribu, di luar open house.
+Kartu 2: Daftar saat open house, Rp100 ribu, hemat Rp400 ribu.
+Kartu 3: Daftar belakangan, Rp300 ribu, sudah hadir daftar menyusul.
+Catatan kecil: Biaya seleksi PMB SMKIT As-Syifa.
 
 Bagian info acara
 Hari dan tanggal, jam, tempat, alamat, tombol Buka peta, tombol Tambah ke kalender. Rangkaian acara ditampilkan sebagai daftar jam hanya jika rundown sudah ada. Jika belum, tampilkan teks: Susunan acara lengkap akan kami kabarkan lewat WhatsApp.

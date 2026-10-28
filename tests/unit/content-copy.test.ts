@@ -34,9 +34,7 @@ describe('original copywriting is preserved', () => {
       'Lihat masjid, lobi, dan ruang belajar di lingkungan sekolah.',
     );
     expect(content.home.incentive.heading).toBe('Daftar saat open house, biayanya lebih ringan');
-    expect(content.home.incentive.laterNote).toBe(
-      'Jika hadir tetapi mendaftar belakangan, biayanya Rp300 ribu.',
-    );
+    expect(content.home.incentive.laterNote).toBe('Sudah hadir, daftar menyusul.');
     expect(content.home.eventInfo.openMap).toBe('Buka Google Maps');
     expect(content.home.eventInfo.addCalendar).toBe('Tambah ke kalender');
     expect(content.home.rundown.tagline).toBe(

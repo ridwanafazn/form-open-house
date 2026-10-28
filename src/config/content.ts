@@ -49,7 +49,7 @@ export const content = {
     incentive: {
       heading: 'Daftar saat open house, biayanya lebih ringan',
       text: 'Biaya pendaftaran seleksi normalnya Rp500 ribu. Jika mendaftar langsung saat open house, biayanya Rp100 ribu. Jika hadir tetapi mendaftar belakangan, biayanya Rp300 ribu.',
-      laterNote: 'Jika hadir tetapi mendaftar belakangan, biayanya Rp300 ribu.',
+      laterNote: 'Sudah hadir, daftar menyusul.',
       note: 'Biaya seleksi PMB SMKIT As-Syifa',
     },
 
