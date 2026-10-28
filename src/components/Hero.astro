@@ -95,7 +95,7 @@ const pillars = [
     </p>
 
     <div
-      class="hero__meta mb-2 flex w-full max-w-[320px] justify-between px-2 font-tech text-[9px] font-bold uppercase tracking-[0.18em] md:max-w-5xl md:px-8 md:text-xs"
+      class="hero__meta flex w-full max-w-[320px] justify-between px-2 font-tech text-[9px] font-bold uppercase tracking-[0.18em] md:max-w-5xl md:px-8 md:text-xs"
     >
       <span class="text-paper/90">{dateLabel}</span>
       <span class="text-syifa-gold">AS SYIFA</span>
@@ -177,24 +177,21 @@ const pillars = [
     pointer-events: none;
   }
 
-  /* Tinggi grid pilar dipakai juga untuk memusatkan tombol di HP. */
+  /* Tinggi grid pilar dipakai juga untuk menempatkan tombol di area pilar. */
   .hero {
-    --pillars-h: max(40vh, 280px);
+    --pillars-h: max(28vh, 210px);
   }
 
   .hero__content {
-    /* Tanpa `position`, supaya tombol yang mengapung di HP berpatokan pada
-       section hero, bukan pada kotak ini. z-index tetap berlaku karena kotak
-       ini flex item dari .hero. */
+    /* Tanpa `position`, supaya tombol berpatokan pada section hero, bukan pada
+       kotak ini. z-index tetap berlaku karena kotak ini flex item dari .hero. */
     z-index: 30;
     display: flex;
     flex: 1;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-end;
-    /* Ruang bawah selebar tombol yang kini mengapung di grid pilar di HP,
-       supaya judul tidak ikut turun. */
-    padding: 96px var(--space-4) calc(var(--space-4) + 72px);
+    /* Jarak atas dan bawah judul dibuat sama oleh margin otomatis judul. */
+    padding: 96px var(--space-4) 0;
   }
 
   .hero__eyebrow {
@@ -205,7 +202,9 @@ const pillars = [
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 12px 0 0;
+    /* Margin otomatis membagi sisa ruang sama banyak ke atas dan ke bawah,
+       sehingga judul duduk di tengah. */
+    margin: auto 0;
     color: #ffffff;
     font-size: min(26vw, 16vh);
     font-weight: 700;
@@ -333,38 +332,22 @@ const pillars = [
 
   @media (min-width: 768px) {
     .hero {
-      --pillars-h: clamp(220px, 25vh, 300px);
+      --pillars-h: clamp(180px, 22vh, 230px);
     }
 
     .hero__title {
       flex-direction: row;
       gap: 0.1em;
-      margin-top: 20px;
       font-size: min(18vw, 28vh);
       line-height: 0.8;
     }
 
-    .hero__content {
-      padding-bottom: var(--space-4);
-    }
-
-    /* Di desktop tombol kembali ke dalam aliran, di celah antara judul dan
-       pilar, dengan pil kertas di atas foto masjid yang gelap. */
+    /* Di desktop tombol duduk di tengah, di bagian atas area pilar, dengan
+       warna negatif: pil tinta dan teks putih di atas foto pilar yang terang. */
     .hero__cta {
-      position: static;
       bottom: auto;
-      transform: none;
-      width: auto;
-      max-width: none;
-      margin-top: var(--space-6);
-      border-color: var(--paper);
-      background: var(--paper);
-      color: var(--ink);
-    }
-
-    .hero__cta:hover {
-      background: #ffffff;
-      border-color: #ffffff;
+      top: calc(100% - var(--pillars-h) + 10px);
+      transform: translateX(-50%);
     }
 
     .pillar {
