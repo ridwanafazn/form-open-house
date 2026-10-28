@@ -220,8 +220,8 @@ const pillars = [
   }
 
   .hero__cta {
-    /* Di HP: pil tinta mengapung tepat di tengah grid pilar, supaya tetap
-       kontras di atas foto pilar yang terang. */
+    /* Di HP: kotak tinta bersudut `--radius` mengapung tepat di tengah grid
+       pilar, supaya tetap kontras di atas foto pilar yang terang. */
     position: absolute;
     left: 50%;
     bottom: calc(var(--pillars-h) / 2);
@@ -233,10 +233,10 @@ const pillars = [
     max-width: calc(100% - var(--space-8));
     align-items: center;
     justify-content: center;
-    min-height: 48px;
-    padding: 12px 28px;
+    min-height: 44px;
+    padding: 12px 18px;
     border: 1px solid var(--ink);
-    border-radius: 999px;
+    border-radius: var(--radius);
     background: var(--ink);
     color: #ffffff;
     font-family: var(--font-body);
@@ -343,7 +343,7 @@ const pillars = [
     }
 
     /* Di desktop tombol duduk di tengah, di bagian atas area pilar, dengan
-       warna negatif: pil tinta dan teks putih di atas foto pilar yang terang. */
+       warna negatif: kotak tinta dan teks putih di atas foto pilar yang terang. */
     .hero__cta {
       bottom: auto;
       top: calc(100% - var(--pillars-h) + 10px);
@@ -379,6 +379,11 @@ const pillars = [
     .hero__title {
       -webkit-text-stroke: 1.5px #ffffff;
       paint-order: stroke fill;
+    }
+
+    /* Strip tanggal diturunkan dari kepala halaman supaya tidak menempel. */
+    .hero__meta {
+      margin-top: var(--space-12);
     }
   }
 
