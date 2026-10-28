@@ -15,6 +15,7 @@ export const content = {
       tagline: 'Datang, lihat langsung, dan coba sendiri.',
       info: 'Sabtu, 07 November 2026, 08.00 sampai 15.00 WIB, Jalancagak, Subang. Gratis.',
       cta: 'Daftar Hadir Open House',
+      heroCta: 'Daftar Sekarang',
     },
 
     story: [
@@ -29,9 +30,9 @@ export const content = {
         text: 'Lihat ruang belajarnya dan coba sendiri di lab.',
       },
       {
-        id: 'asrama',
-        heading: 'Asrama',
-        text: 'Keliling asrama bersama panitia dan lihat tempat anak tinggal dan beristirahat.',
+        id: 'fasilitas',
+        heading: 'Fasilitas',
+        text: 'Lihat masjid, lobi, dan ruang belajar di lingkungan sekolah.',
       },
       {
         id: 'konsultasi',
@@ -39,6 +40,11 @@ export const content = {
         text: 'Tanyakan langsung kepada guru dan panitia, mulai dari jurusan sampai pendaftaran.',
       },
     ],
+
+    campusBand: {
+      kicker: 'Suasana sekolah',
+      text: 'Kegiatan bersama di halaman sekolah.',
+    },
 
     incentive: {
       heading: 'Daftar saat open house, biayanya lebih ringan',

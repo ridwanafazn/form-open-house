@@ -34,13 +34,18 @@ Hero
 Judul: Open House SMKIT As Syifa
 Kalimat pendukung: Datang, lihat langsung, dan coba sendiri.
 Info singkat: Sabtu, 07 November 2026, 08.00 sampai 15.00 WIB, Jalancagak, Subang. Gratis.
-Tombol: Daftar Hadir Open House
+Tombol hero: Daftar Sekarang
+Tombol menempel di HP: Daftar Hadir Open House
 
 Bagian cerita, satu adegan satu kalimat pendek
 1. Jurusan. Dengar langsung pemaparan jurusan RPL dan DKV di aula.
 2. Kelas dan lab. Lihat ruang belajarnya dan coba sendiri di lab.
-3. Asrama. Keliling asrama bersama panitia dan lihat tempat anak tinggal dan beristirahat.
+3. Fasilitas. Lihat masjid, lobi, dan ruang belajar di lingkungan sekolah.
 4. Konsultasi. Tanyakan langsung kepada guru dan panitia, mulai dari jurusan sampai pendaftaran.
+
+Bagian suasana sekolah
+Kicker: Suasana sekolah
+Teks: Kegiatan bersama di halaman sekolah.
 
 Bagian insentif
 Judul: Daftar saat open house, biayanya lebih ringan

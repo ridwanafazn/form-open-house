@@ -22,6 +22,15 @@ Versi terbaru. Arah visual: sketsa pena di atas kertas buku catatan, tetap doff,
 9. Tidak ada emoji dan tidak ada pustaka ikon. Semua ikon adalah sketsa buatan sendiri.
 10. Tidak ada filter SVG yang dianimasikan.
 
+## Foto
+
+1. Foto asli sekolah dipakai di landing: latar hero, empat pilar, dan band suasana sekolah.
+2. Latar hero memakai lapisan gelap datar satu warna, bukan gradien atau blur.
+3. Foto pilar ditampilkan abu-abu dengan lapisan kertas datar; label tetap terbaca.
+4. Foto band memakai panel teks matte solid. Di HP panel turun ke bawah foto.
+5. Semua foto self-hosted, sisi terpanjang maksimal 1920 piksel, JPEG terkompresi, dan punya teks alternatif yang menyebut isi foto.
+6. Crop mobile memakai `object-position`, bukan mengecilkan seluruh foto.
+
 ## Token
 
 Tulis di `src/styles/global.css`.

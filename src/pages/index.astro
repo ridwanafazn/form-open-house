@@ -28,6 +28,25 @@ import 'leaflet/dist/leaflet.css';
       </div>
     </section>
 
+    <section class="campus-band" aria-labelledby="campus-band-title">
+      <div class="container">
+        <figure class="campus-band__figure">
+          <img
+            src="/images/hero/upacara.jpg"
+            alt="Upacara bendera di halaman sekolah"
+            width="1200"
+            height="675"
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption class="campus-band__caption">
+            <h2 class="campus-band__kicker" id="campus-band-title">{content.home.campusBand.kicker}</h2>
+            <p class="campus-band__text">{content.home.campusBand.text}</p>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
     <section class="section section--card" id="incentiv" aria-labelledby="incentiv-title">
       <div class="container">
         <header class="section-head">
@@ -297,6 +316,69 @@ import 'leaflet/dist/leaflet.css';
       grid-template-columns: 5rem 1fr;
       gap: var(--space-6);
       padding: var(--space-8);
+    }
+  }
+
+  /* --- Suasana sekolah: band foto lebar dengan panel teks matte --- */
+  .campus-band {
+    padding-block: 0 var(--space-8);
+  }
+
+  .campus-band__figure {
+    position: relative;
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid var(--paper-grid);
+    border-radius: var(--radius-card);
+    background: var(--ink);
+  }
+
+  .campus-band__figure img {
+    width: 100%;
+    height: clamp(260px, 42vw, 460px);
+    object-fit: cover;
+    object-position: center 42%;
+  }
+
+  .campus-band__caption {
+    position: absolute;
+    left: var(--space-4);
+    bottom: var(--space-4);
+    max-width: 420px;
+    padding: var(--space-4) var(--space-6);
+    border: 1px solid rgba(244, 239, 228, 0.22);
+    border-radius: var(--radius-control);
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .campus-band__kicker {
+    margin: 0 0 var(--space-2);
+    color: var(--gold);
+    font-family: var(--font-tech);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .campus-band__text {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+
+  @media (max-width: 640px) {
+    .campus-band__figure img {
+      height: 300px;
+    }
+
+    .campus-band__caption {
+      position: static;
+      max-width: none;
+      border: 0;
+      border-top: 1px solid rgba(244, 239, 228, 0.22);
+      border-radius: 0;
     }
   }
 
