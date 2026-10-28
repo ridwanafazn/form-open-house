@@ -18,6 +18,14 @@ const chatAdmisi = `https://wa.me/${eventConfig.admissionWhatsApp}?text=${encode
 
 <Base title="Terima kasih" description="Pendaftaran open house berhasil dikirim.">
   <meta slot="head" name="robots" content="noindex" />
+
+<script is:inline>
+    if (typeof window !== 'undefined' && window.fbq) {
+      fbq('track', 'Lead');
+    }
+  </script>
+
+
   <main class="container">
     <section class="ty" aria-labelledby="ty-title">
       <header class="ty__head">
