@@ -15,7 +15,7 @@ export const content = {
       tagline: 'Datang, lihat langsung, dan coba sendiri.',
       info: 'Sabtu, 07 November 2026, 08.00 sampai 15.00 WIB, Jalancagak, Subang. Gratis.',
       cta: 'Daftar Hadir Open House',
-      heroCta: 'Daftar Sekarang',
+      heroCta: 'Daftar Sekarang!',
     },
 
     story: [

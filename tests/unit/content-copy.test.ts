@@ -10,7 +10,7 @@ describe('original copywriting is preserved', () => {
       'Sabtu, 07 November 2026, 08.00 sampai 15.00 WIB, Jalancagak, Subang. Gratis.',
     );
     expect(content.home.hero.cta).toBe('Daftar Hadir Open House');
-    expect(content.home.hero.heroCta).toBe('Daftar Sekarang');
+    expect(content.home.hero.heroCta).toBe('Daftar Sekarang!');
   });
 
   it('hero no longer carries the restyle-only kicker and CTA note', () => {

@@ -8,7 +8,7 @@ Nada: hangat, jelas, sopan, dan menyenangkan, seperti panitia menyapa orang tua.
 
 Larangan di semua teks yang tampil:
 
-1. Tidak memakai simbol hiasan atau pemisah: ampersand, garis miring, kurung, tanda petik, tanda hubung sebagai pemisah, kurung kurawal, garis tegak, atau garis miring terbalik.
+1. Tidak memakai simbol hiasan atau pemisah: ampersand, garis miring, kurung, tanda petik, tanda hubung sebagai pemisah, kurung kurawal, garis tegak, atau garis miring terbalik. Pengecualian: tombol hero memakai tanda seru "Daftar Sekarang!" atas permintaan pemilik acara.
 2. Tidak memakai emoji.
 3. Tulis orang tua atau wali, bukan dengan garis miring. Tulis dan, bukan ampersand.
 4. Tidak memakai pola kalimat khas mesin, seperti bukan sekadar ini tetapi itu, tiga kata sifat berderet, atau ajakan bombastis.
@@ -34,7 +34,7 @@ Hero
 Judul: Open House SMKIT As Syifa
 Kalimat pendukung: Datang, lihat langsung, dan coba sendiri.
 Info singkat: Sabtu, 07 November 2026, 08.00 sampai 15.00 WIB, Jalancagak, Subang. Gratis.
-Tombol hero: Daftar Sekarang
+Tombol hero: Daftar Sekarang!
 Tombol menempel di HP: Daftar Hadir Open House
 
 Bagian cerita, satu adegan satu kalimat pendek
