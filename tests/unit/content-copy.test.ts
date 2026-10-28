@@ -27,7 +27,9 @@ describe('original copywriting is preserved', () => {
       'Fasilitas',
       'Konsultasi',
     ]);
-    expect(content.home.story[0].text).toBe('Dengar langsung pemaparan jurusan RPL dan DKV di aula.');
+    expect(content.home.story[0].text).toBe(
+      'Dengar langsung pemaparan jurusan RPL dan DKV di aula.',
+    );
     expect(content.home.story[2].text).toBe(
       'Lihat masjid, lobi, dan ruang belajar di lingkungan sekolah.',
     );
@@ -37,10 +39,14 @@ describe('original copywriting is preserved', () => {
     );
     expect(content.home.eventInfo.openMap).toBe('Buka Google Maps');
     expect(content.home.eventInfo.addCalendar).toBe('Tambah ke kalender');
-    expect(content.home.rundown.tagline).toBe('Jadwal kegiatan open house dari pagi hingga selesai.');
+    expect(content.home.rundown.tagline).toBe(
+      'Jadwal kegiatan open house dari pagi hingga selesai.',
+    );
     expect(content.home.form.heading).toBe('Daftar hadir');
     expect(content.home.form.tagline).toBe('Cukup dua langkah, tidak sampai satu menit.');
-    expect(content.home.footer.text).toBe('Ada pertanyaan sebelum datang? Hubungi admisi lewat WhatsApp.');
+    expect(content.home.footer.text).toBe(
+      'Ada pertanyaan sebelum datang? Hubungi admisi lewat WhatsApp.',
+    );
     expect(content.home.footer.cta).toBe('Chat admisi');
   });
 });

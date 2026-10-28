@@ -220,10 +220,17 @@ import 'leaflet/dist/leaflet.css';
   const hero = document.getElementById('hero');
   const form = document.getElementById('form');
   if (cta && hero && form) {
+    // Simpan status terakhir tiap elemen. Callback IntersectionObserver bisa
+    // hanya membawa satu entri; memakai entries.find untuk keduanya membuat
+    // tombol muncul kembali saat hero masih terlihat.
+    let heroIn = true;
+    let formIn = false;
     const io = new IntersectionObserver(
       (entries) => {
-        const heroIn = entries.find((e) => e.target === hero)?.isIntersecting;
-        const formIn = entries.find((e) => e.target === form)?.isIntersecting;
+        for (const entry of entries) {
+          if (entry.target === hero) heroIn = entry.isIntersecting;
+          if (entry.target === form) formIn = entry.isIntersecting;
+        }
         if (formIn || heroIn) {
           cta.classList.add('is-hidden');
         } else {
