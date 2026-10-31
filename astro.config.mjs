@@ -52,13 +52,12 @@ export default defineConfig({
         'react-dom/client',
         'react/jsx-runtime',
         'react/jsx-dev-runtime',
-        // Pre-bundle dependensi klien lainnya sejak awal supaya Vite tidak
-        // menjalankan ulang optimizer di tengah sesi (penyebab modul lama
-        // bercampur modul baru di browser).
-        '@supabase/supabase-js',
         'html5-qrcode',
         'qrcode',
         'motion/react',
+      ],
+      exclude: [
+        '@supabase/supabase-js',
       ],
     },
   },

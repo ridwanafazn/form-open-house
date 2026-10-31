@@ -210,7 +210,7 @@ export default function RegisterForm() {
     <LazyMotion features={domAnimation}>
       <form className="form" onSubmit={onSubmit} noValidate>
         {regStatusLoading && (
-          <motion.div
+          <m.div
             className="form-status-banner form-status-banner--loading"
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
@@ -220,11 +220,11 @@ export default function RegisterForm() {
               <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" fill="none" strokeDasharray="31.4 31.4" strokeLinecap="round" />
             </svg>
             <span>Memuat status pendaftaran…</span>
-          </motion.div>
+          </m.div>
         )}
 
         {!regStatusLoading && !regStatus.open && (
-          <motion.div
+          <m.div
             className="form-status-banner form-status-banner--closed"
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
@@ -240,7 +240,7 @@ export default function RegisterForm() {
               <strong>Pendaftaran Ditutup</strong>
               <p>{regStatus.message || content.errors.closed}</p>
             </div>
-          </motion.div>
+          </m.div>
         )}
 
         <ol className="progress">

@@ -109,6 +109,7 @@ export default function SettingsTab({ onClose }: SettingsTabProps) {
               type="checkbox"
               name="open"
               checked={status.open}
+              onChange={(e) => setStatus((s) => ({ ...s, open: e.target.checked }))}
               disabled={saving}
             />
             <span className="admin-switch__track" aria-hidden="true">

@@ -1,32 +1,40 @@
 import type { APIRoute } from 'astro';
+import { supabase } from '../../../lib/supabaseClient';
 import { getRegistrationStatus, setRegistrationStatus } from '../../../lib/settings';
 
 export const prerender = false;
 
+async function checkAdminAuth(locals: any): Promise<{ userId: string } | Response> {
+  // Cloudflare session binding provides locals.session
+  const session = locals.session;
+  if (!session?.user?.id) {
+    return new Response(JSON.stringify({ error: 'unauthorized' }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  // Cek apakah user ada di tabel admins
+  const { data: admin, error: adminError } = await supabase
+    .from('admins')
+    .select('user_id')
+    .eq('user_id', session.user.id)
+    .single();
+
+  if (adminError || !admin) {
+    return new Response(JSON.stringify({ error: 'forbidden' }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  return { userId: session.user.id };
+}
+
 export const GET: APIRoute = async ({ locals }) => {
   try {
-    // Cek admin via session
-    const session = await locals.getSession();
-    if (!session?.user) {
-      return new Response(JSON.stringify({ error: 'unauthorized' }), {
-        status: 401,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-
-    // Cek apakah user ada di tabel admins
-    const { data: admin, error: adminError } = await locals.supabase
-      .from('admins')
-      .select('user_id')
-      .eq('user_id', session.user.id)
-      .single();
-
-    if (adminError || !admin) {
-      return new Response(JSON.stringify({ error: 'forbidden' }), {
-        status: 403,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
+    const auth = await checkAdminAuth(locals);
+    if (auth instanceof Response) return auth;
 
     const status = await getRegistrationStatus();
     return new Response(JSON.stringify(status), {
@@ -44,26 +52,8 @@ export const GET: APIRoute = async ({ locals }) => {
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
-    const session = await locals.getSession();
-    if (!session?.user) {
-      return new Response(JSON.stringify({ error: 'unauthorized' }), {
-        status: 401,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-
-    const { data: admin, error: adminError } = await locals.supabase
-      .from('admins')
-      .select('user_id')
-      .eq('user_id', session.user.id)
-      .single();
-
-    if (adminError || !admin) {
-      return new Response(JSON.stringify({ error: 'forbidden' }), {
-        status: 403,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
+    const auth = await checkAdminAuth(locals);
+    if (auth instanceof Response) return auth;
 
     const body = await request.json();
     const open = Boolean(body.open);
