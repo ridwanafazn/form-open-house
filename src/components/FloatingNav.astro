@@ -546,19 +546,38 @@ const isLanding = variant === 'landing';
       width: 100%;
     }
 
+    /* Di menu mobile, tombol pengaturan mengikuti tampilan tautan lain
+       (Dashboard/Scan Presensi/Lihat Situs): tanpa kotak, warna redup,
+       dan sorotan latar saat disentuh. */
     .floating-nav__settings {
       width: 100%;
       height: auto;
       justify-content: flex-start;
+      gap: 6px;
       padding: 10px 14px;
+      border: none;
       border-radius: 10px;
+      background: transparent;
       font-size: 0.9rem;
       font-weight: 600;
+      color: var(--admin-text-muted, #64748b);
+    }
+
+    .floating-nav__settings:hover,
+    .floating-nav__settings:focus-visible {
+      border-color: transparent;
+      background: #f1f5f9;
       color: var(--admin-primary, #0f172a);
     }
 
     .floating-nav__settings-label {
       display: inline;
+    }
+
+    /* Menu mobile berbasis teks; ikon disembunyikan agar teks rata kiri
+       persis seperti tautan lain. Di desktop tombol tetap ikon saja. */
+    .floating-nav__settings svg {
+      display: none;
     }
 
     .floating-nav__user {
