@@ -62,7 +62,7 @@ REGISTRATION_OPEN=true
 
 Penjelasan tiap nilai:
 
-1. `PUBLIC_SITE_URL`: alamat situs. Lokal `http://localhost:4321`. Produksi berisi alamat workers.dev, atau subdomain sekolah kalau sudah ada.
+1. `PUBLIC_SITE_URL`: alamat situs. Lokal `http://localhost:4321`. Produksi berisi alamat workers.dev (`https://open-house.smkit-asbosch.workers.dev`), atau subdomain sekolah kalau sudah ada.
 2. `PUBLIC_TURNSTILE_SITE_KEY` dan `TURNSTILE_SECRET_KEY`: pasangan kunci Turnstile. Untuk lokal dan uji otomatis, pakai kunci uji dari Cloudflare seperti di atas, yang selalu lolos. Kunci uji hanya menerima token uji, dan kunci produksi menolaknya. Untuk produksi, buat widget sungguhan, isi domain dengan alamat produksi, dan pakai kunci aslinya. Kunci uji tidak boleh dipakai di produksi karena menerima token apa saja.
 3. `SUPABASE_URL` dan `PUBLIC_SUPABASE_URL`: nilainya sama, alamat proyek, ditemukan di dasbor proyek. Bentuknya `https://ID_PROYEK.supabase.co`.
 4. `PUBLIC_SUPABASE_PUBLISHABLE_KEY`: kunci berawalan `sb_publishable_`. Boleh terlihat di browser karena keamanan data dijaga RLS. Ambil dari bagian API Keys di pengaturan proyek. Jika proyek memakai kunci lama, pakai kunci anon lama di sini.
