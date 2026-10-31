@@ -1,5 +1,6 @@
 import { validateRegistration } from './validate';
 import { sendWhatsAppViaFonnte } from './fonnte';
+import { getRegistrationStatus } from './settings';
 
 export interface RegistrationNotification {
   parentPhone: string;
@@ -8,7 +9,7 @@ export interface RegistrationNotification {
   ticketCode: string;
   publicSiteUrl?: string;
   fonnteToken?: string;
-} 
+}
 
 export async function sendRegistrationWhatsApp(notification: RegistrationNotification): Promise<boolean> {
   const ticketUrl = notification.publicSiteUrl
@@ -48,7 +49,6 @@ export async function sendRegistrationWhatsApp(notification: RegistrationNotific
 }
 
 export interface SubmitEnv {
-  registrationOpen: boolean;
   supabaseUrl: string;
   supabaseServiceRoleKey: string;
   fonnteApiToken?: string;
@@ -92,8 +92,9 @@ export async function submitRegistration(
     return { kind: 'bot', status: 200 };
   }
 
-  // 3. Pendaftaran ditutup.
-  if (!env.registrationOpen) {
+  // 3. Cek status pendaftaran dari database (settings table).
+  const regStatus = await getRegistrationStatus();
+  if (!regStatus.open) {
     return { kind: 'error', status: 403, code: 'closed' };
   }
 

@@ -28,8 +28,6 @@ export const POST: APIRoute = async ({ request }) => {
     runtimeEnv.PUBLIC_SITE_URL || (import.meta.env.PUBLIC_SITE_URL as string | undefined) || '';
 
   const env = {
-    registrationOpen:
-      (runtimeEnv.REGISTRATION_OPEN ?? import.meta.env.REGISTRATION_OPEN) !== 'false',
     supabaseUrl:
       runtimeEnv.SUPABASE_URL || (import.meta.env.SUPABASE_URL as string | undefined) || '',
     supabaseServiceRoleKey:

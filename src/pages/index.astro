@@ -132,7 +132,7 @@ import 'leaflet/dist/leaflet.css';
           <h2 id="form-title">{content.home.form.heading}</h2>
           <p class="section-head__tagline">{content.home.form.tagline}</p>
         </header>
-        <RegisterForm client:visible />
+        <RegisterForm client:only="react" />
       </div>
     </section>
 

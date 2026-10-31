@@ -1,6 +1,14 @@
 import { describe, it, expect, vi } from 'vitest';
 import { submitRegistration, bodyTooLarge, type Fetcher } from '../../src/lib/submitRegistration';
 
+// Mock settings module
+vi.mock('../../src/lib/settings', () => ({
+  getRegistrationStatus: vi.fn(),
+  setRegistrationStatus: vi.fn(),
+}));
+
+const { getRegistrationStatus } = await import('../../src/lib/settings');
+
 const valid = {
   child_name: 'Ahmad',
   parent_phone: '081234567890',
@@ -14,7 +22,6 @@ const valid = {
 
 function env(over: Partial<Parameters<typeof submitRegistration>[1]> = {}) {
   return {
-    registrationOpen: true,
     supabaseUrl: 'https://proj.supabase.co',
     supabaseServiceRoleKey: 'svc',
     ...over,
@@ -41,6 +48,12 @@ describe('bodyTooLarge', () => {
 });
 
 describe('submitRegistration', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    // Default: pendaftaran dibuka
+    vi.mocked(getRegistrationStatus).mockResolvedValue({ open: true, message: null });
+  });
+
   it('bot: website terisi => sukses tanpa menyimpan', async () => {
     const f = makeFetch({});
     const r = await submitRegistration({ ...valid, website: 'x' }, env(), f);
@@ -49,8 +62,9 @@ describe('submitRegistration', () => {
   });
 
   it('pendaftaran ditutup => 403 closed', async () => {
+    vi.mocked(getRegistrationStatus).mockResolvedValue({ open: false, message: 'Pendaftaran ditutup' });
     const f = makeFetch({});
-    const r = await submitRegistration(valid, env({ registrationOpen: false }), f);
+    const r = await submitRegistration(valid, env(), f);
     expect(r).toEqual({ kind: 'error', status: 403, code: 'closed' });
   });
 

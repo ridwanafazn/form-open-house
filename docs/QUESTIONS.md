@@ -43,5 +43,10 @@ Atas permintaan pemilik proyek, kombinasi Fraunces × Plus Jakarta Sans dari ran
 Pemilik proyek membawa referensi desain smile-festival.pages.dev (screenshot) dan meminta bahasa desain halaman publik mengikuti referensi itu, kecuali teks "Sustainable Muslim Living" (dianggap AI slop, tidak disalin). Keputusan yang disepakati: (1) matte penuh — tanpa bayangan, elemen melayang memakai border 1px ala navbar (opsi a); (2) Fraunces (self-hosted OFL, woff2 normal + italic di `public/fonts`) kembali sebagai `--font-display` untuk judul halaman publik dan brand navbar — Q06 di atas tetap berlaku untuk body (DM Sans) dan heading admin (Space Grotesk); (3) tombol primer publik menjadi pil gelap netral (`--ink`), tombol primer di footer gelap memakai varian emas; (4) halaman `/e-ticket` dan admin tetap memakai bahasa visual admin (slate), tidak diubah ke tema kertas — pemilik proyek belum memberi keberatan; ubah jika diminta.
 
 
+## Q10 Meta Pixel (T17) hardcoded (2026-10-28)
+
+Meta Pixel ID `1683289080083380` ditanam langsung di `Base.astro` (PageView semua halaman) dan `terima-kasih.astro` (event `Lead`). Spec T17 minta pakai `PUBLIC_META_PIXEL_ID` env var + conditional load + event `CompleteRegistration`, tapi pemilik memutuskan biarkan hardcoded dan anggap selesai. Tanpa data pribadi.
+
+
 
 

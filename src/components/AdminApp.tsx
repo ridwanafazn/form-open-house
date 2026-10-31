@@ -5,6 +5,7 @@ import type { Screen } from './admin/types';
 import AdminErrorBoundary from './admin/AdminErrorBoundary';
 import LoginScreen from './admin/LoginScreen';
 import ListScreen from './admin/ListScreen';
+import SettingsTab from './admin/SettingsTab';
 import '../styles/admin.css';
 
 // Manipulasi DOM ke Astro Navbar
@@ -190,6 +191,10 @@ function AdminAppInner() {
 
   if (screen === 'list' || screen === 'detail') {
     return <ListScreen setScreen={setScreen} />;
+  }
+
+  if (screen === 'settings') {
+    return <SettingsTab onClose={() => setScreen('list')} />;
   }
 
   return null;

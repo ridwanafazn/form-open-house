@@ -1,9 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AnimatePresence, LazyMotion, domAnimation, m } from 'motion/react';
 import { content } from '../config/content';
 import { eventConfig } from '../config/event';
 import { validateRegistration } from '../lib/validate';
 import { trackingForSubmit } from '../lib/utm';
+
+interface RegistrationStatus {
+  open: boolean;
+  message: string | null;
+}
 
 type Fields = {
   child_name: string;
@@ -37,9 +42,31 @@ export default function RegisterForm() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<'idle' | 'sending' | 'error'>('idle');
   const [submitError, setSubmitError] = useState('');
+  const [regStatus, setRegStatus] = useState<RegistrationStatus>({ open: true, message: null });
+  const [regStatusLoading, setRegStatusLoading] = useState(true);
 
   const set = <K extends keyof Fields>(key: K, value: Fields[K]) =>
     setFields((f) => ({ ...f, [key]: value }));
+
+  // Fetch registration status on mount
+  useEffect(() => {
+    async function fetchStatus() {
+      try {
+        const res = await fetch('/api/registration-status', {
+          headers: { 'Content-Type': 'application/json' },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setRegStatus({ open: data.open ?? true, message: data.message ?? null });
+        }
+      } catch {
+        // Gagal fetch → default ke buka (fail-open untuk UX)
+      } finally {
+        setRegStatusLoading(false);
+      }
+    }
+    fetchStatus();
+  }, []);
 
   // progress: langkah 1 aktif, langkah 2 aktif saat step=2 dan sudah selesai saat kirim
   const step1Done = step === 2;
@@ -86,6 +113,13 @@ export default function RegisterForm() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (status === 'sending') return;
+
+    // Cek ulang status sebelum submit (race condition guard)
+    if (!regStatus.open) {
+      setSubmitError(regStatus.message || content.errors.closed);
+      return;
+    }
+
     const r = validateAll();
     if (!r.ok) {
       const m = mapErrors(r.errors);
@@ -170,9 +204,45 @@ export default function RegisterForm() {
     return errors[key] ?? '';
   }
 
+  const formDisabled = !regStatus.open || regStatusLoading;
+
   return (
     <LazyMotion features={domAnimation}>
       <form className="form" onSubmit={onSubmit} noValidate>
+        {regStatusLoading && (
+          <motion.div
+            className="form-status-banner form-status-banner--loading"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+          >
+            <svg className="spinner" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" fill="none" strokeDasharray="31.4 31.4" strokeLinecap="round" />
+            </svg>
+            <span>Memuat status pendaftaran…</span>
+          </motion.div>
+        )}
+
+        {!regStatusLoading && !regStatus.open && (
+          <motion.div
+            className="form-status-banner form-status-banner--closed"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            role="alert"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <div>
+              <strong>Pendaftaran Ditutup</strong>
+              <p>{regStatus.message || content.errors.closed}</p>
+            </div>
+          </motion.div>
+        )}
+
         <ol className="progress">
           <li className={step1Done ? 'done' : 'active'}>{content.home.form.progress[0]}</li>
           <li className={step === 2 ? 'active' : ''}>{content.home.form.progress[1]}</li>
@@ -210,6 +280,7 @@ export default function RegisterForm() {
                   value={fields.child_name}
                   onChange={(e) => set('child_name', e.target.value)}
                   placeholder={stepOne[0].helper}
+                  disabled={formDisabled}
                 />
                 {errorFor('child_name') && <p className="err">{errorFor('child_name')}</p>}
               </div>
@@ -230,6 +301,7 @@ export default function RegisterForm() {
                   value={fields.parent_phone}
                   onChange={(e) => set('parent_phone', e.target.value)}
                   placeholder={stepOne[1].helper}
+                  disabled={formDisabled}
                 />
                 {errorFor('parent_phone') && <p className="err">{errorFor('parent_phone')}</p>}
               </div>
@@ -247,11 +319,17 @@ export default function RegisterForm() {
                   value={fields.parent_name}
                   onChange={(e) => set('parent_name', e.target.value)}
                   placeholder={stepOne[2].helper}
+                  disabled={formDisabled}
                 />
                 {errorFor('parent_name') && <p className="err">{errorFor('parent_name')}</p>}
               </div>
 
-              <button type="button" className="button button--primary form-next" onClick={goToTwo}>
+              <button
+                type="button"
+                className="button button--primary form-next"
+                onClick={goToTwo}
+                disabled={formDisabled}
+              >
                 {buttons.next}
               </button>
             </m.div>
@@ -270,6 +348,7 @@ export default function RegisterForm() {
                     type="button"
                     aria-label="Kurangi jumlah"
                     onClick={() => set('attendee_count', Math.max(1, fields.attendee_count - 1))}
+                    disabled={formDisabled}
                   >
                     -
                   </button>
@@ -278,6 +357,7 @@ export default function RegisterForm() {
                     type="button"
                     aria-label="Tambah jumlah"
                     onClick={() => set('attendee_count', Math.min(10, fields.attendee_count + 1))}
+                    disabled={formDisabled}
                   >
                     +
                   </button>
@@ -299,6 +379,7 @@ export default function RegisterForm() {
                   value={fields.city}
                   onChange={(e) => set('city', e.target.value)}
                   placeholder={stepTwo[1].example}
+                  disabled={formDisabled}
                 />
                 {errorFor('city') && <p className="err">{errorFor('city')}</p>}
               </div>
@@ -316,6 +397,7 @@ export default function RegisterForm() {
                   value={fields.school}
                   onChange={(e) => set('school', e.target.value)}
                   placeholder={stepTwo[2].example}
+                  disabled={formDisabled}
                 />
                 {errorFor('school') && <p className="err">{errorFor('school')}</p>}
               </div>
@@ -339,6 +421,7 @@ export default function RegisterForm() {
                         onClick={() =>
                           set('interest_major', fields.interest_major === val ? '' : val)
                         }
+                        disabled={formDisabled}
                       >
                         {label}
                       </button>
@@ -355,6 +438,7 @@ export default function RegisterForm() {
                     type="checkbox"
                     checked={fields.consent_wa}
                     onChange={(e) => set('consent_wa', e.target.checked)}
+                    disabled={formDisabled}
                   />
                   <span>{consent.text}</span>
                 </label>
@@ -369,13 +453,14 @@ export default function RegisterForm() {
                   type="button"
                   className="button button--secondary"
                   onClick={() => setStep(1)}
+                  disabled={formDisabled}
                 >
                   {buttons.back}
                 </button>
                 <button
                   type="submit"
                   className="button button--primary"
-                  disabled={status === 'sending'}
+                  disabled={status === 'sending' || formDisabled}
                 >
                   {status === 'sending' ? buttons.submitting : buttons.submit}
                 </button>
@@ -421,6 +506,12 @@ export default function RegisterForm() {
           border: 1px solid var(--paper-grid); border-radius: var(--radius-control);
           background: #ffffff; color: var(--ink); font-size: 1rem;
           transition: border-color 0.2s ease;
+        }
+        .field input:disabled,
+        .field button:disabled,
+        .chip:disabled,
+        .consent:has(input:disabled) {
+          opacity: 0.6; cursor: not-allowed;
         }
         .field input::placeholder { color: var(--ink-soft); opacity: 1; }
         .field input:focus { outline: none; border-color: var(--teal-dark); }
@@ -470,6 +561,28 @@ export default function RegisterForm() {
           .actions .button { width: 100%; }
         }
         @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+        /* Status banners */
+        .form-status-banner {
+          display: flex; align-items: flex-start; gap: var(--space-3);
+          padding: var(--space-4); border-radius: var(--radius-control);
+          margin-bottom: var(--space-2);
+        }
+        .form-status-banner--loading {
+          background: var(--teal-light); color: var(--teal-dark);
+          border: 1px solid var(--teal-dark);
+        }
+        .form-status-banner--closed {
+          background: #fef2f2; color: #991b1b;
+          border: 1px solid #fecaca;
+        }
+        .form-status-banner strong { display: block; font-size: 1rem; margin-bottom: 2px; }
+        .form-status-banner p { margin: 0; font-size: 0.9rem; opacity: 0.9; }
+        .spinner {
+          width: 20px; height: 20px; flex: none; margin-top: 2px;
+          animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
       `}</style>
     </LazyMotion>
   );

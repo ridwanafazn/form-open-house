@@ -31,8 +31,13 @@ export interface Registration {
   attended_at: string | null;
 }
 
-export type Screen = 'login' | 'checking' | 'list' | 'detail';
-export type Tab = 'list' | 'scan';
+export type Screen = 'login' | 'checking' | 'list' | 'detail' | 'settings';
+export type Tab = 'list' | 'scan' | 'settings';
+
+export interface RegistrationStatus {
+  open: boolean;
+  message: string | null;
+}
 
 export const STATUS_LABELS: Record<FollowupStatus, string> = {
   belum_dihubungi: 'Belum dihubungi',
