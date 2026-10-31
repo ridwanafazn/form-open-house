@@ -5,7 +5,7 @@ import type { Screen } from './admin/types';
 import AdminErrorBoundary from './admin/AdminErrorBoundary';
 import LoginScreen from './admin/LoginScreen';
 import ListScreen from './admin/ListScreen';
-import SettingsTab from './admin/SettingsTab';
+import SettingsDialog from './admin/SettingsDialog';
 import '../styles/admin.css';
 
 // Manipulasi DOM ke Astro Navbar
@@ -46,6 +46,7 @@ function showAdminProfile(user: {
   name.textContent = displayName;
   avatar.src = buildInitialsAvatar(displayName);
   wrap.hidden = false;
+  document.getElementById('admin-nav-settings')?.removeAttribute('hidden');
 
   try {
     localStorage.setItem('oh_admin_email', user.email ?? '');
@@ -57,6 +58,7 @@ function showAdminProfile(user: {
 function hideAdminProfile() {
   const wrap = document.getElementById('admin-nav-user');
   if (wrap) wrap.hidden = true; // Mencegah kebocoran Auth State
+  document.getElementById('admin-nav-settings')?.setAttribute('hidden', '');
 }
 
 export default function AdminApp() {
@@ -71,6 +73,7 @@ function AdminAppInner() {
   const [screen, setScreen] = useState<Screen>('login');
   const [loginError, setLoginError] = useState('');
   const [configError, setConfigError] = useState('');
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const authCheckRunning = useRef(false);
 
   useEffect(() => {
@@ -98,12 +101,21 @@ function AdminAppInner() {
       } catch {
         // Abaikan
       }
+      setSettingsOpen(false);
       setScreen('login');
       setLoginError('');
     };
 
+    // Tombol gerigi di navbar (Astro) membuka dialog lewat event, sama seperti
+    // pola `admin-logout` yang sudah dipakai untuk keluar.
+    const onNavSettings = () => setSettingsOpen(true);
+
     window.addEventListener('admin-logout', onNavLogout);
-    return () => window.removeEventListener('admin-logout', onNavLogout);
+    window.addEventListener('admin-settings', onNavSettings);
+    return () => {
+      window.removeEventListener('admin-logout', onNavLogout);
+      window.removeEventListener('admin-settings', onNavSettings);
+    };
   }, []);
 
   async function handleLogin(email: string, password: string) {
@@ -190,11 +202,12 @@ function AdminAppInner() {
   }
 
   if (screen === 'list' || screen === 'detail') {
-    return <ListScreen setScreen={setScreen} />;
-  }
-
-  if (screen === 'settings') {
-    return <SettingsTab onClose={() => setScreen('list')} />;
+    return (
+      <>
+        <ListScreen setScreen={setScreen} />
+        <SettingsDialog open={settingsOpen} onClose={() => setSettingsOpen(false)} />
+      </>
+    );
   }
 
   return null;

@@ -65,6 +65,31 @@ const isLanding = variant === 'landing';
           <a href="#dashboard" class="floating-nav__link">Dashboard</a>
           <a href="#scan" class="floating-nav__link">Scan Presensi</a>
           <a href="/" class="floating-nav__link">Lihat Situs</a>
+          <button
+            type="button"
+            class="floating-nav__settings"
+            id="admin-nav-settings"
+            aria-haspopup="dialog"
+            aria-label="Pengaturan pendaftaran"
+            title="Pengaturan pendaftaran"
+            hidden
+          >
+            <svg
+              width="17"
+              height="17"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" />
+            </svg>
+            <span class="floating-nav__settings-label">Pengaturan</span>
+          </button>
           <div class="floating-nav__user-group" id="admin-nav-user" hidden>
             <div class="floating-nav__user">
               <img
@@ -195,6 +220,9 @@ const isLanding = variant === 'landing';
       link.addEventListener('click', closeMenu);
     });
 
+    // Menutup menu mobile setelah membuka dialog pengaturan.
+    nav.querySelector('#admin-nav-settings')?.addEventListener('click', closeMenu);
+
     window.addEventListener('resize', () => {
       if (window.innerWidth > 768) closeMenu();
     });
@@ -204,6 +232,13 @@ const isLanding = variant === 'landing';
     .getElementById('admin-nav-logout')
     ?.addEventListener('click', () => {
       window.dispatchEvent(new CustomEvent('admin-logout'));
+    });
+
+  // Dialog pengaturan dirender oleh island React; navbar hanya memicu event.
+  document
+    .getElementById('admin-nav-settings')
+    ?.addEventListener('click', () => {
+      window.dispatchEvent(new CustomEvent('admin-settings'));
     });
 </script>
 
@@ -368,6 +403,45 @@ const isLanding = variant === 'landing';
     align-items: center;
   }
 
+  /* Elemen dengan atribut `hidden` harus benar-benar hilang, meski kelasnya
+     memberi `display`. Tanpa ini `hidden` kalah oleh aturan display di atas. */
+  [hidden].floating-nav__user-group,
+  [hidden].floating-nav__settings {
+    display: none !important;
+  }
+
+  /* Tombol pengaturan: ikon saja di desktop, menempel pada kluster akun. */
+  .floating-nav__settings {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 1px solid var(--admin-border, #e2e8f0);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--admin-text-muted, #64748b);
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  .floating-nav__settings:hover,
+  .floating-nav__settings:focus-visible {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    color: var(--admin-primary, #0f172a);
+  }
+
+  .floating-nav__settings-label {
+    display: none;
+  }
+
   .floating-nav__user {
     display: inline-flex;
     align-items: center;
@@ -470,6 +544,21 @@ const isLanding = variant === 'landing';
 
     .floating-nav__user-group {
       width: 100%;
+    }
+
+    .floating-nav__settings {
+      width: 100%;
+      height: auto;
+      justify-content: flex-start;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--admin-primary, #0f172a);
+    }
+
+    .floating-nav__settings-label {
+      display: inline;
     }
 
     .floating-nav__user {

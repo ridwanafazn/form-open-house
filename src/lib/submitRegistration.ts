@@ -92,8 +92,14 @@ export async function submitRegistration(
     return { kind: 'bot', status: 200 };
   }
 
-  // 3. Cek status pendaftaran dari database (settings table).
-  const regStatus = await getRegistrationStatus();
+  // 3. Cek status pendaftaran dari database (tabel `settings`).
+  const regStatus = await getRegistrationStatus(
+    {
+      supabaseUrl: env.supabaseUrl,
+      supabaseServiceRoleKey: env.supabaseServiceRoleKey,
+    },
+    fetchImpl,
+  );
   if (!regStatus.open) {
     return { kind: 'error', status: 403, code: 'closed' };
   }

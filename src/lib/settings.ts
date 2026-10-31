@@ -1,89 +1,78 @@
-import { createClient } from '@supabase/supabase-js';
-
-// Deteksi environment Cloudflare Workers (runtime)
-const isCloudflareWorkers = typeof globalThis !== 'undefined' && 'env' in globalThis;
-
-// Ambil env dari Cloudflare Workers binding atau fallback ke import.meta.env (dev lokal)
-function getEnv(key: string): string | undefined {
-  if (isCloudflareWorkers) {
-    // @ts-expect-error - Cloudflare Workers runtime env
-    return globalThis.env?.[key];
-  }
-  // Fallback ke Vite/import.meta.env untuk dev lokal
-  // @ts-expect-error - import.meta.env hanya ada di build time
-  return import.meta.env?.[key];
-}
-
-const SUPABASE_URL = getEnv('SUPABASE_URL');
-const SUPABASE_SERVICE_ROLE_KEY = getEnv('SUPABASE_SERVICE_ROLE_KEY');
-
-// Hanya throw error di production/runtime, bukan saat test
-const isTest = typeof process !== 'undefined' && process.env?.VITEST === 'true';
-if (!isTest && (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY)) {
-  throw new Error('SUPABASE_URL dan SUPABASE_SERVICE_ROLE_KEY wajib diatur di environment');
-}
-
-// Lazy init supabase client untuk menghindari error saat test tanpa env
-let supabase: ReturnType<typeof createClient> | null = null;
-
-function getSupabase() {
-  if (!supabase && SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
-    supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
-      auth: { persistSession: false },
-    });
-  }
-  return supabase;
-}
+/**
+ * Status pendaftaran disimpan di tabel `settings` (Supabase) pada baris
+ * `registration_open` dengan bentuk `{ open: boolean, message: string | null }`.
+ *
+ * Modul ini sengaja hanya berisi fungsi murni + fetch biasa (tanpa
+ * `@supabase/supabase-js`) agar:
+ * 1. bisa diuji unit tanpa mock pustaka,
+ * 2. aman dijalankan di Cloudflare Workers — env dioper dari route yang
+ *    membaca binding `cloudflare:workers`, bukan `import.meta.env` yang
+ *    di-replace Vite saat build (lihat catatan T25/T26 di PROGRESS.md).
+ */
 
 export interface RegistrationStatus {
   open: boolean;
   message: string | null;
 }
 
-export async function getRegistrationStatus(): Promise<RegistrationStatus> {
-  const sb = getSupabase();
-  if (!sb) {
-    // Test mode tanpa Supabase - default ke buka
+export interface SettingsEnv {
+  supabaseUrl: string;
+  supabaseServiceRoleKey: string;
+}
+
+export type Fetcher = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
+
+export const SETTINGS_KEY = 'registration_open';
+
+/** Bentuk nilai yang disimpan di kolom `value` (jsonb). */
+export interface RegistrationOpenValue {
+  open: boolean;
+  message: string | null;
+}
+
+/**
+ * Baca status pendaftaran lewat REST Supabase memakai service role key.
+ * Gagal baca (jaringan/HTTP) diperlakukan sebagai "buka" agar satu gangguan
+ * sementara tidak mengunci seluruh calon peserta; penulisan data tetap
+ * divalidasi ulang di server dan akan gagal dengan 500 bila database mati.
+ */
+export async function getRegistrationStatus(
+  env: SettingsEnv,
+  fetchImpl: Fetcher,
+): Promise<RegistrationStatus> {
+  if (!env.supabaseUrl || !env.supabaseServiceRoleKey) {
     return { open: true, message: null };
   }
 
-  const { data, error } = await sb
-    .from('settings')
-    .select('value')
-    .eq('key', 'registration_open')
-    .single();
+  const url =
+    `${env.supabaseUrl}/rest/v1/settings` +
+    `?key=eq.${encodeURIComponent(SETTINGS_KEY)}` +
+    `&select=value&limit=1`;
 
-  if (error) {
-    // Jika tidak ditemukan (seharusnya tidak terjadi karena default sudah di-insert), default ke buka
-    if (error.code === 'PGRST116') {
-      return { open: true, message: null };
-    }
-    throw new Error(`Gagal baca status pendaftaran: ${error.message}`);
-  }
-
-  const value = data.value as { open: boolean; message?: string | null };
-  return {
-    open: value.open ?? true,
-    message: value.message ?? null,
-  };
-}
-
-export async function setRegistrationStatus(open: boolean, message?: string | null): Promise<void> {
-  const sb = getSupabase();
-  if (!sb) {
-    // Test mode tanpa Supabase - tidak melakukan apa-apa
-    return;
-  }
-
-  const { error } = await sb
-    .from('settings')
-    .upsert({
-      key: 'registration_open',
-      value: { open, message: message?.trim() || null },
-      updated_at: new Date().toISOString(),
+  try {
+    const res = await fetchImpl(url, {
+      headers: {
+        apikey: env.supabaseServiceRoleKey,
+        Authorization: `Bearer ${env.supabaseServiceRoleKey}`,
+        Accept: 'application/json',
+      },
     });
 
-  if (error) {
-    throw new Error(`Gagal simpan status pendaftaran: ${error.message}`);
+    if (!res.ok) {
+      console.error('[settings] Supabase responded with status', res.status);
+      return { open: true, message: null };
+    }
+
+    const rows = (await res.json().catch(() => [])) as Array<{ value?: RegistrationOpenValue }>;
+    const value = Array.isArray(rows) && rows[0] ? rows[0].value : undefined;
+    if (!value) return { open: true, message: null };
+
+    return {
+      open: value.open ?? true,
+      message: typeof value.message === 'string' && value.message.trim() ? value.message : null,
+    };
+  } catch (err) {
+    console.error('[settings] fetch failed:', err);
+    return { open: true, message: null };
   }
 }

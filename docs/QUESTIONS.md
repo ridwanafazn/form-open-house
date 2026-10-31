@@ -48,5 +48,12 @@ Pemilik proyek membawa referensi desain smile-festival.pages.dev (screenshot) da
 Meta Pixel ID `1683289080083380` ditanam langsung di `Base.astro` (PageView semua halaman) dan `terima-kasih.astro` (event `Lead`). Spec T17 minta pakai `PUBLIC_META_PIXEL_ID` env var + conditional load + event `CompleteRegistration`, tapi pemilik memutuskan biarkan hardcoded dan anggap selesai. Tanpa data pribadi.
 
 
+## Q11 Otorisasi tulis `settings` lewat RLS, bukan endpoint admin (2026-10-31)
+
+Percobaan pertama (T54) memakai route `/api/admin/registration-status` untuk membaca/menulis `settings` dari server. Hasilnya selalu `401`: `@supabase/supabase-js` v2 menyimpan sesi di `localStorage` browser, bukan cookie, sehingga server tidak punya cara membaca sesi tanpa menambah paket `@supabase/ssr` (di luar daftar izin TRD).
+
+Keputusan: baca/tulis `settings` dilakukan langsung dari browser memakai sesi admin yang sudah ada, dan otorisasinya diserahkan ke RLS `admins_read_settings` / `admins_write_settings` yang memanggil `public.is_admin()`. Ini pola yang sama dengan `ListScreen`/`DetailScreen` (query `registrations` langsung dari klien), jadi tidak ada jalur otorisasi kedua yang perlu dijaga. Route admin dihapus; hanya `GET /api/registration-status` (publik, service role di server) yang tersisa, karena halaman publik sengaja tidak memuat Supabase (aturan T12).
+
+
 
 

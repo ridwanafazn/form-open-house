@@ -31,8 +31,8 @@ export interface Registration {
   attended_at: string | null;
 }
 
-export type Screen = 'login' | 'checking' | 'list' | 'detail' | 'settings';
-export type Tab = 'list' | 'scan' | 'settings';
+export type Screen = 'login' | 'checking' | 'list' | 'detail';
+export type Tab = 'list' | 'scan';
 
 export interface RegistrationStatus {
   open: boolean;
