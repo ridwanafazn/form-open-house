@@ -33,15 +33,19 @@ describe('original copywriting is preserved', () => {
     expect(content.home.story[2].text).toBe(
       'Lihat masjid, lobi, dan ruang belajar di lingkungan sekolah.',
     );
-    expect(content.home.incentive.heading).toBe('Daftar saat open house, biayanya lebih ringan');
+    expect(content.home.incentive.heading).toBe(
+      'Daftar seleksi PMB saat open house, biayanya lebih ringan',
+    );
     expect(content.home.incentive.laterNote).toBe('Sudah hadir, daftar menyusul.');
     expect(content.home.eventInfo.openMap).toBe('Buka Google Maps');
     expect(content.home.eventInfo.addCalendar).toBe('Tambah ke kalender');
     expect(content.home.rundown.tagline).toBe(
       'Jadwal kegiatan open house dari pagi hingga selesai.',
     );
-    expect(content.home.form.heading).toBe('Daftar hadir');
-    expect(content.home.form.tagline).toBe('Cukup dua langkah, tidak sampai satu menit.');
+    expect(content.home.form.heading).toBe('Daftar sekarang!');
+    expect(content.home.form.tagline).toBe(
+      'Isi form untuk bisa mendapatkan E-Ticket dan bergabung ke grup WhatsApp untuk informasi lebih lanjut.',
+    );
     expect(content.home.footer.text).toBe(
       'Ada pertanyaan sebelum datang? Hubungi admisi lewat WhatsApp.',
     );

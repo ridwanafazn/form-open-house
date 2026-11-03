@@ -1,0 +1,108 @@
+---
+import Base from '../layouts/Base.astro';
+import TicketFinder from '../components/TicketFinder';
+import { content } from '../config/content';
+
+const copy = content.ticketFinder;
+---
+
+<Base
+  title={copy.title}
+  description="Cari tiket Open House SMKIT As-Syifa dengan kode tiket atau nomor HP yang dipakai saat mendaftar."
+>
+  <main class="cari">
+    <div class="container">
+      <header class="cari-hero">
+        <p class="cari-kicker">{copy.kicker}</p>
+        <h1>{copy.title}</h1>
+        <p class="cari-lead">{copy.lead}</p>
+      </header>
+
+      <TicketFinder client:load />
+
+      <p class="cari-back">
+        <a href="/">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M19 12H5"></path>
+            <path d="m12 19-7-7 7-7"></path>
+          </svg>
+          Kembali ke halaman utama
+        </a>
+      </p>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .cari {
+    padding-block: var(--space-8) var(--space-16);
+  }
+
+  .cari-hero {
+    max-width: 640px;
+    margin: 0 auto var(--space-6);
+  }
+
+  .cari-kicker {
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+    padding: 3px 8px;
+    border: 1px solid var(--teal-dark);
+    border-radius: 4px;
+    background: var(--teal-pale);
+    color: var(--teal-dark);
+    font-family: var(--font-tech);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1.7;
+    text-transform: uppercase;
+  }
+
+  .cari-hero h1 {
+    margin-top: var(--space-4);
+    font-family: var(--font-heading);
+    font-size: clamp(1.8rem, 4.6vw, 2.6rem);
+    font-weight: 700;
+    line-height: 1.15;
+  }
+
+  .cari-lead {
+    max-width: 56ch;
+    margin-top: var(--space-3);
+    color: var(--ink-soft);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .cari-back {
+    margin-top: var(--space-8);
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  .cari-back a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--ink-soft);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .cari-back a:hover {
+    color: var(--ink);
+    text-decoration: underline;
+  }
+</style>

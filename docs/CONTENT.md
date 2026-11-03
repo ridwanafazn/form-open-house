@@ -8,12 +8,12 @@ Nada: hangat, jelas, sopan, dan menyenangkan, seperti panitia menyapa orang tua.
 
 Larangan di semua teks yang tampil:
 
-1. Tidak memakai simbol hiasan atau pemisah: ampersand, garis miring, kurung, tanda petik, tanda hubung sebagai pemisah, kurung kurawal, garis tegak, atau garis miring terbalik. Pengecualian: tombol hero memakai tanda seru "Daftar Sekarang!" atas permintaan pemilik acara.
+1. Tidak memakai simbol hiasan atau pemisah: ampersand, garis miring, kurung, tanda petik, tanda hubung sebagai pemisah, kurung kurawal, garis tegak, atau garis miring terbalik. Pengecualian: tombol hero memakai tanda seru "Daftar Sekarang!" atas permintaan pemilik acara, dan nama "As-Syifa" memakai tanda hubung.
 2. Tidak memakai emoji.
 3. Tulis orang tua atau wali, bukan dengan garis miring. Tulis dan, bukan ampersand.
 4. Tidak memakai pola kalimat khas mesin, seperti bukan sekadar ini tetapi itu, tiga kata sifat berderet, atau ajakan bombastis.
 5. Tidak ada klaim yang tidak bisa dibuktikan, seperti terbaik atau pasti lulus.
-6. Nama sekolah ditulis SMKIT As Syifa Boarding School tanpa tanda hubung.
+6. Nama sekolah ditulis SMKIT As-Syifa Boarding School. "SMKIT" ditulis tanpa strip dan tanpa spasi; "As-Syifa" selalu memakai strip.
 7. Jam ditulis 08.00 sampai 15.00 WIB.
 
 Pengecualian teknis: alamat web, nomor telepon, dan kode tidak termasuk aturan ini.
@@ -31,7 +31,7 @@ Fakta lain dari situs sekolah seperti rutinitas harian, fasilitas, testimoni, da
 ## Halaman utama
 
 Hero
-Judul: Open House SMKIT As Syifa
+Judul: Open House SMKIT As-Syifa
 Kalimat pendukung: Datang, lihat langsung, dan coba sendiri.
 Info singkat: Sabtu, 07 November 2026, 08.00 sampai 15.00 WIB, Jalancagak, Subang. Gratis.
 Tombol hero: Daftar Sekarang!
@@ -48,7 +48,7 @@ Kicker: Suasana sekolah
 Teks: Kegiatan bersama di halaman sekolah.
 
 Bagian insentif
-Judul: Daftar saat open house, biayanya lebih ringan
+Judul: Daftar seleksi PMB saat open house, biayanya lebih ringan
 Kartu 1: Pendaftaran normal, Rp500 ribu, di luar open house.
 Kartu 2: Daftar saat open house, Rp100 ribu, hemat Rp400 ribu.
 Kartu 3: Daftar belakangan, Rp300 ribu, sudah hadir daftar menyusul.
@@ -58,8 +58,8 @@ Bagian info acara
 Hari dan tanggal, jam, tempat, alamat, tombol Buka peta, tombol Tambah ke kalender. Rangkaian acara ditampilkan sebagai daftar jam hanya jika rundown sudah ada. Jika belum, tampilkan teks: Susunan acara lengkap akan kami kabarkan lewat WhatsApp.
 
 Bagian form
-Judul: Daftar hadir
-Kalimat pendukung: Cukup dua langkah, tidak sampai satu menit.
+Judul: Daftar sekarang!
+Kalimat pendukung: Isi form untuk bisa mendapatkan E-Ticket dan bergabung ke grup WhatsApp untuk informasi lebih lanjut.
 
 Penutup
 Teks: Ada pertanyaan sebelum datang? Hubungi admisi lewat WhatsApp.
@@ -78,7 +78,7 @@ Langkah dua
 2. Label: Asal kota atau kabupaten. Contoh isi: Subang.
 3. Label: Asal sekolah. Contoh isi: SMP Negeri 1 Subang.
 4. Label: Minat jurusan. Pilihan: RPL, DKV, Belum tahu. Bantuan: Boleh dikosongkan.
-5. Kotak persetujuan: Saya setuju dihubungi lewat WhatsApp oleh pihak SMKIT As Syifa terkait open house dan pendaftaran. Data saya hanya dipakai untuk keperluan itu. Tautan: Kebijakan privasi.
+5. Kotak persetujuan: Saya setuju dihubungi lewat WhatsApp oleh pihak SMKIT As-Syifa terkait open house dan pendaftaran. Data saya hanya dipakai untuk keperluan itu. Tautan: Kebijakan privasi.
 Tombol: Kirim pendaftaran. Tombol kembali: Kembali
 
 Daftar tugas progres: Data anak, Kehadiran.
@@ -98,22 +98,34 @@ Pesan kesalahan
 
 ## Halaman terima kasih
 
+Label status: Pendaftaran terkirim
 Judul: Terima kasih, pendaftaran sudah kami terima
-Isi jika ada ringkasan: Kami tunggu {nama anak} dan {jumlah hadir} orang di open house pada Sabtu 07 November 2026, pukul 08.00 sampai 15.00 WIB.
-Isi jika tidak ada ringkasan: Kami tunggu Bapak dan Ibu di open house pada Sabtu 07 November 2026, pukul 08.00 sampai 15.00 WIB.
+Kalimat pembuka: Tiket masuk sudah siap. Simpan atau kirim ke WhatsApp sebelum hari acara.
+Isi jika ada ringkasan: Kami tunggu {nama anak} dan {jumlah hadir} orang di open house.
+Isi jika tidak ada ringkasan: Kami tunggu Bapak dan Ibu di open house.
 
-Tiket Masuk & QR Code:
-- Judul tiket: Tiket Masuk Open House
-- Label kode: Kode Tiket: {kode tiket}
-- Petunjuk: Tunjukkan QR Code ini kepada panitia di meja registrasi saat tiba di lokasi.
-- Tombol: Simpan Tiket QR (unduh gambar untuk disimpan di galeri ponsel).
-- Tombol: Bagikan Tiket (mengirim gambar QR tiket dan rekap informasi melalui tombol bagikan perangkat; jika tidak didukung, simpan gambar lalu buka WhatsApp dengan teks).
+Langkah sebelum hari acara:
+1. Gabung grup WhatsApp: Pengingat dan informasi terbaru dibagikan lewat grup ini.
+2. Simpan jadwalnya: Tambahkan jadwal ke kalender supaya tidak terlewat.
+3. Siapkan tiket saat tiba: Buka tiket dari HP dan tunjukkan QR code di meja registrasi.
+
+Detail acara: Hari, Tanggal, Jam, Tempat, dan tautan Lihat lokasi di Google Maps.
+Kotak bantuan: Butuh bantuan? Panitia akan menghubungi lewat WhatsApp untuk memastikan kehadiran. Tombol Chat admisi dan tautan Lihat info pendaftaran PMB.
+
+Tiket Masuk dan QR Code:
+- Judul tiket: Open House SMKIT As-Syifa
+- Label kode: Kode tiket
+- Petunjuk: Tunjukkan QR code ini ke panitia di meja registrasi. Tidak perlu dicetak.
+- Tombol: Salin (menyalin kode tiket).
+- Tombol: Simpan gambar tiket (unduh gambar untuk disimpan di galeri ponsel).
+- Tombol: Kirim ke WhatsApp (mengirim gambar QR tiket dan rekap informasi melalui tombol bagikan perangkat; jika tidak didukung, simpan gambar lalu buka WhatsApp dengan teks).
+- Jika data tiket tidak ada: Tiket tidak ditemukan. Data tiket tersimpan di perangkat yang dipakai saat mendaftar. Buka tautan tiket dari pesan WhatsApp panitia, atau hubungi admisi.
 
 Pesan WhatsApp otomatis penyerta tiket (dikirim ke nomor orang tua yang didaftarkan):
 
 Assalamualaikum Bapak/Ibu.
 
-Pendaftaran Open House SMKIT As Syifa berhasil kami terima.
+Pendaftaran Open House SMKIT As-Syifa berhasil kami terima.
 
 👤 Calon siswa: {nama anak}
 👥 Jumlah peserta: {jumlah hadir} orang
@@ -152,7 +164,7 @@ Catatan: Panitia akan menghubungi lewat WhatsApp untuk memastikan kehadiran.
 
 Dasar singkat, perlu disetujui sekolah sebelum tayang. Isi yang harus ada:
 
-1. Siapa yang mengumpulkan: SMKIT As Syifa Boarding School.
+1. Siapa yang mengumpulkan: SMKIT As-Syifa Boarding School.
 2. Data yang dikumpulkan: nama anak, nomor HP orang tua, nama orang tua bila diisi, jumlah yang hadir, asal kota, asal sekolah, minat jurusan bila diisi, dan sumber kunjungan.
 3. Tujuan: informasi dan komunikasi open house serta pendaftaran.
 4. Siapa yang bisa melihat: panitia penerimaan siswa baru.
@@ -160,14 +172,32 @@ Dasar singkat, perlu disetujui sekolah sebelum tayang. Isi yang harus ada:
 6. Cara meminta penghapusan data: hubungi admisi lewat WhatsApp di nomor 0811-2222-3934.
 7. Tidak ada data yang dijual atau dibagikan untuk iklan pihak lain.
 
+Teks halaman:
+
+Label: Privasi dan data
+Judul: Kebijakan Privasi
+Kalimat pembuka: Kami hanya mencatat data yang dibutuhkan untuk menyiapkan open house dan menghubungi Bapak atau Ibu. Halaman ini menjelaskan data apa saja yang kami simpan dan cara meminta penghapusannya.
+Keterangan berlaku: Berlaku untuk pendaftaran Open House 07 November 2026.
+
+Kartu "Data yang kami catat": Saat mendaftar, kami mencatat data berikut: Nama anak, Nomor HP orang tua, Nama orang tua bila diisi, Jumlah yang hadir, Asal kota, Asal sekolah, Minat jurusan bila diisi, Sumber kunjungan.
+
+Kartu "Penggunaan dan akses":
+- Tujuan: Informasi dan komunikasi open house serta pendaftaran.
+- Yang dapat melihat: Panitia penerimaan siswa baru.
+- Lama penyimpanan: 6 bulan.
+
+Pita "Pembagian ke pihak lain": Tidak ada data yang dijual atau dibagikan untuk iklan pihak lain.
+
+Kartu "Hak penghapusan data": Bapak atau Ibu berhak meminta seluruh data pendaftaran dihapus dari sistem kami secara permanen. Permintaan diteruskan ke admisi lewat WhatsApp di nomor 0811-2222-3934. Tombol: Minta hapus via WhatsApp.
+
 ## Pesan WhatsApp untuk tombol Chat di admin
 
 Sapaan: jika nama orang tua ada, Bapak atau Ibu {nama orang tua}. Jika tidak, Bapak atau Ibu dari {nama anak}.
 
 Isi pesan:
-Assalamualaikum {sapaan}. Kami dari panitia Open House SMKIT As Syifa Boarding School. Terima kasih sudah mendaftarkan {nama anak}. Kami ingin memastikan data pendaftaran dan membantu jika ada yang ingin ditanyakan. Apakah ada yang bisa kami bantu?
+Assalamualaikum {sapaan}. Kami dari panitia Open House SMKIT As-Syifa Boarding School. Terima kasih sudah mendaftarkan {nama anak}. Kami ingin memastikan data pendaftaran dan membantu jika ada yang ingin ditanyakan. Apakah ada yang bisa kami bantu?
 
 ## Teks meta
 
-1. Judul halaman: Open House SMKIT As Syifa Boarding School
-2. Deskripsi: Datang, lihat langsung, dan coba sendiri. Daftar hadir open house SMKIT As Syifa Boarding School, Jalancagak, Subang.
+1. Judul halaman: Open House SMKIT As-Syifa Boarding School
+2. Deskripsi: Datang, lihat langsung, dan coba sendiri. Daftar hadir open house SMKIT As-Syifa Boarding School, Jalancagak, Subang.

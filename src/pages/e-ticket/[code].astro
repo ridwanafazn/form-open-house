@@ -6,20 +6,74 @@ export const prerender = false;
 const code = Astro.params.code ?? '';
 ---
 
-<Base title={`Tiket ${code}`} description="Tiket digital Open House SMKIT As Syifa Boarding School.">
+<Base title={`Tiket ${code}`} description="Tiket digital Open House SMKIT As-Syifa Boarding School.">
   <meta slot="head" name="robots" content="noindex" />
-  <main class="ticket-page container">
-    <p class="ticket-page__back"><a href="/">Kembali ke halaman utama</a></p>
-    <PublicTicket client:load code={code} />
-    <p class="ticket-page__footnote">Tiket ini ditujukan untuk keperluan registrasi Open House. Simpan tautan ini sampai hari acara.</p>
+  <main class="ticket-page">
+    <div class="container">
+      <div class="ticket-page__inner">
+        <PublicTicket client:load code={code} />
+        <p class="ticket-page__footnote">
+          Tiket ini untuk keperluan registrasi Open House. Simpan tautan ini sampai hari acara.
+        </p>
+        <p class="ticket-page__back">
+          <a href="/">
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M19 12H5"></path>
+              <path d="m12 19-7-7 7-7"></path>
+            </svg>
+            Kembali ke halaman utama
+          </a>
+        </p>
+      </div>
+    </div>
   </main>
 </Base>
 
 <style>
-  /* Latar dan tipografi mengikuti token admin.css, sudah diimpor via PublicTicket. */
-  .ticket-page { padding-block: 20px 64px; }
-  .ticket-page__back { max-width: 620px; margin: 0 auto; font-size: .9rem; font-family: 'DM Sans', sans-serif; }
-  .ticket-page__back a { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border: 1px solid var(--admin-border, #E2E8F0); border-radius: var(--radius-md, 10px); background: var(--admin-surface, #FFFFFF); color: var(--admin-text-main, #1E293B); text-decoration: none; transition: all .2s; }
-  .ticket-page__back a:hover { background: #F1F5F9; color: var(--admin-primary, #0F172A); }
-  .ticket-page__footnote { max-width: 620px; margin: 18px auto; color: var(--admin-text-muted, #64748B); font-family: 'DM Sans', sans-serif; font-size: .85rem; text-align: center; }
+  .ticket-page {
+    padding-block: var(--space-8) var(--space-16);
+  }
+
+  .ticket-page__inner {
+    max-width: 620px;
+    margin-inline: auto;
+  }
+
+  .ticket-page__footnote {
+    margin-top: var(--space-3);
+    color: var(--ink-soft);
+    font-size: 0.8rem;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .ticket-page__back {
+    margin-top: var(--space-6);
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  .ticket-page__back a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--ink-soft);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .ticket-page__back a:hover {
+    color: var(--ink);
+    text-decoration: underline;
+  }
 </style>

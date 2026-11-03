@@ -65,7 +65,7 @@ export const GET: APIRoute = async ({ url }) => {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1120" viewBox="0 0 900 1120">
   <rect width="900" height="1120" fill="#fffdf8"/>
   <rect x="24" y="24" width="852" height="1072" rx="24" fill="none" stroke="#b7d6cf" stroke-width="6"/>
-  <text x="68" y="94" fill="#1d2c2b" font-family="Arial,sans-serif" font-size="36" font-weight="700">OPEN HOUSE SMKIT AS SYIFA</text>
+  <text x="68" y="94" fill="#1d2c2b" font-family="Arial,sans-serif" font-size="36" font-weight="700">OPEN HOUSE SMKIT AS-SYIFA</text>
   <text x="68" y="132" fill="#526363" font-family="Arial,sans-serif" font-size="24">Tiket masuk</text>
   <g transform="translate(270 170) scale(.83)">${qrMarkup}</g>
   <text x="68" y="570" fill="#1d2c2b" font-family="Arial,sans-serif" font-size="32" font-weight="700">${name}</text>
@@ -73,7 +73,7 @@ export const GET: APIRoute = async ({ url }) => {
   <text x="68" y="646" fill="#526363" font-family="Arial,sans-serif" font-size="23">${city}</text>
   <text x="68" y="732" fill="#1d2c2b" font-family="monospace" font-size="32" font-weight="700">${ticketCode}</text>
   <text x="68" y="798" fill="#526363" font-family="Arial,sans-serif" font-size="22">Sabtu, 07 November 2026 · 08.00–15.00 WIB</text>
-  <text x="68" y="838" fill="#526363" font-family="Arial,sans-serif" font-size="22">SMKIT As Syifa Boarding School, Jalancagak, Subang</text>
+  <text x="68" y="838" fill="#526363" font-family="Arial,sans-serif" font-size="22">SMKIT As-Syifa Boarding School, Jalancagak, Subang</text>
   <text x="68" y="908" fill="#526363" font-family="Arial,sans-serif" font-size="22">Tunjukkan tiket ini kepada panitia saat registrasi.</text>
 </svg>`;
 

@@ -6,7 +6,7 @@ export const content = {
   meta: {
     title: 'Open House',
     description:
-      'Datang, lihat langsung, dan coba sendiri. Daftar hadir open house SMKIT As Syifa Boarding School, Jalancagak, Subang.',
+      'Datang, lihat langsung, dan coba sendiri. Daftar hadir open house SMKIT As-Syifa Boarding School, Jalancagak, Subang.',
   },
 
   home: {
@@ -47,13 +47,14 @@ export const content = {
     },
 
     incentive: {
-      heading: 'Daftar saat open house, biayanya lebih ringan',
+      heading: 'Daftar seleksi PMB saat open house, biayanya lebih ringan',
       text: 'Biaya pendaftaran seleksi normalnya Rp500 ribu. Jika mendaftar langsung saat open house, biayanya Rp100 ribu. Jika hadir tetapi mendaftar belakangan, biayanya Rp300 ribu.',
       laterNote: 'Sudah hadir, daftar menyusul.',
       note: 'Biaya seleksi PMB SMKIT As-Syifa',
     },
 
     eventInfo: {
+      heading: 'Lokasi dan Informasi Acara',
       openMap: 'Buka Google Maps',
       addCalendar: 'Tambah ke kalender',
     },
@@ -61,43 +62,136 @@ export const content = {
     rundown: {
       heading: 'Susunan Acara',
       tagline: 'Jadwal kegiatan open house dari pagi hingga selesai.',
-      items: [
+      // Ringkasan untuk peserta. Agenda internal panitia seperti persiapan,
+      // briefing, jobdesk, dan perlengkapan tidak ditampilkan.
+      groups: [
         {
-          time: '08:00 - 08:30',
-          title: 'Registrasi dan Penyambutan',
-          desc: 'Registrasi ulang kehadiran peserta serta pembagian panduan open house.',
+          title: 'Registrasi dan Pembukaan',
+          short: 'Registrasi',
+          range: '08.00–09.35',
+          items: [
+            {
+              time: '08.00–08.30',
+              title: 'Registrasi dan penyambutan',
+              location: 'Lobi Sekolah',
+            },
+            {
+              time: '08.30–09.00',
+              title: 'Pembukaan, sambutan, dan profil sekolah',
+              location: 'Aula SMK',
+            },
+            {
+              time: '09.00–09.30',
+              title: 'Pengenalan jurusan RPL dan DKV',
+              location: 'Aula SMK',
+            },
+            {
+              time: '09.30–09.35',
+              title: 'Pengarahan tur kampus',
+              location: 'Aula SMK',
+            },
+          ],
         },
         {
-          time: '08:30 - 09:30',
-          title: 'Pemaparan Sekolah dan Jurusan',
-          desc: 'Pengenalan kurikulum boarding school serta keunggulan jurusan RPL dan DKV di aula.',
+          title: 'Tour Kampus',
+          short: 'Tour',
+          range: '09.35–11.30',
+          items: [
+            {
+              time: '09.35–09.45',
+              title: 'Pembagian kelompok',
+              location: 'Aula SMK',
+            },
+            {
+              time: '09.45–10.15',
+              title: 'Kunjungan ruang kelas',
+              location: 'Area Sekolah',
+            },
+            {
+              time: '10.15–10.45',
+              title: 'Kunjungan lab RPL dan DKV',
+              location: 'Area Sekolah',
+            },
+            {
+              time: '10.45–11.15',
+              title: 'Kunjungan asrama',
+              location: 'Area Sekolah',
+            },
+          ],
         },
         {
-          time: '09:30 - 11:30',
-          title: 'Tur Kampus dan Praktik Lab',
-          desc: 'Kunjungan langsung ke ruang kelas, laboratorium komputer dan desain, serta asrama santri.',
-        },
-        {
-          time: '11:30 - 13:00',
           title: 'Ishoma',
-          desc: 'Salat berjamaah di masjid kampus dan istirahat siang bersama.',
+          short: 'Ishoma',
+          range: '11.15–13.00',
+          items: [
+            {
+              time: '11.15–11.40',
+              title: 'Menuju masjid',
+              location: 'Masjid',
+            },
+            {
+              time: '11.40–12.15',
+              title: 'Salat Zuhur berjamaah',
+              location: 'Masjid',
+            },
+            {
+              time: '12.15–13.00',
+              title: 'Istirahat dan persiapan',
+              location: 'Area Kampus 4',
+            },
+          ],
         },
         {
-          time: '13:00 - 14:30',
-          title: 'Konsultasi PMB dan Pendaftaran',
-          desc: 'Konsultasi langsung dengan tim admisi dan guru, serta layanan pendaftaran seleksi berinsentif.',
+          title: 'Konsultasi dan Pendaftaran',
+          short: 'Konsultasi',
+          range: '13.00–14.30',
+          items: [
+            {
+              time: '13.00–13.30',
+              title: 'Sosialisasi PMB',
+              location: 'Lobi / Aula',
+            },
+            {
+              time: '13.30–13.50',
+              title: 'Penjelasan program pendidikan',
+              location: 'Lobi / Aula',
+            },
+            {
+              time: '13.50–14.15',
+              title: 'Konsultasi individual',
+              location: 'Lobi / Aula',
+            },
+            {
+              time: '14.15–14.30',
+              title: 'Pendaftaran awal',
+              location: 'Lobi / Aula',
+            },
+          ],
         },
         {
-          time: '14:30 - 15:00',
-          title: 'Ramah Tamah dan Penutupan',
-          desc: 'Sesi penutupan open house dan pembagian cinderamata.',
+          title: 'Penutupan',
+          short: 'Penutupan',
+          range: '14.30–15.00',
+          items: [
+            {
+              time: '14.30–14.45',
+              title: 'Ucapan terima kasih dan doa penutup',
+              location: 'Aula SMK',
+            },
+            {
+              time: '14.45–15.00',
+              title: 'Cendera mata, foto bersama, dan pengantaran',
+              location: 'Aula SMK',
+            },
+          ],
         },
       ],
     },
 
     form: {
-      heading: 'Daftar hadir',
-      tagline: 'Cukup dua langkah, tidak sampai satu menit.',
+      heading: 'Daftar sekarang!',
+      tagline:
+        'Isi form untuk bisa mendapatkan E-Ticket dan bergabung ke grup WhatsApp untuk informasi lebih lanjut.',
       progress: ['Data anak', 'Kehadiran'],
     },
 
@@ -149,7 +243,7 @@ export const content = {
       },
     ],
     consent: {
-      text: 'Saya setuju dihubungi lewat WhatsApp oleh pihak SMKIT As Syifa terkait open house dan pendaftaran. Data saya hanya dipakai untuk keperluan itu.',
+      text: 'Saya setuju dihubungi lewat WhatsApp oleh pihak SMKIT As-Syifa terkait open house dan pendaftaran. Data saya hanya dipakai untuk keperluan itu.',
       linkText: 'Kebijakan privasi',
       linkHref: '/privasi',
     },
@@ -177,13 +271,47 @@ export const content = {
   },
 
   thankyou: {
+    kicker: 'Pendaftaran terkirim',
     title: 'Terima kasih, pendaftaran sudah kami terima',
-    withSummary:
-      'Kami tunggu {nama anak} dan {jumlah hadir} orang di open house pada Sabtu 07 November 2026, pukul 08.00 sampai 15.00 WIB.',
-    withoutSummary:
-      'Kami tunggu Bapak dan Ibu di open house pada Sabtu 07 November 2026, pukul 08.00 sampai 15.00 WIB.',
+    lead: 'Tiket masuk sudah siap. Simpan atau kirim ke WhatsApp sebelum hari acara.',
+    withSummary: 'Kami tunggu {nama anak} dan {jumlah hadir} orang di open house.',
+    withoutSummary: 'Kami tunggu Ayah dan Bunda di open house.',
+    ticket: {
+      label: 'Tiket masuk',
+      status: 'Terdaftar',
+      codeLabel: 'Kode tiket',
+      copy: 'Salin',
+      copied: 'Tersalin',
+      child: 'Calon siswa',
+      attendees: 'Jumlah hadir',
+      personUnit: 'orang',
+      instruction: 'Tunjukkan QR code ini ke panitia di meja registrasi. Tidak perlu dicetak.',
+      download: 'Simpan gambar tiket',
+      share: 'Kirim ke WhatsApp',
+      emptyTitle: 'Tiket tidak ditemukan',
+      emptyText:
+        'Data tiket tersimpan di perangkat yang dipakai saat mendaftar. Buka tautan tiket dari pesan WhatsApp panitia, atau hubungi admisi.',
+      noJsNote:
+        'Tiket digital memerlukan JavaScript. Buka tautan tiket dari pesan WhatsApp panitia, atau hubungi admisi.',
+    },
+    steps: {
+      heading: 'Sebelum hari acara',
+      joinTitle: 'Gabung grup WhatsApp',
+      joinText: 'Pengingat dan informasi terbaru dibagikan lewat grup ini.',
+      calendarTitle: 'Simpan jadwalnya',
+      calendarText: 'Tambahkan jadwal ke kalender supaya tidak terlewat.',
+      ticketTitle: 'Siapkan tiket saat tiba',
+      ticketText: 'Buka tiket dari HP dan tunjukkan QR code di meja registrasi.',
+    },
+    event: {
+      heading: 'Detail acara',
+      openMap: 'Lihat lokasi di Google Maps',
+    },
+    help: {
+      heading: 'Butuh bantuan?',
+    },
     nextSteps: {
-      joinWa: 'Gabung WhatsApp Open House',
+      joinWa: 'Gabung grup WhatsApp',
       waChannelNote: 'Saluran ini satu arah, nomor Bapak atau Ibu tidak terlihat oleh orang lain.',
       waGroupNote:
         'Di grup, anggota lain dapat melihat nomor Bapak atau Ibu. Bergabung bersifat pilihan.',
@@ -194,19 +322,61 @@ export const content = {
     note: 'Panitia akan menghubungi lewat WhatsApp untuk memastikan kehadiran.',
   },
 
+  ticketFinder: {
+    kicker: 'Tiket digital',
+    title: 'Cari tiket Open House',
+    lead: 'Masukkan kode tiket atau nomor HP yang dipakai saat mendaftar. Tiket bisa dibuka dan disimpan lagi kapan saja.',
+    label: 'Kode tiket atau nomor HP',
+    placeholder: 'Contoh: OH-ABC123 atau 0812 3456 7890',
+    hint: 'Nomor HP boleh ditulis dengan 08, 62, atau +62.',
+    submit: 'Cari tiket',
+    searching: 'Mencari tiket...',
+    resultsHeading: 'Tiket ditemukan',
+    multiple: 'Ada beberapa tiket dengan nomor ini. Pilih salah satu.',
+    open: 'Buka tiket',
+    attendees: 'orang',
+    emptyTitle: 'Tiket tidak ditemukan',
+    emptyText:
+      'Periksa kembali kode tiket atau nomor HP-nya. Pastikan nomornya sama dengan yang dipakai saat mendaftar.',
+    invalid: 'Masukkan kode tiket yang valid atau nomor HP Indonesia.',
+    rateLimited: 'Terlalu banyak percobaan. Tunggu sebentar lalu coba lagi.',
+    server: 'Pencarian gagal. Periksa koneksi lalu coba lagi.',
+  },
+
   privacy: {
-    collector: 'SMKIT As Syifa Boarding School',
-    dataCollected:
-      'nama anak, nomor HP orang tua, nama orang tua bila diisi, jumlah yang hadir, asal kota, asal sekolah, minat jurusan bila diisi, dan sumber kunjungan',
-    purpose: 'informasi dan komunikasi open house serta pendaftaran',
-    viewers: 'panitia penerimaan siswa baru',
-    storageDuration: '6 bulan',
-    deleteRequest: 'hubungi admisi lewat WhatsApp di nomor 0811-2222-3934',
-    noSharing: 'Tidak ada data yang dijual atau dibagikan untuk iklan pihak lain.',
+    kicker: 'Privasi dan data',
+    title: 'Kebijakan Privasi',
+    lead: 'Kami hanya mencatat data yang dibutuhkan untuk menyiapkan open house dan menghubungi Ayah dan Bunda. Halaman ini menjelaskan data apa saja yang kami simpan dan cara meminta penghapusannya.',
+    meta: 'Berlaku untuk pendaftaran Open House 07 November 2026.',
+    dataItems: [
+      'Nama anak',
+      'Nomor HP orang tua',
+      'Nama orang tua bila diisi',
+      'Jumlah yang hadir',
+      'Asal kota',
+      'Asal sekolah',
+      'Minat jurusan bila diisi',
+      'Sumber kunjungan',
+    ],
+    collectedHeading: 'Data yang kami catat',
+    collectedIntro: 'Saat mendaftar, kami mencatat data berikut:',
+    usageHeading: 'Penggunaan dan akses',
+    purposeLabel: 'Tujuan',
+    purposeText: 'Informasi dan komunikasi open house serta pendaftaran.',
+    accessLabel: 'Yang dapat melihat',
+    accessText: 'Panitia penerimaan siswa baru.',
+    retentionLabel: 'Lama penyimpanan',
+    retentionText: '6 bulan.',
+    sharingHeading: 'Pembagian ke pihak lain',
+    sharingText: 'Tidak ada data yang dijual atau dibagikan untuk iklan pihak lain.',
+    deletionHeading: 'Hak penghapusan data',
+    deletionText:
+      'Ayah dan Bunda berhak meminta seluruh data pendaftaran dihapus dari sistem kami secara permanen.',
+    deletionAction: 'Minta hapus via WhatsApp',
   },
 
   waMessage: {
     greeting:
-      'Assalamualaikum {sapaan}. Kami dari panitia Open House SMKIT As Syifa Boarding School. Terima kasih sudah mendaftarkan {nama anak}. Kami ingin memastikan data pendaftaran dan membantu jika ada yang ingin ditanyakan. Apakah ada yang bisa kami bantu?',
+      'Assalamualaikum {sapaan}. Kami dari panitia Open House SMKIT As-Syifa Boarding School. Terima kasih sudah mendaftarkan {nama anak}. Kami ingin memastikan data pendaftaran dan membantu jika ada yang ingin ditanyakan. Apakah ada yang bisa kami bantu?',
   },
 };

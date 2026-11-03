@@ -12,102 +12,464 @@ const waNote = isGroup
   : content.thankyou.nextSteps.waChannelNote;
 const waJoinHref = eventConfig.waJoinUrl?.startsWith('http') ? eventConfig.waJoinUrl : null;
 const chatAdmisi = `https://wa.me/${eventConfig.admissionWhatsApp}?text=${encodeURIComponent(
-  'Assalamualaikum. Saya ingin bertanya tentang Open House SMKIT As Syifa.',
+  'Assalamualaikum. Saya ingin bertanya tentang Open House SMKIT As-Syifa.',
 )}`;
+
+const [dayName, ...dateParts] = eventConfig.dateText.split(', ');
+const dateOnly = dateParts.join(', ');
 ---
 
 <Base title="Terima kasih" description="Pendaftaran open house berhasil dikirim.">
   <meta slot="head" name="robots" content="noindex" />
 
-<script is:inline>
+  <script is:inline>
     if (typeof window !== 'undefined' && window.fbq) {
       fbq('track', 'Lead');
     }
   </script>
 
-
-  <main class="container">
-    <section class="ty" aria-labelledby="ty-title">
-      <header class="ty__head">
+  <main class="ty">
+    <div class="container">
+      <header class="ty-hero">
+        <p class="ty-kicker">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="m5 13 4 4L19 7"></path>
+          </svg>
+          {content.thankyou.kicker}
+        </p>
         <h1 id="ty-title">{content.thankyou.title}</h1>
+        <p class="ty-lead">{content.thankyou.lead}</p>
+        <ThankYouSummary client:idle />
       </header>
-      <ThankYouSummary client:idle />
 
-      <!-- Kartu Tiket Masuk Digital & QR Code -->
-      <TicketCard client:load />
+      <div class="ty-grid">
+        <div class="ty-main">
+          <!-- Tiket adalah bukti masuk, jadi tampil paling awal dan paling menonjol. -->
+          <div class="ty-ticket">
+            <TicketCard client:load />
+            <noscript>
+              <style is:inline>
+                .ticket-card--loading {
+                  display: none;
+                }
+              </style>
+              <p class="ty-ticket__nojs">{content.thankyou.ticket.noJsNote}</p>
+            </noscript>
+          </div>
 
-      <p class="ty__note">{content.thankyou.note}</p>
-
-      {waJoinHref && (
-        <div class="ty__block">
-          <h2 class="ty__sub">Sebelum hari acara</h2>
-          <a class="button button--primary" href={waJoinHref} rel="noopener" target="_blank">
-            {content.thankyou.nextSteps.joinWa}
-          </a>
-          <p class="ty__wa-note">{waNote}</p>
+          <section class="ty-card ty-steps" aria-labelledby="ty-steps-title">
+            <h2 class="ty-card__title" id="ty-steps-title">{content.thankyou.steps.heading}</h2>
+            <ol class="ty-steps__list">
+              {waJoinHref && (
+                <li class="ty-step">
+                  <span class="ty-step__num" aria-hidden="true">01</span>
+                  <div class="ty-step__body">
+                    <h3 class="ty-step__title">{content.thankyou.steps.joinTitle}</h3>
+                    <p class="ty-step__text">{content.thankyou.steps.joinText}</p>
+                    <div class="ty-step__action">
+                      <a
+                        class="button button--primary"
+                        href={waJoinHref}
+                        rel="noopener"
+                        target="_blank"
+                      >
+                        {content.thankyou.nextSteps.joinWa}
+                      </a>
+                    </div>
+                    <p class="ty-step__note">{waNote}</p>
+                  </div>
+                </li>
+              )}
+              <li class="ty-step">
+                <span class="ty-step__num" aria-hidden="true">{waJoinHref ? '02' : '01'}</span>
+                <div class="ty-step__body">
+                  <h3 class="ty-step__title">{content.thankyou.steps.calendarTitle}</h3>
+                  <p class="ty-step__text">{content.thankyou.steps.calendarText}</p>
+                  <div class="ty-step__action">
+                    <AddCalendar client:idle />
+                  </div>
+                </div>
+              </li>
+              <li class="ty-step">
+                <span class="ty-step__num" aria-hidden="true">{waJoinHref ? '03' : '02'}</span>
+                <div class="ty-step__body">
+                  <h3 class="ty-step__title">{content.thankyou.steps.ticketTitle}</h3>
+                  <p class="ty-step__text">{content.thankyou.steps.ticketText}</p>
+                </div>
+              </li>
+            </ol>
+          </section>
         </div>
-      )}
 
-      <div class="ty__block">
-        <h2 class="ty__sub">Simpan dan siapkan</h2>
-        <div class="ty__actions">
-          <AddCalendar client:idle />
-          <a class="button button--secondary" href={chatAdmisi} rel="noopener" target="_blank">
-            {content.thankyou.nextSteps.chatAdmisi}
-          </a>
-          <a class="button button--secondary" href={eventConfig.pmbPortalUrl} rel="noopener" target="_blank">
-            {content.thankyou.nextSteps.pmbLink}
-          </a>
-        </div>
+        <aside class="ty-side">
+          <section class="ty-card ty-event" aria-labelledby="ty-event-title">
+            <h2 class="ty-card__title" id="ty-event-title">{content.thankyou.event.heading}</h2>
+            <dl class="ty-facts">
+              <div class="ty-fact">
+                <dt>Hari</dt>
+                <dd>{dayName}</dd>
+              </div>
+              <div class="ty-fact">
+                <dt>Tanggal</dt>
+                <dd>{dateOnly}</dd>
+              </div>
+              <div class="ty-fact">
+                <dt>Jam</dt>
+                <dd>{eventConfig.startTime} sampai {eventConfig.endTime} WIB</dd>
+              </div>
+              <div class="ty-fact">
+                <dt>Tempat</dt>
+                <dd>{eventConfig.locationName}</dd>
+              </div>
+            </dl>
+            <a
+              class="ty-event__map"
+              href={eventConfig.mapsUrl}
+              rel="noopener"
+              target="_blank"
+            >
+              {content.thankyou.event.openMap}
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M5 12h14"></path>
+                <path d="m12 5 7 7-7 7"></path>
+              </svg>
+            </a>
+          </section>
+
+          <section class="ty-card ty-help" aria-labelledby="ty-help-title">
+            <h2 class="ty-card__title" id="ty-help-title">{content.thankyou.help.heading}</h2>
+            <p class="ty-help__text">{content.thankyou.note}</p>
+            <div class="ty-help__actions">
+              <a class="button button--primary" href={chatAdmisi} rel="noopener" target="_blank">
+                {content.thankyou.nextSteps.chatAdmisi}
+              </a>
+              <a
+                class="ty-help__link"
+                href={eventConfig.pmbPortalUrl}
+                rel="noopener"
+                target="_blank"
+              >
+                {content.thankyou.nextSteps.pmbLink}
+              </a>
+            </div>
+          </section>
+        </aside>
       </div>
 
-      <p class="ty__back"><a href="/">Kembali ke halaman utama</a></p>
-    </section>
+      <p class="ty-back">
+        <a href="/">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M19 12H5"></path>
+            <path d="m12 19-7-7 7-7"></path>
+          </svg>
+          Kembali ke halaman utama
+        </a>
+      </p>
+    </div>
   </main>
 </Base>
 
 <style>
   .ty {
-    max-width: 640px;
-    margin-inline: auto;
-    padding-block: var(--space-12) var(--space-16);
+    padding-block: var(--space-8) var(--space-16);
   }
-  .ty__head {
-    margin-bottom: var(--space-6);
+
+  /* --- Kepala halaman: satu pesan utama, tanpa teks bersaing --- */
+  .ty-hero {
+    max-width: 720px;
+    margin-bottom: var(--space-8);
   }
-  .ty__head h1 {
-    margin-top: 0;
-    font-family: var(--font-heading);
+
+  .ty-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 3px 8px;
+    border: 1px solid var(--teal-dark);
+    border-radius: 4px;
+    background: var(--teal-pale);
+    color: var(--teal-dark);
+    font-family: var(--font-tech);
+    font-size: 0.68rem;
     font-weight: 700;
-    font-size: clamp(1.9rem, 5vw, 2.8rem);
+    letter-spacing: 0.08em;
+    line-height: 1.7;
+    text-transform: uppercase;
   }
-  .ty__note {
+
+  .ty-hero h1 {
+    margin-top: var(--space-4);
+    font-size: clamp(1.8rem, 4.6vw, 2.6rem);
+  }
+
+  .ty-lead {
+    max-width: 56ch;
+    margin-top: var(--space-3);
     color: var(--ink-soft);
-    margin-block: var(--space-6) var(--space-8);
-    padding-top: var(--space-4);
+    font-size: 1rem;
+  }
+
+  :global(.ty-summary) {
+    max-width: 56ch;
+    margin-top: var(--space-6);
+    padding: var(--space-3) var(--space-4);
+    border-left: 3px solid var(--teal);
+    border-radius: 0 8px 8px 0;
+    background: var(--paper-card);
+    font-size: 0.95rem;
+  }
+
+  /* --- Dua kolom di desktop: tiket dan langkah di kiri, detail di kanan --- */
+  .ty-grid {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .ty-main,
+  .ty-side {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    min-width: 0;
+  }
+
+  @media (min-width: 900px) {
+    .ty-grid {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      align-items: start;
+    }
+
+    .ty-side {
+      position: sticky;
+      top: 120px;
+    }
+  }
+
+  .ty-card {
+    padding: var(--space-6);
+    border: 1px solid var(--paper-grid);
+    border-radius: 12px;
+    background: #ffffff;
+  }
+
+  .ty-ticket__nojs {
+    padding: var(--space-4);
+    border: 1px solid var(--paper-grid);
+    border-radius: 12px;
+    background: var(--paper-card);
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .ty-card__title {
+    margin: 0 0 var(--space-4);
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+
+  /* --- Langkah sebelum acara --- */
+  .ty-steps__list {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .ty-step {
+    display: grid;
+    grid-template-columns: 1.75rem minmax(0, 1fr);
+    gap: var(--space-3);
+    padding-block: var(--space-4);
     border-top: 1px solid var(--paper-grid);
   }
-  .ty__block {
-    margin-block: var(--space-6);
+
+  .ty-step:first-child {
+    padding-top: 0;
+    border-top: 0;
   }
-  .ty__sub {
-    font-size: 1.05rem;
-    margin-bottom: var(--space-3);
-    color: var(--ink);
+
+  .ty-step:last-child {
+    padding-bottom: 0;
   }
-  .ty__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-3);
-    align-items: center;
+
+  .ty-step__num {
+    padding-top: 3px;
+    color: var(--teal-dark);
+    font-family: var(--font-tech);
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1.4;
   }
-  .ty__wa-note {
-    margin-top: var(--space-2);
-    font-size: 0.85rem;
+
+  .ty-step__title {
+    margin: 0 0 2px;
+    font-family: var(--font-heading);
+    font-size: 0.98rem;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  .ty-step__text {
     color: var(--ink-soft);
+    font-size: 0.9rem;
+    line-height: 1.5;
   }
-  .ty__back {
+
+  .ty-step__action {
+    margin-top: var(--space-3);
+  }
+
+  .ty-step__action :global(.button) {
+    width: 100%;
+  }
+
+  .ty-step__note {
+    max-width: 46ch;
+    margin-top: var(--space-2);
+    color: var(--ink-soft);
+    font-size: 0.78rem;
+    line-height: 1.5;
+  }
+
+  /* --- Detail acara --- */
+  .ty-facts {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin: 0;
+  }
+
+  .ty-fact {
+    display: grid;
+    grid-template-columns: 4.5rem minmax(0, 1fr);
+    gap: var(--space-3);
+    align-items: start;
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--paper-grid);
+  }
+
+  .ty-fact:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+
+  .ty-fact dt {
+    color: var(--teal-dark);
+    font-family: var(--font-heading);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    line-height: 1.7;
+    text-transform: uppercase;
+  }
+
+  .ty-fact dd {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  .ty-event__map {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: var(--space-4);
+    color: var(--teal-dark);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .ty-event__map:hover {
+    text-decoration: underline;
+  }
+
+  /* --- Bantuan --- */
+  .ty-help__text {
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .ty-help__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+
+  .ty-help__actions :global(.button) {
+    width: 100%;
+  }
+
+  .ty-help__link {
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  .ty-back {
     margin-top: var(--space-8);
     font-size: 0.9rem;
+    text-align: center;
+  }
+
+  .ty-back a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--ink-soft);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .ty-back a:hover {
+    color: var(--ink);
+    text-decoration: underline;
+  }
+
+  @media (max-width: 599px) {
+    .ty-card {
+      padding: var(--space-4);
+    }
+
+    .ty-fact {
+      grid-template-columns: 4rem minmax(0, 1fr);
+      gap: var(--space-2);
+    }
   }
 </style>

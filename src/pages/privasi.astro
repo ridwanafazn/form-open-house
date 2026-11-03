@@ -5,151 +5,353 @@ import { eventConfig } from '../config/event';
 
 const p = content.privacy;
 const deleteWa = `https://wa.me/${eventConfig.admissionWhatsApp}?text=${encodeURIComponent(
-  'Halo tim Admisi, saya ingin meminta penghapusan data pendaftaran Open House saya.'
+  'Assalamualaikum. Saya ingin meminta penghapusan data pendaftaran Open House.',
 )}`;
-
-const rows: Array<[string, string]> = [
-  ['Pengelola data', p.collector],
-  ['Data yang dikumpulkan', p.dataCollected],
-  ['Tujuan penggunaan', p.purpose],
-  ['Akses data', p.viewers],
-  ['Lama penyimpanan', p.storageDuration],
-  ['Distribusi pihak ketiga', p.noSharing],
-];
 ---
 
-<Base title="Kebijakan Privasi | Open House SMKIT As-Syifa">
-  <main class="privacy container">
-    <header class="privacy__head">
-      <h1>Kebijakan Privasi</h1>
-      <p class="privacy__lede">
-        Dokumen transparansi pengelolaan data pendaftaran Open House {p.collector}.
-      </p>
-    </header>
+<Base
+  title="Kebijakan Privasi"
+  description="Data apa yang dicatat saat mendaftar Open House SMKIT As-Syifa, cara penggunaannya, dan cara meminta penghapusan."
+>
+  <main class="privacy">
+    <div class="container">
+      <header class="privacy-hero">
+        <p class="privacy-kicker">{p.kicker}</p>
+        <h1>{p.title}</h1>
+        <p class="privacy-lead">{p.lead}</p>
+        <p class="privacy-meta">{p.meta}</p>
+      </header>
 
-    <dl class="privacy-table">
-      {rows.map(([term, value]) => (
-        <div class="privacy-row">
-          <dt>{term}</dt>
-          <dd>{value}</dd>
-        </div>
-      ))}
-    </dl>
+      <div class="privacy-grid">
+        <section class="privacy-card privacy-card--data" aria-labelledby="data-title">
+          <h2 class="privacy-card__title" id="data-title">{p.collectedHeading}</h2>
+          <p class="privacy-card__intro">{p.collectedIntro}</p>
+          <ul class="privacy-chips">
+            {p.dataItems.map((item) => (
+              <li class="privacy-chip">{item}</li>
+            ))}
+          </ul>
+        </section>
 
-    <div class="privacy-delete">
-      <div>
-        <h2>Hak penghapusan data</h2>
-        <p>
-          Anda berhak meminta kami menghapus seluruh data pendaftaran Anda dari
-          sistem kami secara permanen.
-        </p>
+        <section class="privacy-card" aria-labelledby="usage-title">
+          <h2 class="privacy-card__title" id="usage-title">{p.usageHeading}</h2>
+          <dl class="privacy-facts">
+            <div class="privacy-fact">
+              <dt>{p.purposeLabel}</dt>
+              <dd>{p.purposeText}</dd>
+            </div>
+            <div class="privacy-fact">
+              <dt>{p.accessLabel}</dt>
+              <dd>{p.accessText}</dd>
+            </div>
+            <div class="privacy-fact">
+              <dt>{p.retentionLabel}</dt>
+              <dd>{p.retentionText}</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section
+          class="privacy-card privacy-card--sharing"
+          aria-labelledby="sharing-title"
+        >
+          <h2 class="privacy-card__title" id="sharing-title">{p.sharingHeading}</h2>
+          <p class="privacy-card__text">{p.sharingText}</p>
+        </section>
+
+        <section class="privacy-card privacy-card--delete" aria-labelledby="delete-title">
+          <div>
+            <h2 class="privacy-card__title" id="delete-title">{p.deletionHeading}</h2>
+            <p class="privacy-card__text">{p.deletionText}</p>
+            <p class="privacy-delete__note">{p.deleteRequest}</p>
+          </div>
+          <a
+            class="button button--primary privacy-delete__action"
+            href={deleteWa}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            {p.deletionAction}
+          </a>
+        </section>
       </div>
-      <a href={deleteWa} rel="noopener noreferrer" target="_blank" class="button button--secondary">
-        Hubungi Admisi
-      </a>
-    </div>
 
-    <p class="privacy__back"><a href="/">Kembali ke halaman utama</a></p>
+      <p class="privacy-back">
+        <a href="/">
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M19 12H5"></path>
+            <path d="m12 19-7-7 7-7"></path>
+          </svg>
+          Kembali ke halaman utama
+        </a>
+      </p>
+    </div>
   </main>
 </Base>
 
 <style>
   .privacy {
-    max-width: 760px;
-    padding-block: var(--space-12) var(--space-16);
+    padding-block: var(--space-8) var(--space-16);
   }
 
-  .privacy__head {
+  /* --- Kepala halaman --- */
+  .privacy-hero {
+    max-width: 680px;
     margin-bottom: var(--space-8);
   }
 
-  .privacy__head h1 {
-    margin-top: 0;
-    font-family: var(--font-heading);
-    font-weight: 700;
-  }
-
-  .privacy__lede {
-    max-width: 52ch;
-    margin-top: var(--space-4);
-    color: var(--ink-soft);
-    font-size: 1.05rem;
-  }
-
-  .privacy-table {
+  .privacy-kicker {
+    display: inline-flex;
+    align-items: center;
     margin: 0;
-    border: 1px solid var(--paper-grid);
-    border-radius: 16px;
-    background: #ffffff;
-    overflow: hidden;
-  }
-
-  .privacy-row {
-    display: grid;
-    gap: var(--space-1) var(--space-6);
-    padding: var(--space-4) var(--space-6);
-    border-top: 1px solid var(--paper-grid);
-  }
-
-  .privacy-row:first-child {
-    border-top: 0;
-  }
-
-  .privacy-row dt {
+    padding: 3px 8px;
+    border: 1px solid var(--teal-dark);
+    border-radius: 4px;
+    background: var(--teal-pale);
     color: var(--teal-dark);
-    font-family: var(--font-heading);
-    font-size: 0.78rem;
+    font-family: var(--font-tech);
+    font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.08em;
+    line-height: 1.7;
     text-transform: uppercase;
   }
 
-  .privacy-row dd {
-    margin: 0;
-    font-size: 0.95rem;
-    line-height: 1.55;
+  .privacy-hero h1 {
+    margin-top: var(--space-4);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: clamp(1.8rem, 4.6vw, 2.6rem);
+    line-height: 1.15;
   }
 
-  @media (min-width: 640px) {
-    .privacy-row {
-      grid-template-columns: 220px 1fr;
-      align-items: baseline;
+  .privacy-lead {
+    max-width: 58ch;
+    margin-top: var(--space-3);
+    color: var(--ink-soft);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .privacy-meta {
+    margin-top: var(--space-4);
+    color: var(--ink-soft);
+    font-family: var(--font-tech);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+  }
+
+  /* --- Kartu isi: satu kolom di mobile, dua kolom seimbang di desktop --- */
+  .privacy-grid {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  @media (min-width: 860px) {
+    .privacy-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+    }
+
+    .privacy-card--delete {
+      grid-column: 1 / -1;
+    }
+
+    .privacy-card--sharing {
+      grid-column: 1 / -1;
     }
   }
 
-  .privacy-delete {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-4);
-    margin-top: var(--space-6);
+  .privacy-card {
     padding: var(--space-6);
     border: 1px solid var(--paper-grid);
-    border-left: 4px solid var(--maroon);
-    border-radius: 16px;
+    border-radius: 12px;
+    background: #ffffff;
+  }
+
+  .privacy-card--data {
     background: var(--paper-card);
   }
 
-  @media (min-width: 640px) {
-    .privacy-delete {
+  /* Pernyataan pembagian data: pita ringkas selebar grid. */
+  .privacy-card--sharing {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    background: var(--teal-pale);
+    border-color: #b9d6d1;
+  }
+
+  .privacy-card--sharing .privacy-card__title {
+    margin-bottom: 0;
+  }
+
+  .privacy-card--sharing .privacy-card__text {
+    color: var(--ink);
+  }
+
+  @media (min-width: 760px) {
+    .privacy-card--sharing {
       flex-direction: row;
-      align-items: center;
+      align-items: baseline;
       justify-content: space-between;
+      gap: var(--space-8);
+    }
+
+    .privacy-card--sharing .privacy-card__text {
+      max-width: 52ch;
+      text-align: right;
     }
   }
 
-  .privacy-delete h2 {
+  .privacy-card__title {
+    margin: 0 0 var(--space-3);
+    font-family: var(--font-heading);
     font-size: 1.05rem;
-    margin-bottom: var(--space-1);
+    font-weight: 700;
+    line-height: 1.35;
   }
 
-  .privacy-delete p {
+  .privacy-card__intro {
+    margin-bottom: var(--space-4);
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .privacy-card__text {
+    margin: 0;
     color: var(--ink-soft);
     font-size: 0.92rem;
-    max-width: 48ch;
+    line-height: 1.6;
   }
 
-  .privacy__back {
+  /* --- Daftar data: chip persegi, bukan pil --- */
+  .privacy-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .privacy-chip {
+    padding: 4px 9px;
+    border: 1px solid var(--paper-grid);
+    border-radius: 2px;
+    background: #ffffff;
+    color: var(--ink);
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  /* --- Fakta penggunaan --- */
+  .privacy-facts {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin: 0;
+  }
+
+  .privacy-fact {
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--paper-grid);
+  }
+
+  .privacy-fact:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+
+  .privacy-fact dt {
+    color: var(--teal-dark);
+    font-family: var(--font-heading);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    line-height: 1.7;
+    text-transform: uppercase;
+  }
+
+  .privacy-fact dd {
+    margin: 1px 0 0;
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+
+  /* --- Penghapusan data --- */
+  .privacy-card--delete {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    border-left: 3px solid var(--maroon);
+    background: var(--paper-card);
+  }
+
+  .privacy-card--delete .privacy-card__text {
+    max-width: 58ch;
+  }
+
+  .privacy-delete__note {
+    margin-top: var(--space-2);
+    color: var(--ink-soft);
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+
+  .privacy-delete__action {
+    width: 100%;
+  }
+
+  @media (min-width: 640px) {
+    .privacy-card--delete {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-6);
+    }
+
+    .privacy-delete__action {
+      flex: none;
+      width: auto;
+    }
+  }
+
+  /* --- Kembali --- */
+  .privacy-back {
     margin-top: var(--space-8);
     font-size: 0.9rem;
+    text-align: center;
+  }
+
+  .privacy-back a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--ink-soft);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .privacy-back a:hover {
+    color: var(--ink);
+    text-decoration: underline;
+  }
+
+  @media (max-width: 599px) {
+    .privacy-card {
+      padding: var(--space-4);
+    }
   }
 </style>

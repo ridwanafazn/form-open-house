@@ -6,7 +6,7 @@ import FloatingNav from '../components/FloatingNav.astro';
 // Meta dari docs/CONTENT.md bagian "Teks meta".
 const title = 'Open House';
 const description =
-  'Datang, lihat langsung, dan coba sendiri. Daftar hadir open house SMKIT As Syifa Boarding School, Jalancagak, Subang.';
+  'Datang, lihat langsung, dan coba sendiri. Daftar hadir open house SMKIT As-Syifa Boarding School, Jalancagak, Subang.';
 
 interface Props {
   title?: string;
@@ -21,7 +21,7 @@ const {
   adminMode = false,
   landing = false,
 } = Astro.props;
-const finalTitle = pageTitle ? `${pageTitle} - Open House SMKIT As Syifa` : title;
+const finalTitle = pageTitle ? `${pageTitle} - Open House SMKIT As-Syifa` : title;
 const finalDescription = pageDescription ?? description;
 ---
 

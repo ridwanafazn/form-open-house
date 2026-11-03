@@ -217,7 +217,16 @@ export default function RegisterForm() {
             exit={{ opacity: 0, height: 0 }}
           >
             <svg className="spinner" viewBox="0 0 24 24" aria-hidden="true">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" fill="none" strokeDasharray="31.4 31.4" strokeLinecap="round" />
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="3"
+                fill="none"
+                strokeDasharray="31.4 31.4"
+                strokeLinecap="round"
+              />
             </svg>
             <span>Memuat status pendaftaran…</span>
           </m.div>
@@ -231,7 +240,15 @@ export default function RegisterForm() {
             exit={{ opacity: 0, y: -8 }}
             role="alert"
           >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              aria-hidden="true"
+            >
               <circle cx="12" cy="12" r="10"></circle>
               <line x1="12" y1="8" x2="12" y2="12"></line>
               <line x1="12" y1="16" x2="12.01" y2="16"></line>
@@ -341,7 +358,7 @@ export default function RegisterForm() {
               exit={{ opacity: 0, x: 8 }}
               transition={{ duration: 0.25 }}
             >
-              <fieldset className="field">
+              <fieldset className="field field--attendee">
                 <legend>{stepTwo[0].label}</legend>
                 <div className="stepper">
                   <button
@@ -494,7 +511,12 @@ export default function RegisterForm() {
         .progress li.done { color: var(--teal-dark); }
         .progress li.done::after { background: var(--teal-dark); }
         .field { display: flex; flex-direction: column; gap: 6px; }
-        .form-next { margin-top: var(--space-4); }
+        /* Jumlah hadir: beri napas ekstra terhadap label dan elemen berikutnya. */
+        .field--attendee { margin-bottom: var(--space-4); padding-bottom: var(--space-2); }
+        .field--attendee legend { margin-bottom: var(--space-2); }
+        /* Tombol form: kotak membulat tipis, bukan pil, dan mengisi lebar. */
+        .form .button { border-radius: 8px; }
+        .form-next { margin-top: var(--space-4); width: 100%; }
         .field label, .field legend {
           padding: 0; font-weight: 600; font-size: 0.92rem; color: var(--ink);
         }
@@ -519,11 +541,14 @@ export default function RegisterForm() {
         .err { color: var(--error); font-size: 0.88rem; margin: 0; }
         .hint { color: var(--ink-soft); font-size: 0.88rem; margin: 0; }
         .submit-err { margin: 0; }
-        /* Stepper: boxed 44px controls around a large count. */
-        .stepper { display: flex; align-items: center; gap: var(--space-3); }
+        /* Stepper: kontrol - dan + serta angka berada di tengah dengan jarak lebar. */
+        .stepper {
+          display: flex; align-items: center; justify-content: center;
+          gap: clamp(24px, 8vw, 56px); width: 100%;
+        }
         .stepper button {
           width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center;
-          border: 1px solid var(--paper-grid); border-radius: var(--radius-control);
+          border: 1px solid var(--paper-grid); border-radius: 8px;
           background: #ffffff; font-size: 1.2rem; font-weight: 700; cursor: pointer;
           transition: border-color 0.2s ease, color 0.2s ease;
         }
@@ -535,9 +560,10 @@ export default function RegisterForm() {
         /* Selectable chips: same recipe, selected = dark pill like the primary button. */
         .chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
         .chip {
-          min-height: 44px; padding: var(--space-2) var(--space-6);
-          border: 1px solid var(--paper-grid); border-radius: var(--radius-control);
-          background: #ffffff; cursor: pointer; font-weight: 600; font-size: 0.95rem;
+          flex: 1 1 0; min-width: 96px; min-height: 44px; padding: var(--space-2);
+          border: 1px solid var(--paper-grid); border-radius: 8px;
+          background: #ffffff; cursor: pointer; font-weight: 600; font-size: 0.9rem;
+          white-space: nowrap;
           transition: border-color 0.2s ease, color 0.2s ease;
         }
         .chip:hover { border-color: var(--teal-dark); color: var(--teal-dark); }
@@ -547,25 +573,26 @@ export default function RegisterForm() {
         .consent {
           display: flex; gap: var(--space-3); align-items: flex-start;
           padding: 14px; border: 1px solid var(--paper-grid);
-          border-radius: var(--radius-control); background: #ffffff;
-          cursor: pointer; font-size: 0.92rem; line-height: 1.5;
+          border-radius: 8px; background: #ffffff;
+          cursor: pointer; font-size: 0.84rem; line-height: 1.45;
         }
         .consent input { width: 18px; height: 18px; margin: 2px 0 0; flex: none; accent-color: var(--ink); }
-        .form a { color: var(--teal-dark); font-size: 0.9rem; }
+        .form a { color: var(--teal-dark); font-size: 0.78rem; }
         .form-notice { max-width: 46ch; }
-        .actions { display: flex; gap: var(--space-3); flex-wrap: wrap; }
-        .actions .button--primary { flex: 1; min-width: 200px; }
+        /* Dua tombol mengisi satu baris penuh; tidak ada ruang kosong. */
+        .actions { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); gap: var(--space-3); }
+        .actions .button { width: 100%; }
         @media (max-width: 640px) {
           .form { padding: var(--space-4); }
-          .actions { flex-direction: column-reverse; }
-          .actions .button { width: 100%; }
+          .actions { grid-template-columns: 1fr; }
+          .actions .button--primary { order: -1; }
         }
         @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 
         /* Status banners */
         .form-status-banner {
           display: flex; align-items: flex-start; gap: var(--space-3);
-          padding: var(--space-4); border-radius: var(--radius-control);
+          padding: var(--space-4); border-radius: 8px;
           margin-bottom: var(--space-2);
         }
         .form-status-banner--loading {

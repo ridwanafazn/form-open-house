@@ -20,7 +20,7 @@ export function buildCalendar(fileName = 'open-house.ics'): { href: string; down
   const lines = [
     'BEGIN:VCALENDAR',
     'VERSION:2.0',
-    'PRODID:-//Open House SMKIT As Syifa//ID',
+    'PRODID:-//Open House SMKIT As-Syifa//ID',
     'CALSCALE:GREGORIAN',
     'BEGIN:VEVENT',
     `UID:${uid}`,

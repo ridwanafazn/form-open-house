@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import QRCode from 'qrcode';
+import { eventConfig } from '../config/event';
+import { content } from '../config/content';
 
 interface SummaryData {
   child_name: string;
@@ -11,8 +13,13 @@ interface SummaryData {
 
 const STORAGE_SUMMARY_KEY = 'oh_summary';
 
+const ticket = content.thankyou.ticket;
+const timeLabel = `${eventConfig.startTime.replace(':', '.')}–${eventConfig.endTime.replace(':', '.')} WIB`;
+const dateLabel = `${eventConfig.dateText}, ${timeLabel}`;
+
 export default function TicketCard() {
   const [data, setData] = useState<SummaryData | null>(null);
+  const [ready, setReady] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -26,12 +33,14 @@ export default function TicketCard() {
     } catch {
       setData(null);
     }
+    // `ready` mencegah tiket placeholder tampil sebelum sessionStorage dibaca.
+    setReady(true);
   }, []);
 
   const ticketCode = data?.ticket_code || 'OH-TICKET';
 
   useEffect(() => {
-    if (!canvasRef.current) return;
+    if (!ready || !canvasRef.current) return;
     QRCode.toCanvas(
       canvasRef.current,
       ticketCode,
@@ -39,7 +48,7 @@ export default function TicketCard() {
         width: 280,
         margin: 2,
         color: {
-          dark: '#0F172A',
+          dark: '#22262A',
           light: '#FFFFFF',
         },
       },
@@ -47,7 +56,7 @@ export default function TicketCard() {
         if (err) console.error('Gagal membuat QR Code:', err);
       },
     );
-  }, [ticketCode, data]);
+  }, [ticketCode, data, ready]);
 
   function buildTicketMessage() {
     const child = data?.child_name || 'Calon Siswa';
@@ -58,15 +67,15 @@ export default function TicketCard() {
       '',
       'Pendaftaran Open House SMKIT As-Syifa berhasil kami terima.',
       '',
-      `1. 👤 Calon siswa: ${child}`,
-      `2. 👥 Jumlah peserta: ${count} orang`,
-      `3. 🎟️ Kode tiket: ${ticketCode}`,
+      `1. Calon siswa: ${child}`,
+      `2. Jumlah peserta: ${count} orang`,
+      `3. Kode tiket: ${ticketCode}`,
       '',
       'Mohon simpan pesan dan gambar tiket ini. Tunjukkan QR Code kepada panitia saat registrasi di lokasi.',
       '',
-      '📢Grup peserta: https://chat.whatsapp.com/FqM8p44kE3H5BFNmYj4fys',
+      `Grup peserta: ${eventConfig.waJoinUrl ?? '-'}`,
       '',
-      `🔗 Tiket digital:\n${ticketUrl}`,
+      `Tiket digital:\n${ticketUrl}`,
       '',
       'Sampai bertemu di Open House.',
       'Wassalamualaikum.',
@@ -88,7 +97,7 @@ export default function TicketCard() {
     context.fillRect(76, 136, 220, 6);
     context.fillStyle = '#0F172A';
     context.font = "700 46px 'Space Grotesk', Arial";
-    context.fillText('Open House SMKIT As Syifa', 76, 200);
+    context.fillText('Open House SMKIT As-Syifa', 76, 200);
     context.fillStyle = '#FFFFFF';
     context.fillRect(76, 236, 262, 44);
     context.strokeStyle = '#E2E8F0';
@@ -96,7 +105,7 @@ export default function TicketCard() {
     context.strokeRect(76, 236, 262, 44);
     context.fillStyle = '#166534';
     context.font = "600 24px 'Space Grotesk', Arial";
-    context.fillText('TERDAFTAR ✓', 96, 266);
+    context.fillText('TERDAFTAR', 96, 266);
     if (canvasRef.current) {
       context.drawImage(canvasRef.current, 332, 320, 336, 336);
     }
@@ -113,9 +122,9 @@ export default function TicketCard() {
     context.fillText(ticketCode, 76, 902);
     context.fillStyle = '#64748B';
     context.font = "400 25px 'DM Sans', Arial";
-    context.fillText('Sabtu, 07 November 2026 · 08.00–15.00 WIB', 76, 966);
+    context.fillText(dateLabel, 76, 966);
     context.fillText('Tunjukkan tiket ini kepada panitia saat registrasi.', 76, 1018);
-    context.fillText('SMKIT As Syifa Boarding School, Jalancagak, Subang', 76, 1056);
+    context.fillText('SMKIT As-Syifa Boarding School, Jalancagak, Subang', 76, 1056);
   }
 
   function createTicketFile(): Promise<File> {
@@ -186,191 +195,344 @@ export default function TicketCard() {
     });
   }
 
+  // Satu wadah dengan tiga keadaan: kerangka sebelum sessionStorage dibaca,
+  // arahan saat data tiket tidak ada, dan tiket lengkap saat data tersedia.
   return (
-    <div className="ticket-card" aria-label="Tiket Masuk Open House">
-      <div className="ticket-card__header">
-        <span className="ticket-card__badge">Tiket Masuk Resmi</span>
-        <h2 className="ticket-card__title">Open House SMKIT As Syifa</h2>
-        <p className="ticket-card__subtitle">Sabtu, 07 November 2026 • 08.00 - 15.00 WIB</p>
-      </div>
+    <div
+      className={`ticket-card${ready ? '' : ' ticket-card--loading'}`}
+      aria-label="Tiket masuk Open House"
+    >
+      {ready && !data?.ticket_code && (
+        <>
+          <div className="ticket-card__head">
+            <span className="ticket-card__eyebrow">{ticket.label}</span>
+          </div>
+          <div className="ticket-card__empty">
+            <h2 className="ticket-card__title">{ticket.emptyTitle}</h2>
+            <p className="ticket-card__empty-text">{ticket.emptyText}</p>
+          </div>
+        </>
+      )}
 
-      <div className="ticket-card__body">
-        <div className="ticket-card__qr-box">
-          <canvas ref={canvasRef} className="ticket-card__canvas" aria-label={`QR Code ${ticketCode}`} />
-        </div>
-
-        <div className="ticket-card__info">
-          <div className="ticket-card__code-wrap">
-            <span className="ticket-card__code-label">KODE TIKET:</span>
-            <strong className="ticket-card__code">{ticketCode}</strong>
-            <button
-              type="button"
-              className="ticket-card__btn-copy"
-              onClick={handleCopyCode}
-              title="Salin kode tiket"
-            >
-              {copied ? 'Tersalin!' : 'Salin'}
-            </button>
+      {ready && data?.ticket_code && (
+        <>
+          <div className="ticket-card__head">
+            <span className="ticket-card__eyebrow">{ticket.label}</span>
+            <span className="ticket-card__status">
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="m5 13 4 4L19 7" />
+              </svg>
+              {ticket.status}
+            </span>
           </div>
 
-          {data && (
-            <div className="ticket-card__meta">
-              <p><strong>Calon Siswa:</strong> {data.child_name}</p>
-              <p><strong>Rencana Hadir:</strong> {data.attendee_count} Orang</p>
+          <div className="ticket-card__event">
+            <h2 className="ticket-card__title">Open House SMKIT As-Syifa</h2>
+            <p className="ticket-card__when">{dateLabel}</p>
+          </div>
+
+          <div className="ticket-card__body">
+            <div className="ticket-card__qr-box">
+              <canvas
+                ref={canvasRef}
+                className="ticket-card__canvas"
+                aria-label={`QR Code ${ticketCode}`}
+              />
             </div>
-          )}
-        </div>
-      </div>
 
-      <p className="ticket-card__instruction">
-        Tunjukkan QR Code ini kepada panitia di meja registrasi saat tiba di lokasi acara.
-      </p>
+            <dl className="ticket-card__facts">
+              <div className="ticket-card__fact">
+                <dt>{ticket.child}</dt>
+                <dd>{data?.child_name || 'Calon siswa'}</dd>
+              </div>
+              <div className="ticket-card__fact">
+                <dt>{ticket.attendees}</dt>
+                <dd>
+                  {data?.attendee_count || 1} {ticket.personUnit}
+                </dd>
+              </div>
+            </dl>
+          </div>
 
-      <div className="ticket-card__actions">
-        <button
-          type="button"
-          className="button button--secondary ticket-card__btn"
-          onClick={handleDownloadImage}
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-            <polyline points="7 10 12 15 17 10" />
-            <line x1="12" y1="15" x2="12" y2="3" />
-          </svg>
-          Simpan Gambar Tiket
-        </button>
+          <div className="ticket-card__code-block">
+            <span className="ticket-card__code-label">{ticket.codeLabel}</span>
+            <div className="ticket-card__code-row">
+              <code className="ticket-card__code">{ticketCode}</code>
+              <button type="button" className="ticket-card__btn-copy" onClick={handleCopyCode}>
+                {copied ? ticket.copied : ticket.copy}
+              </button>
+            </div>
+          </div>
 
-        <button
-          type="button"
-          className="button button--primary ticket-card__btn ticket-card__btn--wa"
-          onClick={handleShareWa}
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-          </svg>
-          Kirim Tiket ke WhatsApp
-        </button>
-      </div>
+          <p className="ticket-card__hint">{ticket.instruction}</p>
+
+          <div className="ticket-card__actions">
+            <button
+              type="button"
+              className="button button--primary ticket-card__btn"
+              onClick={handleDownloadImage}
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M12 3v12" />
+                <path d="m7 10 5 5 5-5" />
+                <path d="M4 19h16" />
+              </svg>
+              {ticket.download}
+            </button>
+
+            <button
+              type="button"
+              className="button button--secondary ticket-card__btn"
+              onClick={handleShareWa}
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
+              {ticket.share}
+            </button>
+          </div>
+        </>
+      )}
 
       <style>{`
         .ticket-card {
-          margin-block: var(--space-6);
-          padding: var(--space-6);
+          overflow: hidden;
+          border: 1px solid var(--paper-grid);
+          border-radius: 12px;
           background: #ffffff;
-          border: 2px solid var(--border-soft);
-          border-radius: var(--radius-lg, 16px);
-          /* Kedalaman dibuat dari garis dan bidang datar, tanpa efek glossy. */
-          text-align: center;
         }
-        .ticket-card__header {
-          border-bottom: 1px dashed var(--border-soft);
-          padding-bottom: var(--space-4);
-          margin-bottom: var(--space-4);
+        .ticket-card--loading {
+          min-height: 380px;
+          background: var(--paper-card);
         }
-        .ticket-card__badge {
-          display: inline-block;
-          font-size: 0.75rem;
+        .ticket-card__head {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 12px;
+          padding: 10px 16px;
+          border-bottom: 1px solid var(--paper-grid);
+          background: var(--paper-card);
+        }
+        .ticket-card__eyebrow {
+          color: var(--ink-soft);
+          font-family: var(--font-tech);
+          font-size: 0.66rem;
           font-weight: 700;
+          letter-spacing: 0.1em;
+          line-height: 1.6;
           text-transform: uppercase;
-          letter-spacing: 0.05em;
-          padding: 2px 10px;
-          border-radius: 999px;
-          background: #e8f5e9;
-          color: #2e7d32;
-          margin-bottom: var(--space-2);
+        }
+        .ticket-card__status {
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          padding: 2px 7px;
+          border: 1px solid var(--teal-dark);
+          border-radius: 4px;
+          background: var(--teal-pale);
+          color: var(--teal-dark);
+          font-family: var(--font-tech);
+          font-size: 0.64rem;
+          font-weight: 700;
+          letter-spacing: 0.06em;
+          line-height: 1.6;
+          text-transform: uppercase;
+        }
+        .ticket-card__event {
+          padding: 16px 16px 0;
         }
         .ticket-card__title {
-          font-family: var(--font-heading);
-          font-size: 1.25rem;
-          margin: 0 0 var(--space-1);
-          color: var(--ink);
-        }
-        .ticket-card__subtitle {
-          font-size: 0.85rem;
-          color: var(--ink-soft);
           margin: 0;
+          color: var(--ink);
+          font-family: var(--font-heading);
+          font-size: 1.1rem;
+          font-weight: 700;
+          line-height: 1.3;
+        }
+        .ticket-card__when {
+          margin: 2px 0 0;
+          color: var(--ink-soft);
+          font-size: 0.8rem;
+          line-height: 1.5;
         }
         .ticket-card__body {
-          display: flex;
-          flex-direction: column;
+          display: grid;
+          grid-template-columns: 156px minmax(0, 1fr);
+          gap: 16px;
           align-items: center;
-          gap: var(--space-3);
-          margin-bottom: var(--space-4);
+          padding: 16px;
+        }
+        .ticket-card__body > * {
+          min-width: 0;
         }
         .ticket-card__qr-box {
-          padding: 8px;
+          min-width: 0;
+          padding: 6px;
+          border: 1px solid var(--paper-grid);
+          border-radius: 8px;
           background: #ffffff;
-          border: 1px solid var(--border-soft);
-          border-radius: 12px;
-          display: inline-flex;
         }
         .ticket-card__canvas {
           display: block;
+          width: 100% !important;
           max-width: 100%;
-          height: auto;
+          height: auto !important;
+          aspect-ratio: 1;
         }
-        .ticket-card__code-wrap {
-          display: inline-flex;
-          align-items: center;
-          gap: 8px;
-          background: #f4f4f0;
-          padding: 6px 14px;
-          border-radius: 8px;
-          margin-top: 4px;
+        .ticket-card__facts {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          min-width: 0;
+          margin: 0;
+        }
+        .ticket-card__fact dt {
+          color: var(--ink-soft);
+          font-size: 0.64rem;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          line-height: 1.6;
+          text-transform: uppercase;
+        }
+        .ticket-card__fact dd {
+          margin: 1px 0 0;
+          color: var(--ink);
+          font-family: var(--font-heading);
+          font-size: 0.95rem;
+          font-weight: 700;
+          line-height: 1.35;
+          overflow-wrap: anywhere;
+        }
+        .ticket-card__code-block {
+          display: flex;
+          flex-direction: column;
+          gap: 1px;
+          margin: 0 16px;
+          padding: 12px 0;
+          border-top: 1px dashed var(--paper-grid);
         }
         .ticket-card__code-label {
-          font-size: 0.75rem;
           color: var(--ink-soft);
-          font-weight: 600;
+          font-size: 0.64rem;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          line-height: 1.6;
+          text-transform: uppercase;
+        }
+        .ticket-card__code-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 12px;
         }
         .ticket-card__code {
-          font-family: monospace;
-          font-size: 1.2rem;
-          letter-spacing: 0.08em;
-          color: var(--brand-rpl, #1e3a8a);
+          color: var(--teal-dark);
+          font-family: var(--font-tech);
+          font-size: 1rem;
+          font-weight: 700;
+          letter-spacing: 0.06em;
         }
         .ticket-card__btn-copy {
-          background: none;
-          border: 1px solid var(--border-soft);
-          padding: 2px 8px;
-          border-radius: 4px;
-          font-size: 0.75rem;
-          cursor: pointer;
-        }
-        .ticket-card__meta {
-          margin-top: var(--space-2);
-          font-size: 0.9rem;
-          color: var(--ink);
-          line-height: 1.4;
-        }
-        .ticket-card__meta p {
-          margin: 2px 0;
-        }
-        .ticket-card__instruction {
-          font-size: 0.85rem;
+          flex: none;
+          padding: 3px 8px;
+          border: 1px solid var(--paper-grid);
+          border-radius: 6px;
+          background: transparent;
           color: var(--ink-soft);
-          margin-bottom: var(--space-4);
-          font-style: italic;
+          font-size: 0.72rem;
+          font-weight: 700;
+          cursor: pointer;
+          transition:
+            border-color 0.2s ease,
+            color 0.2s ease;
+        }
+        .ticket-card__btn-copy:hover {
+          border-color: var(--teal-dark);
+          color: var(--teal-dark);
+        }
+        .ticket-card__hint {
+          margin: 0 16px 16px;
+          padding-top: 12px;
+          border-top: 1px dashed var(--paper-grid);
+          color: var(--ink-soft);
+          font-size: 0.8rem;
+          line-height: 1.5;
+        }
+        .ticket-card__empty {
+          padding: 20px 16px 24px;
+        }
+        .ticket-card__empty-text {
+          max-width: 44ch;
+          margin-top: 6px;
+          color: var(--ink-soft);
+          font-size: 0.9rem;
+          line-height: 1.55;
         }
         .ticket-card__actions {
-          display: flex;
-          flex-wrap: wrap;
-          gap: var(--space-3);
-          justify-content: center;
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 8px;
+          padding: 0 16px 16px;
         }
         .ticket-card__btn {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          font-size: 0.9rem;
+          width: 100%;
+          padding: 10px 12px;
+          font-size: 0.85rem;
         }
-        .ticket-card__btn--wa {
-          background: #25d366;
-          color: #ffffff;
-          border-color: #25d366;
+        .ticket-card__btn svg {
+          flex: none;
         }
-        .ticket-card__btn--wa:hover {
-          background: #1eb956;
+        @media (max-width: 599px) {
+          .ticket-card__body {
+            grid-template-columns: minmax(0, 1fr);
+            justify-items: center;
+            gap: 14px;
+          }
+          .ticket-card__qr-box {
+            width: 168px;
+          }
+          .ticket-card__facts {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            width: 100%;
+          }
+        }
+        @media (max-width: 459px) {
+          .ticket-card__actions {
+            grid-template-columns: minmax(0, 1fr);
+          }
         }
       `}</style>
     </div>

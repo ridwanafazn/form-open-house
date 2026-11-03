@@ -9,6 +9,9 @@ import RegisterForm from '../components/RegisterForm';
 import { content } from '../config/content';
 import { eventConfig } from '../config/event';
 import 'leaflet/dist/leaflet.css';
+
+const [dayName, ...dateParts] = eventConfig.dateText.split(', ');
+const dateOnly = dateParts.join(', ');
 ---
 
 <Base landing>
@@ -70,23 +73,27 @@ import 'leaflet/dist/leaflet.css';
             <p class="price-card__note">{content.home.incentive.laterNote}</p>
           </div>
         </div>
-        <p class="note">{content.home.incentive.note}</p>
+        <p class="incentive-note">{content.home.incentive.note}</p>
       </div>
     </section>
 
     <section class="section" id="event-info" aria-labelledby="event-info-title">
       <div class="container">
         <header class="section-head">
-          <h2 id="event-info-title">{eventConfig.name}</h2>
+          <h2 id="event-info-title">{content.home.eventInfo.heading}</h2>
         </header>
 
         <div class="info-grid">
           <div class="info-panel">
             <ul class="info-list">
-              <li><strong>Hari dan tanggal</strong> {eventConfig.dateText}</li>
-              <li><strong>Jam</strong> {eventConfig.startTime} sampai {eventConfig.endTime} WIB</li>
-              <li><strong>Tempat</strong> {eventConfig.locationName}</li>
-              <li><strong>Alamat</strong> {eventConfig.locationAddress}</li>
+              <li>
+                <strong>Jam</strong>
+                <span class="info-value">{eventConfig.startTime} sampai {eventConfig.endTime} WIB</span>
+              </li>
+              <li><strong>Hari</strong> <span class="info-value">{dayName}</span></li>
+              <li><strong>Tanggal</strong> <span class="info-value">{dateOnly}</span></li>
+              <li><strong>Tempat</strong> <span class="info-value">{eventConfig.locationName}</span></li>
+              <li><strong>Alamat</strong> <span class="info-value">{eventConfig.locationAddress}</span></li>
             </ul>
             <div class="info-actions">
               <a class="button button--primary" href={eventConfig.mapsUrl} rel="noopener" target="_blank">{content.home.eventInfo.openMap}</a>
@@ -112,17 +119,51 @@ import 'leaflet/dist/leaflet.css';
           <h2 id="rundown-title">{content.home.rundown.heading}</h2>
           <p class="section-head__tagline">{content.home.rundown.tagline}</p>
         </header>
-        <ol class="rundown-list" role="list">
-          {content.home.rundown.items.map((item) => (
-            <li class="rundown-item">
-              <div class="rundown-time">{item.time}</div>
-              <div class="rundown-content">
-                <h3 class="rundown-item-title">{item.title}</h3>
-                <p class="rundown-item-desc">{item.desc}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
+        <div class="rundown" data-rundown>
+          <div class="rundown-tabs" role="tablist" aria-label="Pilih sesi susunan acara">
+            {content.home.rundown.groups.map((group, groupIndex) => (
+              <button
+                type="button"
+                role="tab"
+                id={`rundown-tab-${groupIndex}`}
+                aria-controls={`rundown-panel-${groupIndex}`}
+                aria-selected={groupIndex === 0 ? 'true' : 'false'}
+                tabindex={groupIndex === 0 ? 0 : -1}
+                class:list={['rundown-tab', groupIndex === 0 && 'is-active']}
+              >
+                <span class="rundown-tab__title">{group.short ?? group.title}</span>
+              </button>
+            ))}
+          </div>
+
+          <div class="rundown-panels">
+            {content.home.rundown.groups.map((group, groupIndex) => (
+              <section
+                class:list={['rundown-panel', groupIndex === 0 && 'is-active']}
+                id={`rundown-panel-${groupIndex}`}
+                role="tabpanel"
+                aria-labelledby={`rundown-tab-${groupIndex}`}
+                tabindex="0"
+              >
+                <header class="rundown-panel__head">
+                  <h3 class="rundown-panel__title">{group.title}</h3>
+                  <p class="rundown-panel__range">{group.range}</p>
+                </header>
+                <ol class="rundown-panel__items" role="list">
+                  {group.items.map((item) => (
+                    <li class="rundown-item">
+                      <span class="rundown-time">{item.time}</span>
+                      <div class="rundown-content">
+                        <h4 class="rundown-item-title">{item.title}</h4>
+                        <span class="rundown-location">{item.location}</span>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </section>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
 
@@ -140,9 +181,9 @@ import 'leaflet/dist/leaflet.css';
       <div class="container">
         <div class="site-footer__grid">
           <div class="site-footer__brand">
-            <img class="site-footer__logo" src="/images/logo.png" alt="Logo SMKIT As Syifa" width="40" height="40" />
+            <img class="site-footer__logo" src="/images/logo.png" alt="Logo SMKIT As-Syifa" width="40" height="40" />
             <div>
-              <p class="site-footer__eyebrow">SMKIT As Syifa Boarding School</p>
+              <p class="site-footer__eyebrow">SMKIT As-Syifa Boarding School</p>
               <p class="site-footer__text">{content.home.footer.text}</p>
             </div>
           </div>
@@ -163,7 +204,7 @@ import 'leaflet/dist/leaflet.css';
           </div>
         </div>
         <div class="site-footer__bottom">
-          <p>&copy; 2026 SMKIT As Syifa Boarding School</p>
+          <p>&copy; 2026 SMKIT As-Syifa Boarding School</p>
           <a href="/privasi">Kebijakan privasi</a>
         </div>
       </div>
@@ -186,7 +227,7 @@ import 'leaflet/dist/leaflet.css';
     const map = L.map(container, {
       scrollWheelZoom: false,
       attributionControl: true,
-    }).setView([eventConfig.mapsLat, eventConfig.mapsLng], 15);
+    }).setView([eventConfig.mapsLat, eventConfig.mapsLng], 14);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
@@ -201,8 +242,15 @@ import 'leaflet/dist/leaflet.css';
       fillOpacity: 1,
     }).addTo(map);
 
-    marker.bindPopup(`<strong>${eventConfig.locationName}</strong>`);
-    // Popup terbuka sejak awal supaya lokasi langsung jelas.
+    marker.bindPopup(`<strong>${eventConfig.locationName}</strong>`, {
+      // Popup ringkas: tetap terbuka otomatis, tetapi tidak memenuhi peta.
+      maxWidth: 210,
+      autoPanPaddingTopLeft: [12, 48],
+      autoPanPaddingBottomRight: [12, 12],
+      className: 'map-popup',
+    });
+    // Popup dibuka otomatis di semua ukuran layar; di mobile ukurannya dibuat
+    // lebih kecil lewat CSS agar tidak menempel ke tepi atau terpotong.
     marker.openPopup();
 
     // Pastikan ukuran peta benar setelah layout selesai dan saat viewport
@@ -210,6 +258,44 @@ import 'leaflet/dist/leaflet.css';
     const fit = () => map.invalidateSize();
     setTimeout(fit, 0);
     window.addEventListener('resize', fit);
+  }
+</script>
+
+<script>
+  // Tab susunan acara. Tanpa JavaScript semua panel tetap tampil; kelas
+  // data-enhanced baru menyembunyikan panel nonaktif setelah tab siap.
+  const rundown = document.querySelector('[data-rundown]');
+  if (rundown) {
+    rundown.setAttribute('data-enhanced', '');
+    const tabs = Array.from(rundown.querySelectorAll('[role="tab"]'));
+    const panels = Array.from(rundown.querySelectorAll('[role="tabpanel"]'));
+
+    const activate = (index) => {
+      tabs.forEach((tab, tabIndex) => {
+        const active = tabIndex === index;
+        tab.classList.toggle('is-active', active);
+        tab.setAttribute('aria-selected', String(active));
+        tab.tabIndex = active ? 0 : -1;
+      });
+      panels.forEach((panel, panelIndex) => {
+        panel.classList.toggle('is-active', panelIndex === index);
+      });
+    };
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => activate(index));
+      tab.addEventListener('keydown', (event) => {
+        if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+        event.preventDefault();
+        let next = index;
+        if (event.key === 'ArrowRight') next = (index + 1) % tabs.length;
+        if (event.key === 'ArrowLeft') next = (index - 1 + tabs.length) % tabs.length;
+        if (event.key === 'Home') next = 0;
+        if (event.key === 'End') next = tabs.length - 1;
+        activate(next);
+        tabs[next].focus();
+      });
+    });
   }
 </script>
 
@@ -468,24 +554,35 @@ import 'leaflet/dist/leaflet.css';
     background: #f3e5c8;
   }
 
-  .note {
-    max-width: 640px;
-    margin: var(--space-4) auto 0;
-    color: var(--ink-soft);
-    font-size: 0.9rem;
+  /* Catatan biaya seleksi: Space Grotesk 14px bold, garis bawah dibuat
+     berjarak supaya tidak menyentuh huruf (seperti anotasi kecil). */
+  .incentive-note {
+    width: fit-content;
+    max-width: 100%;
+    margin: var(--space-6) auto 0;
+    color: var(--ink);
+    font-family: var(--font-heading);
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.6;
     text-align: center;
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-decoration-color: var(--teal-dark);
+    text-underline-offset: 8px;
   }
 
   /* --- Info acara + peta --- */
   .info-grid {
     display: grid;
-    gap: var(--space-6);
-    align-items: start;
+    gap: var(--space-4);
+    align-items: stretch;
   }
 
-  @media (min-width: 880px) {
+  @media (min-width: 900px) {
     .info-grid {
-      grid-template-columns: 5fr 7fr;
+      /* Dua kolom seimbang: informasi dan peta punya bobot visual sama. */
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     }
   }
 
@@ -493,43 +590,101 @@ import 'leaflet/dist/leaflet.css';
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
-  }
-
-  .info-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  .info-list li {
-    padding-block: var(--space-3);
-    border-bottom: 1px solid var(--paper-grid);
-  }
-  .info-list strong {
-    display: block;
-    margin-bottom: 2px;
-    color: var(--teal-dark);
-    font-family: var(--font-heading);
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-  .info-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-3);
-  }
-
-  .map-card {
-    overflow: hidden;
+    padding: clamp(20px, 3vw, 32px);
     border: 1px solid var(--paper-grid);
     border-radius: 16px;
     background: #ffffff;
   }
 
+  .info-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .info-list li {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2px;
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--paper-grid);
+    font-size: 0.98rem;
+    line-height: 1.5;
+  }
+
+  .info-list li:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+
+  @media (min-width: 560px) {
+    .info-list li {
+      grid-template-columns: 8.5rem minmax(0, 1fr);
+      gap: var(--space-4);
+      align-items: start;
+    }
+  }
+
+  .info-list strong {
+    color: var(--teal-dark);
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    line-height: 1.5;
+    text-transform: uppercase;
+  }
+
+  .info-value {
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.6;
+  }
+
+  .info-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-top: auto;
+  }
+
+  @media (min-width: 480px) {
+    .info-actions {
+      flex-direction: row;
+    }
+  }
+
+  .info-actions .button {
+    flex: 1 1 0;
+    min-width: 0;
+    border-radius: 10px;
+    white-space: nowrap;
+  }
+
+  .map-card {
+    display: flex;
+    padding: 6px;
+    overflow: hidden;
+    border: 1px solid var(--ink);
+    border-radius: 16px;
+    background: #ffffff;
+    /* Outline peta: garis tinta + cincin tipis + bayangan lembut. */
+    box-shadow:
+      0 0 0 4px var(--paper-card),
+      0 0 0 5px var(--paper-grid),
+      0 18px 36px rgba(34, 38, 42, 0.16);
+  }
+
   .map-card__canvas {
     width: 100%;
-    height: 360px;
+    min-height: 340px;
+    height: clamp(340px, 44vw, 480px);
+    border-radius: 10px;
     /* Nuansa tenang: sedikit didesaturasi supaya menyatu dengan tema kertas. */
     filter: grayscale(0.25) saturate(0.85);
   }
@@ -552,21 +707,184 @@ import 'leaflet/dist/leaflet.css';
     font-family: var(--font-body);
   }
 
-  /* --- Rundown --- */
-  .rundown-list {
-    display: flex;
-    flex-direction: column;
-    max-width: 820px;
+  .map-card :global(.map-popup .leaflet-popup-content) {
+    margin: 7px 10px;
+    font-size: 0.76rem;
+    line-height: 1.35;
+  }
+
+  .map-card :global(.map-popup .leaflet-popup-content strong) {
+    font-family: var(--font-heading);
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+
+  @media (max-width: 640px) {
+    .map-card {
+      box-shadow:
+        0 0 0 3px var(--paper-card),
+        0 0 0 4px var(--paper-grid),
+        0 12px 24px rgba(34, 38, 42, 0.14);
+    }
+
+    .map-card__canvas {
+      min-height: 300px;
+      height: 300px;
+    }
+  }
+
+  /* Desktop: peta dan panel info lebih pendek, lebar kolom tetap.
+     Mobile tidak berubah. Ditempatkan setelah aturan dasar agar menang. */
+  @media (min-width: 900px) {
+    .info-panel {
+      gap: 10px;
+      padding: 20px 24px;
+    }
+
+    .info-list {
+      gap: 6px;
+    }
+
+    .info-list li {
+      padding-bottom: 6px;
+    }
+
+    .map-card__canvas {
+      min-height: 340px;
+      height: 340px;
+    }
+  }
+
+  /* --- Rundown: tab per sesi, hanya informasi penting untuk peserta --- */
+  .rundown {
+    max-width: 1080px;
     margin-inline: auto;
-    padding: 0;
+  }
+
+  .rundown-tabs {
+    display: none;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    margin-bottom: var(--space-3);
+    border: 1px solid var(--paper-grid);
+    border-radius: 10px;
+    background: #ffffff;
+    overflow: hidden;
+  }
+
+  [data-rundown][data-enhanced] .rundown-tabs {
+    display: grid;
+  }
+
+  .rundown-tab {
+    min-width: 0;
+    padding: 9px 4px;
+    border: 0;
+    border-left: 1px solid var(--paper-grid);
+    background: transparent;
+    color: var(--ink-soft);
+    text-align: center;
+    cursor: pointer;
+    transition:
+      background 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .rundown-tab:first-child {
+    border-left: 0;
+  }
+
+  .rundown-tab:hover {
+    background: var(--paper-card);
+    color: var(--ink);
+  }
+
+  .rundown-tab.is-active {
+    background: var(--ink);
+    color: #ffffff;
+  }
+
+  .rundown-tab__title {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+
+  @media (max-width: 640px) {
+    /* Di layar sempit tiap sekat mengikuti lebar teksnya, bukan dibagi rata. */
+    [data-rundown][data-enhanced] .rundown-tabs {
+      display: flex;
+      overflow-x: auto;
+    }
+
+    .rundown-tab {
+      flex: 1 1 auto;
+      padding-inline: 5px;
+      white-space: nowrap;
+    }
+
+    .rundown-tab__title {
+      font-size: 0.66rem;
+      letter-spacing: 0;
+    }
+  }
+
+  .rundown-panel {
+    overflow: hidden;
+    border: 1px solid var(--paper-grid);
+    border-radius: 16px;
+    background: #ffffff;
+  }
+
+  [data-rundown][data-enhanced] .rundown-panel {
+    display: none;
+  }
+
+  [data-rundown][data-enhanced] .rundown-panel.is-active {
+    display: block;
+  }
+
+  .rundown-panel__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--paper-grid);
+    background: var(--paper-card);
+  }
+
+  .rundown-panel__title {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .rundown-panel__range {
+    margin: 0;
+    color: var(--ink-soft);
+    font-family: var(--font-tech);
+    font-size: 0.68rem;
+    white-space: nowrap;
+  }
+
+  .rundown-panel__items {
     list-style: none;
+    margin: 0;
+    padding: 0 var(--space-4);
   }
 
   .rundown-item {
     display: grid;
-    grid-template-columns: 130px 1fr;
-    gap: var(--space-6);
-    padding-block: var(--space-4);
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: var(--space-3);
+    align-items: start;
+    padding-block: 10px;
     border-top: 1px solid var(--paper-grid);
   }
 
@@ -575,28 +893,50 @@ import 'leaflet/dist/leaflet.css';
   }
 
   .rundown-time {
-    font-family: var(--font-heading);
-    font-weight: 700;
     color: var(--teal-dark);
-    font-size: 0.92rem;
+    font-family: var(--font-tech);
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1.6;
     white-space: nowrap;
   }
 
   .rundown-item-title {
-    margin: 0 0 var(--space-1);
-    font-size: 1rem;
-  }
-
-  .rundown-item-desc {
     margin: 0;
-    font-size: 0.92rem;
-    color: var(--ink-soft);
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.35;
   }
 
-  @media (max-width: 640px) {
+  .rundown-location {
+    display: inline-flex;
+    margin-top: 3px;
+    padding: 1px 6px;
+    border: 1px solid var(--paper-grid);
+    border-radius: 2px;
+    background: var(--paper-card);
+    color: var(--ink-soft);
+    font-family: var(--font-tech);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    line-height: 1.7;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 520px) {
     .rundown-item {
-      grid-template-columns: 1fr;
-      gap: var(--space-1);
+      grid-template-columns: 78px minmax(0, 1fr);
+      gap: var(--space-2);
+    }
+
+    .rundown-time {
+      font-size: 0.68rem;
+    }
+
+    .rundown-item-title {
+      font-size: 0.86rem;
     }
   }
 

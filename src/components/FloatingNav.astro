@@ -2,7 +2,7 @@
 import { eventConfig } from '../config/event';
 
 const admissionHref = `https://wa.me/${eventConfig.admissionWhatsApp}?text=${encodeURIComponent(
-  'Assalamualaikum. Saya ingin bertanya tentang Open House SMKIT As Syifa.',
+  'Assalamualaikum. Saya ingin bertanya tentang Open House SMKIT As-Syifa.',
 )}`;
 
 interface Props {
@@ -31,17 +31,17 @@ const isLanding = variant === 'landing';
     <a
       class="floating-nav__brand"
       href={adminMode ? '/admin' : '/'}
-      aria-label={adminMode ? 'Halaman admin' : 'Beranda Open House SMKIT As Syifa'}
+      aria-label={adminMode ? 'Halaman admin' : 'Beranda Open House SMKIT As-Syifa'}
     >
       <img
         class="floating-nav__logo"
         src="/images/logo.png"
-        alt="Logo SMKIT As Syifa"
+        alt="Logo SMKIT As-Syifa"
         width="32"
         height="32"
       />
       <span class="floating-nav__brand-text">
-        {adminMode ? 'Admin Portal' : 'Open House As Syifa'}
+        {adminMode ? 'Admin Portal' : 'Open House As-Syifa'}
       </span>
     </a>
 
@@ -111,6 +111,7 @@ const isLanding = variant === 'landing';
         <>
           <a href="#story" class="floating-nav__link">Fasilitas</a>
           <a href="#rundown" class="floating-nav__link">Rundown</a>
+          <a href="/cari-tiket" class="floating-nav__link">Cek Tiket</a>
           <a
             class="floating-nav__link"
             href={admissionHref}
@@ -140,6 +141,7 @@ const isLanding = variant === 'landing';
         <>
           <a href="/#event-info" class="floating-nav__link">Info Acara</a>
           <a href="/#rundown" class="floating-nav__link">Rundown</a>
+          <a href="/cari-tiket" class="floating-nav__link">Cek Tiket</a>
           <a
             class="floating-nav__link floating-nav__admission"
             href={admissionHref}
