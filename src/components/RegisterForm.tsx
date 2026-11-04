@@ -74,6 +74,9 @@ export default function RegisterForm() {
   // Selisih jam perangkat dengan server agar countdown tidak meleset.
   const clockOffset = useRef(0);
   const [nowTick, setNowTick] = useState(() => Date.now());
+  // Floating countdown hanya tampil saat pengunjung melewati hero dan belum
+  // sampai ke formulir (agar tidak menduplikasi banner di dalam form).
+  const [floatingVisible, setFloatingVisible] = useState(false);
 
   const set = <K extends keyof Fields>(key: K, value: Fields[K]) =>
     setFields((f) => ({ ...f, [key]: value }));
@@ -110,6 +113,37 @@ export default function RegisterForm() {
   useEffect(() => {
     const id = window.setInterval(() => setNowTick(Date.now() + clockOffset.current), 1000);
     return () => window.clearInterval(id);
+  }, []);
+
+  // Tampilkan floating countdown di antara hero dan bagian formulir.
+  useEffect(() => {
+    const hero = document.getElementById('hero');
+    const formSection = document.getElementById('form');
+    if (!formSection) return;
+
+    let frame = 0;
+    const sync = () => {
+      frame = 0;
+      const viewport = window.innerHeight;
+      const heroRect = hero?.getBoundingClientRect();
+      const formRect = formSection.getBoundingClientRect();
+      const heroIn = heroRect ? heroRect.bottom > 0 && heroRect.top < viewport : false;
+      const formIn = formRect.top < viewport && formRect.bottom > 0;
+      setFloatingVisible(!heroIn && !formIn);
+    };
+    const requestSync = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(sync);
+    };
+
+    sync();
+    window.addEventListener('scroll', requestSync, { passive: true });
+    window.addEventListener('resize', requestSync);
+    return () => {
+      window.removeEventListener('scroll', requestSync);
+      window.removeEventListener('resize', requestSync);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
   }, []);
 
   // progress: langkah 1 aktif, langkah 2 aktif saat step=2 dan sudah selesai saat kirim
@@ -594,6 +628,22 @@ export default function RegisterForm() {
         </AnimatePresence>
       </form>
 
+      {effectiveOpen && countdown && floatingVisible && (
+        <a
+          href="#form"
+          className={`floating-countdown${
+            countdown.urgent ? ' floating-countdown--urgent' : ''
+          }`}
+          aria-label={`Pendaftaran ditutup dalam ${countdown.days} hari ${countdown.hours} jam ${countdown.minutes} menit ${countdown.seconds} detik. Menuju formulir pendaftaran.`}
+        >
+          <span className="floating-countdown__label">Pendaftaran ditutup dalam</span>
+          <span className="floating-countdown__time" role="timer" aria-live="off">
+            {countdown.days > 0 && `${countdown.days}h `}
+            {pad2(countdown.hours)}:{pad2(countdown.minutes)}:{pad2(countdown.seconds)}
+          </span>
+        </a>
+      )}
+
       <style>{`
         /* Card container: white surface + 1px border, matte (doff). */
         .form {
@@ -740,6 +790,41 @@ export default function RegisterForm() {
         }
         .countdown__colon { font-size: 1.4rem; font-weight: 700; line-height: 1.4; opacity: 0.5; }
         .countdown__head strong { display: inline; font-size: inherit; margin: 0; }
+        /* Floating countdown: muncul di antara hero dan form. */
+        .floating-countdown {
+          position: fixed; z-index: 30;
+          right: var(--space-6); bottom: var(--space-6);
+          display: flex; align-items: center; gap: 12px;
+          padding: 10px 16px;
+          border: 1px solid #fed7aa; border-radius: 14px;
+          background: #fff7ed; color: #7c2d12;
+          text-decoration: none;
+          transition: background 0.2s ease, border-color 0.2s ease;
+        }
+        .floating-countdown:hover { background: #ffedd5; border-color: #fdba74; }
+        .floating-countdown:focus-visible { outline: 2px solid var(--teal-dark); outline-offset: 2px; }
+        .floating-countdown--urgent { background: #fef2f2; border-color: #fecaca; color: #991b1b; }
+        .floating-countdown--urgent:hover { background: #fee2e2; border-color: #fca5a5; }
+        .floating-countdown__label {
+          max-width: 11ch;
+          font-family: var(--font-heading); font-size: 0.66rem; font-weight: 700;
+          letter-spacing: 0.07em; line-height: 1.2; text-transform: uppercase;
+        }
+        .floating-countdown__time {
+          font-family: var(--font-heading); font-size: 1.2rem; font-weight: 700;
+          font-variant-numeric: tabular-nums; letter-spacing: 0.02em; white-space: nowrap;
+        }
+        @media (max-width: 719px) {
+          .floating-countdown {
+            left: var(--space-4); right: var(--space-4);
+            bottom: calc(var(--space-4) + 58px + env(safe-area-inset-bottom, 0px));
+            justify-content: space-between;
+            padding: 9px 14px; border-radius: 12px;
+          }
+          .floating-countdown__label { max-width: none; font-size: 0.62rem; }
+          .floating-countdown__time { font-size: 1.05rem; }
+        }
+        @media (prefers-reduced-motion: reduce) { .floating-countdown { transition: none; } }
         .form-status-banner strong { display: block; font-size: 1rem; margin-bottom: 2px; }
         .form-status-banner p { margin: 0; font-size: 0.9rem; opacity: 0.9; }
         .spinner {
