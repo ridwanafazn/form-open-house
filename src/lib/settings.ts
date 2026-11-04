@@ -1,6 +1,7 @@
 /**
  * Status pendaftaran disimpan di tabel `settings` (Supabase) pada baris
- * `registration_open` dengan bentuk `{ open: boolean, message: string | null }`.
+ * `registration_open` dengan bentuk
+ * `{ open: boolean, message: string | null, deadline: string | null, forced: boolean }`.
  *
  * Modul ini sengaja hanya berisi fungsi murni + fetch biasa (tanpa
  * `@supabase/supabase-js`) agar:
@@ -11,8 +12,13 @@
  */
 
 export interface RegistrationStatus {
+  /** Status efektif setelah tenggat waktu dihitung. */
   open: boolean;
   message: string | null;
+  /** Tenggat pendaftaran dalam ISO UTC, atau null bila tanpa countdown. */
+  deadline: string | null;
+  /** Admin membuka paksa formulir setelah tenggat terlewati. */
+  forced: boolean;
 }
 
 export interface SettingsEnv {
@@ -28,6 +34,42 @@ export const SETTINGS_KEY = 'registration_open';
 export interface RegistrationOpenValue {
   open: boolean;
   message: string | null;
+  deadline?: string | null;
+  forced?: boolean;
+}
+
+/**
+ * Ubah nilai mentah dari database menjadi status efektif.
+ *
+ * Aturan:
+ * - `open: false` selalu menutup formulir (keputusan manual admin).
+ * - Bila `deadline` terlewati DAN admin tidak memaksa buka (`forced`), formulir
+ *   otomatis ditutup — tanpa perlu ada yang menekan tombol.
+ * - `forced: true` mengabaikan tenggat sehingga admin tetap bisa membuka
+ *   pendaftaran secara manual setelah countdown habis.
+ */
+export function resolveRegistrationStatus(
+  value: RegistrationOpenValue | null | undefined,
+  now: Date = new Date(),
+): RegistrationStatus {
+  const manualOpen = value?.open ?? true;
+  const message =
+    typeof value?.message === 'string' && value.message.trim() ? value.message.trim() : null;
+  const deadline = normalizeDeadline(value?.deadline);
+  const forced = value?.forced === true;
+
+  if (!manualOpen) {
+    return { open: false, message, deadline, forced };
+  }
+
+  if (deadline && !forced) {
+    const deadlineMs = Date.parse(deadline);
+    if (Number.isFinite(deadlineMs) && now.getTime() >= deadlineMs) {
+      return { open: false, message, deadline, forced };
+    }
+  }
+
+  return { open: true, message, deadline, forced };
 }
 
 /**
@@ -39,9 +81,10 @@ export interface RegistrationOpenValue {
 export async function getRegistrationStatus(
   env: SettingsEnv,
   fetchImpl: Fetcher,
+  now: Date = new Date(),
 ): Promise<RegistrationStatus> {
   if (!env.supabaseUrl || !env.supabaseServiceRoleKey) {
-    return { open: true, message: null };
+    return resolveRegistrationStatus(null, now);
   }
 
   const url =
@@ -60,19 +103,21 @@ export async function getRegistrationStatus(
 
     if (!res.ok) {
       console.error('[settings] Supabase responded with status', res.status);
-      return { open: true, message: null };
+      return resolveRegistrationStatus(null, now);
     }
 
     const rows = (await res.json().catch(() => [])) as Array<{ value?: RegistrationOpenValue }>;
     const value = Array.isArray(rows) && rows[0] ? rows[0].value : undefined;
-    if (!value) return { open: true, message: null };
-
-    return {
-      open: value.open ?? true,
-      message: typeof value.message === 'string' && value.message.trim() ? value.message : null,
-    };
+    return resolveRegistrationStatus(value, now);
   } catch (err) {
     console.error('[settings] fetch failed:', err);
-    return { open: true, message: null };
+    return resolveRegistrationStatus(null, now);
   }
+}
+
+/** Normalisasi tenggat ke ISO UTC; nilai tidak valid dianggap tanpa tenggat. */
+export function normalizeDeadline(value: unknown): string | null {
+  if (typeof value !== 'string' || !value.trim()) return null;
+  const ms = Date.parse(value);
+  return Number.isFinite(ms) ? new Date(ms).toISOString() : null;
 }

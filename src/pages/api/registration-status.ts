@@ -14,6 +14,7 @@ export const prerender = false;
  */
 export const GET: APIRoute = async () => {
   const runtimeEnv = (workerEnv ?? {}) as Record<string, string | undefined>;
+  const now = new Date();
 
   const status = await getRegistrationStatus(
     {
@@ -25,9 +26,10 @@ export const GET: APIRoute = async () => {
         '',
     },
     globalThis.fetch.bind(globalThis),
+    now,
   );
 
-  return new Response(JSON.stringify(status), {
+  return new Response(JSON.stringify({ ...status, now: now.toISOString() }), {
     status: 200,
     headers: {
       'Content-Type': 'application/json',

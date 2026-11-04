@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { AnimatePresence, LazyMotion, domAnimation, m } from 'motion/react';
 import { content } from '../config/content';
 import { eventConfig } from '../config/event';
@@ -8,6 +8,33 @@ import { trackingForSubmit } from '../lib/utm';
 interface RegistrationStatus {
   open: boolean;
   message: string | null;
+  /** ISO UTC; null berarti tanpa countdown. */
+  deadline: string | null;
+  /** Admin membuka paksa setelah tenggat. */
+  forced: boolean;
+}
+
+const EMPTY_STATUS: RegistrationStatus = {
+  open: true,
+  message: null,
+  deadline: null,
+  forced: false,
+};
+
+function pad2(value: number): string {
+  return String(value).padStart(2, '0');
+}
+
+/** Pecah sisa waktu menjadi hari/jam/menit/detik. */
+function splitDuration(ms: number) {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  return {
+    days: Math.floor(total / 86_400),
+    hours: Math.floor((total % 86_400) / 3_600),
+    minutes: Math.floor((total % 3_600) / 60),
+    seconds: total % 60,
+    urgent: total <= 3_600,
+  };
 }
 
 type Fields = {
@@ -42,8 +69,11 @@ export default function RegisterForm() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<'idle' | 'sending' | 'error'>('idle');
   const [submitError, setSubmitError] = useState('');
-  const [regStatus, setRegStatus] = useState<RegistrationStatus>({ open: true, message: null });
+  const [regStatus, setRegStatus] = useState<RegistrationStatus>(EMPTY_STATUS);
   const [regStatusLoading, setRegStatusLoading] = useState(true);
+  // Selisih jam perangkat dengan server agar countdown tidak meleset.
+  const clockOffset = useRef(0);
+  const [nowTick, setNowTick] = useState(() => Date.now());
 
   const set = <K extends keyof Fields>(key: K, value: Fields[K]) =>
     setFields((f) => ({ ...f, [key]: value }));
@@ -57,7 +87,14 @@ export default function RegisterForm() {
         });
         if (res.ok) {
           const data = await res.json();
-          setRegStatus({ open: data.open ?? true, message: data.message ?? null });
+          const serverNow = Date.parse(data.now);
+          if (Number.isFinite(serverNow)) clockOffset.current = serverNow - Date.now();
+          setRegStatus({
+            open: data.open ?? true,
+            message: data.message ?? null,
+            deadline: data.deadline ?? null,
+            forced: data.forced ?? false,
+          });
         }
       } catch {
         // Gagal fetch → default ke buka (fail-open untuk UX)
@@ -66,6 +103,13 @@ export default function RegisterForm() {
       }
     }
     fetchStatus();
+  }, []);
+
+  // Detak countdown. Memakai offset server agar batas waktu tetap konsisten
+  // walau jam perangkat pengunjung tidak akurat.
+  useEffect(() => {
+    const id = window.setInterval(() => setNowTick(Date.now() + clockOffset.current), 1000);
+    return () => window.clearInterval(id);
   }, []);
 
   // progress: langkah 1 aktif, langkah 2 aktif saat step=2 dan sudah selesai saat kirim
@@ -114,8 +158,8 @@ export default function RegisterForm() {
     e.preventDefault();
     if (status === 'sending') return;
 
-    // Cek ulang status sebelum submit (race condition guard)
-    if (!regStatus.open) {
+    // Cek ulang status sebelum submit (race condition guard, termasuk tenggat).
+    if (!effectiveOpen) {
       setSubmitError(regStatus.message || content.errors.closed);
       return;
     }
@@ -204,7 +248,17 @@ export default function RegisterForm() {
     return errors[key] ?? '';
   }
 
-  const formDisabled = !regStatus.open || regStatusLoading;
+  const deadlineMs = regStatus.deadline ? Date.parse(regStatus.deadline) : null;
+  const remainingMs =
+    deadlineMs !== null && Number.isFinite(deadlineMs)
+      ? Math.max(0, deadlineMs - nowTick)
+      : null;
+  // Tenggat lewat dan admin tidak memaksa buka => tutup otomatis di browser,
+  // tanpa menunggu refresh. Server tetap memvalidasi hal yang sama.
+  const autoExpired = remainingMs === 0 && !regStatus.forced;
+  const effectiveOpen = regStatus.open && !autoExpired;
+  const formDisabled = !effectiveOpen || regStatusLoading;
+  const countdown = remainingMs !== null && remainingMs > 0 ? splitDuration(remainingMs) : null;
 
   return (
     <LazyMotion features={domAnimation}>
@@ -232,7 +286,55 @@ export default function RegisterForm() {
           </m.div>
         )}
 
-        {!regStatusLoading && !regStatus.open && (
+        {!regStatusLoading && effectiveOpen && countdown && remainingMs !== null && (
+          <m.div
+            className={`form-status-banner form-status-banner--countdown${
+              countdown.urgent ? ' form-status-banner--urgent' : ''
+            }`}
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            role="status"
+          >
+            <div className="countdown">
+              <div className="countdown__head">
+                <strong>Pendaftaran ditutup dalam</strong>
+              </div>
+              <div
+                className="countdown__digits"
+                role="timer"
+                aria-live="off"
+                aria-label={`Sisa waktu ${countdown.days} hari ${countdown.hours} jam ${countdown.minutes} menit ${countdown.seconds} detik`}
+              >
+                {countdown.days > 0 && (
+                  <span className="countdown__unit">
+                    <span className="countdown__num">{countdown.days}</span>
+                    <span className="countdown__label">hari</span>
+                  </span>
+                )}
+                <span className="countdown__unit">
+                  <span className="countdown__num">{pad2(countdown.hours)}</span>
+                  <span className="countdown__label">jam</span>
+                </span>
+                <span className="countdown__colon" aria-hidden="true">
+                  :
+                </span>
+                <span className="countdown__unit">
+                  <span className="countdown__num">{pad2(countdown.minutes)}</span>
+                  <span className="countdown__label">menit</span>
+                </span>
+                <span className="countdown__colon" aria-hidden="true">
+                  :
+                </span>
+                <span className="countdown__unit">
+                  <span className="countdown__num">{pad2(countdown.seconds)}</span>
+                  <span className="countdown__label">detik</span>
+                </span>
+              </div>
+            </div>
+          </m.div>
+        )}
+
+        {!regStatusLoading && !effectiveOpen && (
           <m.div
             className="form-status-banner form-status-banner--closed"
             initial={{ opacity: 0, y: -8 }}
@@ -254,8 +356,13 @@ export default function RegisterForm() {
               <line x1="12" y1="16" x2="12.01" y2="16"></line>
             </svg>
             <div>
-              <strong>Pendaftaran Ditutup</strong>
-              <p>{regStatus.message || content.errors.closed}</p>
+              <strong>{autoExpired ? 'Tenggat Pendaftaran Berakhir' : 'Pendaftaran Ditutup'}</strong>
+              <p>
+                {regStatus.message ||
+                  (autoExpired
+                    ? 'Batas waktu konfirmasi kehadiran sudah lewat. Hubungi admisi bila masih ingin mendaftar.'
+                    : content.errors.closed)}
+              </p>
             </div>
           </m.div>
         )}
@@ -603,6 +710,36 @@ export default function RegisterForm() {
           background: #fef2f2; color: #991b1b;
           border: 1px solid #fecaca;
         }
+        /* Countdown: hangat saat normal, memerah saat sisa waktu < 1 jam. */
+        .form-status-banner--countdown {
+          background: #fff7ed; color: #7c2d12;
+          border: 1px solid #fed7aa;
+        }
+        .form-status-banner--urgent {
+          background: #fef2f2; color: #991b1b;
+          border-color: #fecaca;
+        }
+        .countdown { width: 100%; }
+        .countdown__head {
+          display: flex; align-items: center; gap: 8px;
+          font-size: 0.82rem; font-weight: 700;
+          letter-spacing: 0.08em; text-transform: uppercase;
+        }
+        .countdown__digits {
+          display: flex; align-items: flex-start; justify-content: space-between;
+          width: 100%; gap: clamp(4px, 2vw, 16px);
+          margin-top: 8px;
+          font-family: var(--font-heading); font-variant-numeric: tabular-nums;
+        }
+        .countdown__unit { flex: 1; display: flex; flex-direction: column; align-items: center; }
+        .countdown__colon { align-self: center; }
+        .countdown__num { font-size: clamp(1.6rem, 5vw, 2.1rem); font-weight: 700; line-height: 1; }
+        .countdown__label {
+          margin-top: 4px; font-size: 0.62rem; font-weight: 700;
+          letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.75;
+        }
+        .countdown__colon { font-size: 1.4rem; font-weight: 700; line-height: 1.4; opacity: 0.5; }
+        .countdown__head strong { display: inline; font-size: inherit; margin: 0; }
         .form-status-banner strong { display: block; font-size: 1rem; margin-bottom: 2px; }
         .form-status-banner p { margin: 0; font-size: 0.9rem; opacity: 0.9; }
         .spinner {

@@ -577,6 +577,13 @@ body {
   border-color: var(--admin-primary);
 }
 
+/* Isian selebar dialog (mis. datetime-local pada pengaturan). */
+.admin-input--block {
+  flex: none;
+  width: 100%;
+  background: var(--admin-surface);
+}
+
 /* Scanner Activity Feed */
 .admin-activity-list {
   display: flex;

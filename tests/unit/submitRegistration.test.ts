@@ -51,7 +51,12 @@ describe('submitRegistration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Default: pendaftaran dibuka
-    vi.mocked(getRegistrationStatus).mockResolvedValue({ open: true, message: null });
+    vi.mocked(getRegistrationStatus).mockResolvedValue({
+      open: true,
+      message: null,
+      deadline: null,
+      forced: false,
+    });
   });
 
   it('bot: website terisi => sukses tanpa menyimpan', async () => {
@@ -62,7 +67,12 @@ describe('submitRegistration', () => {
   });
 
   it('pendaftaran ditutup => 403 closed', async () => {
-    vi.mocked(getRegistrationStatus).mockResolvedValue({ open: false, message: 'Pendaftaran ditutup' });
+    vi.mocked(getRegistrationStatus).mockResolvedValue({
+      open: false,
+      message: 'Pendaftaran ditutup',
+      deadline: null,
+      forced: false,
+    });
     const f = makeFetch({});
     const r = await submitRegistration(valid, env(), f);
     expect(r).toEqual({ kind: 'error', status: 403, code: 'closed' });
