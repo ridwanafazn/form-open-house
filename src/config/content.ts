@@ -63,7 +63,7 @@ export const content = {
       kicker: 'Penginapan',
       heading: 'Guest House As-Syifa',
       tagline: 'Nyaman menginap, tenang di hati.',
-      text: 'Untuk tamu yang datang dari luar kota. Guest House berada di luar sekolah, tetapi tetap berdekatan dengan Kampus 4.',
+      text: '',
       note: 'Cek kamar dan pesan langsung melalui aplikasi Guest House.',
       cta: 'Buka Guest House',
       url: 'https://gh.assyifa.site/',
