@@ -59,6 +59,16 @@ export const content = {
       addCalendar: 'Tambah ke kalender',
     },
 
+    penginapan: {
+      kicker: 'Penginapan',
+      heading: 'Guest House As-Syifa',
+      tagline: 'Nyaman menginap, tenang di hati.',
+      text: 'Untuk tamu yang datang dari luar kota. Guest House berada di luar sekolah, tetapi tetap berdekatan dengan Kampus 4.',
+      note: 'Cek kamar dan pesan langsung melalui aplikasi Guest House.',
+      cta: 'Buka Guest House',
+      url: 'https://gh.assyifa.site/',
+    },
+
     rundown: {
       heading: 'Susunan Acara',
       tagline: 'Jadwal kegiatan open house dari pagi hingga selesai.',

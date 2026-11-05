@@ -1,0 +1,152 @@
+---
+import { content } from '../config/content';
+
+const stay = content.home.penginapan;
+---
+
+<section class="stay" id="penginapan" aria-labelledby="penginapan-title">
+  <div class="container">
+    <div class="stay__card">
+      <span class="stay__icon" aria-hidden="true">
+        <svg
+          width="26"
+          height="26"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.7"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M2 20v-8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v8" />
+          <path d="M4 10V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4" />
+          <path d="M2 17h20" />
+          <path d="M6 13h4" />
+          <path d="M14 13h4" />
+        </svg>
+      </span>
+
+      <div class="stay__body">
+        <p class="stay__kicker">{stay.kicker}</p>
+        <h2 id="penginapan-title">{stay.heading}</h2>
+        <p class="stay__tagline">{stay.tagline}</p>
+        <p class="stay__text">{stay.text}</p>
+        <p class="stay__note">{stay.note}</p>
+      </div>
+
+      <div class="stay__action">
+        <a class="button button--primary stay__cta" href={stay.url} target="_blank" rel="noopener">
+          {stay.cta}
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M7 17 17 7" />
+            <path d="M8 7h9v9" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .stay {
+    padding-block: var(--space-8);
+  }
+
+  .stay__card {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-6);
+    padding: var(--space-6);
+    border: 1px solid var(--paper-grid);
+    border-radius: 14px;
+    background: var(--paper-card);
+    box-shadow:
+      0 1px 0 #e8e1cf,
+      0 18px 40px -30px rgba(34, 38, 42, 0.35);
+  }
+
+  .stay__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    flex: none;
+    border: 1px solid var(--paper-grid);
+    border-radius: 12px;
+    background: #fffdf7;
+    color: var(--teal-dark);
+  }
+
+  .stay__kicker {
+    margin: 0 0 2px;
+    color: var(--teal-dark);
+    font-family: var(--font-tech);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    line-height: 1.6;
+    text-transform: uppercase;
+  }
+
+  .stay__body h2 {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-size: clamp(1.2rem, 3vw, 1.5rem);
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .stay__tagline {
+    margin: 4px 0 0;
+    color: var(--teal-dark);
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .stay__text {
+    margin: 6px 0 0;
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+
+  .stay__note {
+    margin: 4px 0 0;
+    color: var(--ink-soft);
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+
+  .stay__cta {
+    gap: 8px;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 719px) {
+    .stay__card {
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: var(--space-4);
+    }
+
+    .stay__action {
+      grid-column: 1 / -1;
+    }
+
+    .stay__cta {
+      width: 100%;
+    }
+  }
+</style>
