@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import QRCode from 'qrcode';
 import { eventConfig } from '../config/event';
+import TicketReminder from './TicketReminder';
 
 export interface PublicTicketData {
   child_name: string;
@@ -170,6 +171,8 @@ export default function PublicTicket({ ticket: initialTicket, code }: Props) {
       >
         Simpan gambar tiket
       </button>
+
+      <TicketReminder />
 
       <style>{`
         .pt {

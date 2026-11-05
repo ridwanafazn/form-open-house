@@ -119,6 +119,7 @@ export default function RegisterForm() {
   useEffect(() => {
     const hero = document.getElementById('hero');
     const formSection = document.getElementById('form');
+    const guideSection = document.getElementById('panduan');
     if (!formSection) return;
 
     let frame = 0;
@@ -127,9 +128,12 @@ export default function RegisterForm() {
       const viewport = window.innerHeight;
       const heroRect = hero?.getBoundingClientRect();
       const formRect = formSection.getBoundingClientRect();
+      const guideRect = guideSection?.getBoundingClientRect();
       const heroIn = heroRect ? heroRect.bottom > 0 && heroRect.top < viewport : false;
       const formIn = formRect.top < viewport && formRect.bottom > 0;
-      setFloatingVisible(!heroIn && !formIn);
+      const guideIn = guideRect ? guideRect.top < viewport && guideRect.bottom > 0 : false;
+      // Sembunyikan saat panduan atau form terlihat agar tidak menutupi teks.
+      setFloatingVisible(!heroIn && !formIn && !guideIn);
     };
     const requestSync = () => {
       if (frame) return;

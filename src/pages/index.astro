@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero.astro';
 import StorySection from '../components/StorySection';
+import VisitorGuide from '../components/VisitorGuide.astro';
 import AddCalendar from '../components/AddCalendar';
 // Form kini tanpa pemeriksaan CAPTCHA (Turnstile). Jebakan bot tetap ada di
 // form lewat isian tersembunyi (honeypot), ditangani di sisi server.
@@ -167,6 +168,8 @@ const dateOnly = dateParts.join(', ');
       </div>
     </section>
 
+    <VisitorGuide />
+
     <section class="section" id="form" aria-labelledby="form-title">
       <div class="container form-wrap">
         <header class="section-head">
@@ -191,6 +194,7 @@ const dateOnly = dateParts.join(', ');
             <p class="site-footer__title">Tautan</p>
             <a href="/#event-info">Info Acara</a>
             <a href="/#rundown">Rundown</a>
+            <a href="/#panduan">Panduan</a>
             <a href="/#form">Daftar Hadir</a>
           </nav>
           <div class="site-footer__col">

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import QRCode from 'qrcode';
 import { eventConfig } from '../config/event';
 import { content } from '../config/content';
+import TicketReminder from './TicketReminder';
 
 interface SummaryData {
   child_name: string;
@@ -321,6 +322,8 @@ export default function TicketCard() {
               {ticket.share}
             </button>
           </div>
+
+          <TicketReminder />
         </>
       )}
 

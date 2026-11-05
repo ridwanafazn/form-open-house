@@ -188,6 +188,66 @@ export const content = {
       ],
     },
 
+    panduan: {
+      heading: 'Panduan Pengunjung',
+      tagline: 'Sebelum berangkat, periksa kembali',
+      lakukanTitle: 'Lakukan',
+      hindariTitle: 'Hindari',
+      lakukan: [
+        { icon: 'shirt', text: 'Pakaian sopan dan rapi' },
+        { icon: 'ticket', text: 'E-Ticket di lobi sekolah' },
+        { icon: 'users', text: 'Tour asrama dengan pemandu' },
+      ],
+      hindari: [
+        { icon: 'smoke', text: 'Rokok dan vape' },
+        { icon: 'food', text: 'Makan dan minum di masjid dan lab' },
+        { icon: 'tools', text: 'Peralatan lab tanpa izin' },
+      ],
+      moreLabel: 'Lihat panduan lengkap',
+      groups: [
+        {
+          icon: 'parking',
+          title: 'Saat tiba',
+          items: [
+            { icon: 'parking', text: 'Parkir di Syifa Mart atau depan Asrama 1 SMK' },
+            { icon: 'ticket', text: 'Registrasi ulang di lobi sekolah' },
+          ],
+        },
+        {
+          icon: 'users',
+          title: 'Saat tour',
+          items: [
+            { icon: 'users', text: 'Asrama hanya bersama pemandu' },
+            { icon: 'door', text: 'Jangan masuk kamar tanpa izin' },
+            { icon: 'child', text: 'Awasi balita yang ikut' },
+          ],
+        },
+        {
+          icon: 'mosque',
+          title: 'Ibadah dan area kampus',
+          items: [
+            { icon: 'mosque', text: 'Salat Zuhur berjamaah pukul 11.40' },
+            { icon: 'food', text: 'Makan dan minum di luar masjid mushola dan lab' },
+            { icon: 'smoke', text: 'Seluruh area bebas rokok dan vape' },
+          ],
+        },
+        {
+          icon: 'book',
+          title: 'Adab dan ketertiban',
+          items: [
+            { icon: 'speaker', text: 'Hindari klakson dan musik keras' },
+            { icon: 'alert', text: 'Jangan bawa barang berbahaya' },
+          ],
+        },
+      ],
+      note: 'Ikuti arahan panitia di lokasi',
+      ticket: {
+        label: 'Sebelum berangkat',
+        items: ['Pakaian sopan dan rapi', 'E-Ticket di lobi sekolah', 'Bebas rokok dan vape'],
+        link: 'Baca panduan lengkap',
+      },
+    },
+
     form: {
       heading: 'Daftar sekarang!',
       tagline:
