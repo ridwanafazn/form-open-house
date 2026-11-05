@@ -6,6 +6,7 @@ import type { CsvRow } from '../../lib/csv';
 import { STATUS_LABELS } from './types';
 import type { Registration, FollowupStatus, Screen, Tab } from './types';
 import ScannerTab from './ScannerTab';
+import RecapTab from './RecapTab';
 import DetailScreen from './DetailScreen';
 
 interface ListScreenProps {
@@ -13,9 +14,12 @@ interface ListScreenProps {
 }
 
 export default function ListScreen({ setScreen }: ListScreenProps) {
-  const [activeTab, setActiveTab] = useState<Tab>(() =>
-    typeof window !== 'undefined' && window.location.hash === '#scan' ? 'scan' : 'list',
-  );
+  const [activeTab, setActiveTab] = useState<Tab>(() => {
+    if (typeof window === 'undefined') return 'list';
+    if (window.location.hash === '#scan') return 'scan';
+    if (window.location.hash === '#recap') return 'recap';
+    return 'list';
+  });
   const [rows, setRows] = useState<Registration[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
@@ -50,7 +54,8 @@ export default function ListScreen({ setScreen }: ListScreenProps) {
 
   useEffect(() => {
     const syncHash = () => {
-      setActiveTab(window.location.hash === '#scan' ? 'scan' : 'list');
+      const hash = window.location.hash;
+      setActiveTab(hash === '#scan' ? 'scan' : hash === '#recap' ? 'recap' : 'list');
     };
     window.addEventListener('hashchange', syncHash);
     syncHash();
@@ -78,7 +83,7 @@ export default function ListScreen({ setScreen }: ListScreenProps) {
         ? true
         : filterAttendance === 'attended'
           ? !!r.attended_at
-          : !r.attended_at;
+          : !r.attended_at && r.followup_status !== 'tidak_jadi';
 
     return matchSearch && matchStatus && matchAssigned && matchAttendance;
   });
@@ -91,12 +96,16 @@ export default function ListScreen({ setScreen }: ListScreenProps) {
   const endIndex = Math.min(startIndex + PAGE_SIZE, filtered.length);
   const visibleRows = filtered.slice(startIndex, endIndex);
 
-  const totalRegisteredFamilies = rows.length;
-  const attendedRows = rows.filter((r) => !!r.attended_at);
+  // Pendaftar berstatus Tidak jadi tidak dihitung sebagai peserta aktif,
+  // sehingga angka dasbor ikut turun saat status diubah.
+  const activeRows = rows.filter((r) => r.followup_status !== 'tidak_jadi');
+  const cancelledCount = rows.length - activeRows.length;
+  const totalRegisteredFamilies = activeRows.length;
+  const attendedRows = activeRows.filter((r) => !!r.attended_at);
   const totalAttendedFamilies = attendedRows.length;
   const totalAbsentFamilies = totalRegisteredFamilies - totalAttendedFamilies;
   const totalAttendedIndividuals = attendedRows.reduce((sum, r) => sum + r.attendee_count, 0);
-  const totalExpectedIndividuals = rows.reduce((sum, r) => sum + r.attendee_count, 0);
+  const totalExpectedIndividuals = activeRows.reduce((sum, r) => sum + r.attendee_count, 0);
 
   const sourceSummary = rows.reduce<Record<string, number>>((acc, r) => {
     const src = r.utm_source ?? 'Organik/Langsung';
@@ -184,6 +193,16 @@ export default function ListScreen({ setScreen }: ListScreenProps) {
               >
                 Scan Presensi QR
               </button>
+              <button
+                type="button"
+                className={`admin-tab ${activeTab === 'recap' ? 'admin-tab--active' : ''}`}
+                onClick={() => {
+                  setActiveTab('recap');
+                  window.history.replaceState(null, '', '#recap');
+                }}
+              >
+                Rekap Acara
+              </button>
             </div>
           </div>
         </div>
@@ -195,6 +214,8 @@ export default function ListScreen({ setScreen }: ListScreenProps) {
           onCheckInSuccess={handleCheckInSuccess}
           onSelectRegistration={handleSelect}
         />
+      ) : activeTab === 'recap' ? (
+        <RecapTab rows={rows} onSelectRegistration={handleSelect} />
       ) : (
         <>
           <section className="admin-summary">
@@ -202,7 +223,11 @@ export default function ListScreen({ setScreen }: ListScreenProps) {
             <div className="admin-stat admin-stat--primary">
               <div className="admin-stat__header">Total Keluarga</div>
               <div className="admin-stat__num">{totalRegisteredFamilies}</div>
-              <div className="admin-stat__footer">↗ Terdaftar dalam sistem</div>
+              <div className="admin-stat__footer">
+                {cancelledCount > 0
+                  ? `Terdaftar aktif, ${cancelledCount} tidak jadi dikecualikan`
+                  : 'Terdaftar dalam sistem'}
+              </div>
             </div>
             
             <div className="admin-stat">

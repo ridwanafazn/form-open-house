@@ -32,7 +32,7 @@ export interface Registration {
 }
 
 export type Screen = 'login' | 'checking' | 'list' | 'detail';
-export type Tab = 'list' | 'scan';
+export type Tab = 'list' | 'scan' | 'recap';
 
 export interface RegistrationStatus {
   open: boolean;

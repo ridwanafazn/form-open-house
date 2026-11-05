@@ -20,7 +20,7 @@ export default function ScannerTab({ rows, onCheckInSuccess, onSelectRegistratio
   const [activityLimit, setActivityLimit] = useState<number>(5);
 
   const [scanResult, setScanResult] = useState<{
-    type: 'success' | 'duplicate' | 'error';
+    type: 'success' | 'duplicate' | 'cancelled' | 'error';
     message: string;
     item?: Registration;
   } | null>(null);
@@ -65,6 +65,18 @@ export default function ScannerTab({ rows, onCheckInSuccess, onSelectRegistratio
       setScanResult({
         type: 'error',
         message: `Tiket atau Kontak "${cleanCode}" tidak ditemukan dalam sistem kami.`,
+      });
+      setProcessing(false);
+      return;
+    }
+
+    // Pendaftar yang sudah berstatus tidak jadi tidak boleh masuk hitungan
+    // kehadiran. Tolak sebelum cek duplikat agar tiket tidak pernah tercatat.
+    if (target.followup_status === 'tidak_jadi') {
+      setScanResult({
+        type: 'cancelled',
+        message: `${target.child_name} berstatus Tidak jadi. Tiket tidak dapat discan. Hubungi panitia jika status pendaftar berubah.`,
+        item: target,
       });
       setProcessing(false);
       return;
@@ -180,6 +192,7 @@ export default function ScannerTab({ rows, onCheckInSuccess, onSelectRegistratio
         }
         .oh-modal--success .oh-modal-icon { background: #DCFCE7; color: #166534; }
         .oh-modal--duplicate .oh-modal-icon { background: #FFFBEB; color: #92400E; }
+        .oh-modal--cancelled .oh-modal-icon { background: #FEE2E2; color: #991B1B; }
         .oh-modal--error .oh-modal-icon { background: #FEF2F2; color: #991B1B; }
         
         /* Teks & Tombol Modal */
@@ -215,12 +228,14 @@ export default function ScannerTab({ rows, onCheckInSuccess, onSelectRegistratio
             <div className="oh-modal-icon">
               {scanResult.type === 'success' && '✓'}
               {scanResult.type === 'duplicate' && '!'}
+              {scanResult.type === 'cancelled' && '!'}
               {scanResult.type === 'error' && '✕'}
             </div>
             <div className="oh-modal-body">
               <h3>
                 {scanResult.type === 'success' && 'Presensi Berhasil'}
                 {scanResult.type === 'duplicate' && 'Sudah Pernah Hadir'}
+                {scanResult.type === 'cancelled' && 'Pendaftaran Tidak Jadi'}
                 {scanResult.type === 'error' && 'Tiket Tidak Valid'}
               </h3>
               <p>{scanResult.message}</p>

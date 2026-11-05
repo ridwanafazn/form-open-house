@@ -24,13 +24,21 @@ export default function DetailScreen({ registration: initial, onBack, onUpdateRo
     setSaving(true);
     setSaveMsg('');
     
+    const updatePayload: Record<string, unknown> = {
+      followup_status: status,
+      assigned_to: assignedTo || null,
+      followup_note: note || null,
+    };
+
+    // Status tidak jadi membatalkan kehadiran agar tidak ikut terhitung
+    // di dasbor maupun rekap acara.
+    if (status === 'tidak_jadi') {
+      updatePayload.attended_at = null;
+    }
+
     const { error } = await supabase
       .from('registrations')
-      .update({
-        followup_status: status,
-        assigned_to: assignedTo || null,
-        followup_note: note || null,
-      })
+      .update(updatePayload)
       .eq('id', reg.id);
       
     setSaving(false);
@@ -41,6 +49,7 @@ export default function DetailScreen({ registration: initial, onBack, onUpdateRo
         followup_status: status,
         assigned_to: assignedTo || null,
         followup_note: note || null,
+        attended_at: status === 'tidak_jadi' ? null : reg.attended_at,
       };
       setReg(updated);
       onUpdateRow(updated);
@@ -288,10 +297,20 @@ export default function DetailScreen({ registration: initial, onBack, onUpdateRo
                 type="button"
                 className={`admin-btn ${reg.attended_at ? 'admin-btn--outline' : 'admin-btn--primary'}`}
                 onClick={toggleAttendance}
-                disabled={saving}
+                disabled={saving || status === 'tidak_jadi'}
               >
-                {reg.attended_at ? 'Batalkan Presensi' : 'Tandai Hadir'}
+                {status === 'tidak_jadi'
+                  ? 'Presensi Dinonaktifkan'
+                  : reg.attended_at
+                    ? 'Batalkan Presensi'
+                    : 'Tandai Hadir'}
               </button>
+              {status === 'tidak_jadi' && (
+                <p className="admin-hint">
+                  Status Tidak jadi menonaktifkan presensi. Simpan perubahan untuk menghapus
+                  catatan hadir.
+                </p>
+              )}
             </div>
 
             <div className="admin-form-block">
