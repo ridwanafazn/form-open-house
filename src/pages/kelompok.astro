@@ -4,7 +4,6 @@ import GroupDirectory from '../components/GroupDirectory';
 import { content } from '../config/content';
 import { GROUP_CODES, MANUAL_GROUP_CODE, getGroupRoute } from '../config/groups';
 import { assignGroups, maskChildName } from '../lib/groups';
-import { formatWib } from '../lib/deadline';
 import { env as workerEnv } from 'cloudflare:workers';
 
 export const prerender = false;
@@ -70,12 +69,11 @@ const publicGroups = GROUP_CODES.map((code) => {
     label: route.label,
     stops: route.stops,
     returnStop: route.returnStop,
+    returnLabel: route.returnLabel,
     note: route.note,
     members,
   };
 }).filter((group) => group.code !== MANUAL_GROUP_CODE || group.members.length > 0);
-
-const updatedAt = formatWib(new Date().toISOString());
 
 Astro.response.headers.set('Cache-Control', 'no-store');
 ---
@@ -96,12 +94,7 @@ Astro.response.headers.set('Cache-Control', 'no-store');
         </p>
       </header>
 
-      <GroupDirectory
-        client:load
-        groups={publicGroups}
-        updatedAt={updatedAt}
-        loadError={loadError}
-      />
+      <GroupDirectory client:load groups={publicGroups} loadError={loadError} />
     </div>
   </main>
 </Base>

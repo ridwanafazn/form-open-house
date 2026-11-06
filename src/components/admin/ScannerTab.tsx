@@ -105,7 +105,7 @@ export default function ScannerTab({ rows, onCheckInSuccess, onSelectRegistratio
     
     setScanResult({
       type: 'success',
-      message: `${target.child_name} (${target.school}) berhasil Check-in. Total rombongan: ${target.attendee_count} Orang.`,
+      message: `${target.child_name} (${target.school}) berhasil check-in. Total orang yang hadir: ${target.attendee_count} orang.`,
       item: updated,
     });
     setManualCode('');
@@ -329,7 +329,7 @@ export default function ScannerTab({ rows, onCheckInSuccess, onSelectRegistratio
             <div className="admin-card__header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px' }}>
               <div>
                 <h2>Aktivitas Terbaru</h2>
-                <p>Riwayat check-in keluarga di lokasi.</p>
+                <p>Riwayat check-in pendaftar di lokasi.</p>
               </div>
               <select
                 className="admin-select"
@@ -368,7 +368,7 @@ export default function ScannerTab({ rows, onCheckInSuccess, onSelectRegistratio
                       <div className="admin-activity-body">
                         <div className="admin-activity-title">
                           <strong>{item.child_name}</strong>
-                          <span className="admin-activity-count">+{item.attendee_count} Org</span>
+                          <span className="admin-activity-count">+{item.attendee_count} orang</span>
                         </div>
                         <div className="admin-activity-meta">
                           {item.school} <span className="admin-activity-dot">•</span> {item.ticket_code}

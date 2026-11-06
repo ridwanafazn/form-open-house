@@ -150,11 +150,11 @@ const guide = content.home.panduan;
   /* Tumpukan kertas di belakang, ikut terlihat di tepi yang tidak rata. */
   .guide__shadow {
     position: absolute;
-    inset: 18px 12px -18px;
+    inset: 10px 6px -8px;
     z-index: 0;
-    background: rgba(34, 38, 42, 0.2);
-    filter: blur(26px);
-    transform: translateY(12px);
+    background: rgba(34, 38, 42, 0.16);
+    filter: blur(14px);
+    transform: translateY(6px);
     pointer-events: none;
   }
 
@@ -167,15 +167,15 @@ const guide = content.home.panduan;
   }
 
   .guide__stack::before {
-    inset: 8px -5px -9px 5px;
+    inset: 5px -3px -5px 3px;
     background: #eee6d2;
-    transform: rotate(0.5deg);
+    transform: rotate(0.3deg);
   }
 
   .guide__stack::after {
-    inset: 15px -9px -17px 9px;
+    inset: 9px -5px -9px 5px;
     background: #e5dcc6;
-    transform: rotate(-0.35deg);
+    transform: rotate(-0.2deg);
   }
 
   /* Lembar kertas dengan tepi tidak rata dan gerak angin terus berulang. */

@@ -12,23 +12,19 @@ export interface PublicGroup {
   label: string;
   stops: readonly string[];
   returnStop: string | null;
+  returnLabel: string | null;
   note: string;
   members: GroupMember[];
 }
 
 interface GroupDirectoryProps {
   groups: PublicGroup[];
-  updatedAt: string;
   loadError: string;
 }
 
 const copy = content.groupPage;
 
-export default function GroupDirectory({
-  groups,
-  updatedAt,
-  loadError,
-}: GroupDirectoryProps) {
+export default function GroupDirectory({ groups, loadError }: GroupDirectoryProps) {
   const [query, setQuery] = useState('');
 
   const normalizedQuery = query.trim().toLowerCase();
@@ -316,16 +312,6 @@ export default function GroupDirectory({
           font-size: 0.85rem;
           line-height: 1.5;
         }
-        .group-note {
-          margin: 20px 0 0;
-          padding: 12px 14px;
-          border: 1px solid var(--paper-grid);
-          border-radius: 8px;
-          background: var(--paper-card);
-          color: var(--ink-soft);
-          font-size: 0.76rem;
-          line-height: 1.5;
-        }
         @media (max-width: 600px) {
           .group-search-row {
             flex-direction: column;
@@ -336,8 +322,7 @@ export default function GroupDirectory({
         }
         @media print {
           .group-toolbar,
-          .group-result-note,
-          .group-note {
+          .group-result-note {
             display: none !important;
           }
           .group-cards {
@@ -432,8 +417,8 @@ export default function GroupDirectory({
                         {group.stops.map((stop) => (
                           <li key={`${group.code}-${stop}`}>{stop}</li>
                         ))}
-                        {group.returnStop && (
-                          <li className="group-route__return">Kembali ke {group.returnStop}</li>
+                        {group.returnLabel && (
+                          <li className="group-route__return">{group.returnLabel}</li>
                         )}
                       </ol>
                       <p className="group-route__note">{group.note}</p>
@@ -479,10 +464,6 @@ export default function GroupDirectory({
             </div>
           )}
 
-          <p className="group-note">
-            {copy.privacyNote}
-            {updatedAt ? ` ${copy.updatedLabel} ${updatedAt}.` : ''}
-          </p>
         </>
       )}
     </>

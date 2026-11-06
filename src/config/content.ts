@@ -211,27 +211,6 @@ export const content = {
           ],
         },
       ],
-      tour: {
-        heading: 'Alur Tour Kampus',
-        tagline: 'Tiga sesi, tiga lokasi, setiap kelompok berputar dengan urutan berbeda.',
-        durationLabel: '90 menit',
-        durationText: '3 sesi x 30 menit',
-        sessionsHeading: 'Jadwal rotasi',
-        routesHeading: 'Rute tiap kelompok',
-        finalHeading: 'Titik kumpul akhir',
-        finalText:
-          'Semua kelompok kembali ke Gedung Sekolah pada 11.15 sebagai titik kumpul.',
-        notesHeading: 'Saat mengikuti tour',
-        notes: [
-          'Setiap lokasi dikunjungi 30 menit.',
-          'Ikuti pemandu kelompok dan tetap bersama rombongan.',
-          'Jangan berpindah lokasi tanpa arahan panitia.',
-        ],
-        manualNote:
-          'Kelompok A dan B untuk pendaftar online. Pendaftar manual di hari acara masuk Kelompok C.',
-        groupLinkLabel: 'Lihat pembagian kelompok',
-        groupLinkNote: 'Cari nama Anda dan lihat rute kelompok.',
-      },
     },
 
     panduan: {
@@ -314,11 +293,10 @@ export const content = {
     searchLabel: 'Cari nama atau sekolah',
     searchPlaceholder: 'Contoh: Ahmad atau SMP Negeri 1 Subang',
     searchHint: 'Nama ditampilkan disamarkan untuk menjaga privasi.',
-    resultsLabel: '{count} peserta cocok',
-    updatedLabel: 'Diperbarui',
+    resultsLabel: '{count} nama cocok',
     routeLabel: 'Rute kunjungan',
     sessionsLabel: 'Jadwal sesi',
-    membersLabel: 'Peserta',
+    membersLabel: 'Nama peserta',
     emptyTitle: 'Belum ada peserta',
     emptyText:
       'Daftar kelompok akan tampil setelah ada pendaftar. Hubungi panitia di meja registrasi bila nama Anda belum muncul.',
@@ -328,8 +306,6 @@ export const content = {
     loadErrorTitle: 'Data kelompok belum bisa dimuat',
     loadErrorText:
       'Periksa koneksi internet lalu muat ulang halaman. Bila masih gagal, tanyakan kepada panitia di meja registrasi.',
-    privacyNote:
-      'Halaman ini hanya menampilkan nama yang disamarkan dan asal sekolah. Nomor HP, nama orang tua, kota, dan jumlah orang tidak ditampilkan.',
     print: 'Cetak daftar',
     backToRundown: 'Kembali ke rundown',
   },
@@ -355,8 +331,8 @@ export const content = {
     stepTwo: [
       {
         id: 'attendee_count',
-        label: 'Jumlah yang akan hadir',
-        helper: 'Hitung termasuk anak.',
+        label: 'Jumlah orang yang akan hadir',
+        helper: 'Total orang yang datang, termasuk calon siswa.',
       },
       {
         id: 'city',
@@ -407,7 +383,8 @@ export const content = {
     kicker: 'Pendaftaran terkirim',
     title: 'Terima kasih, pendaftaran sudah kami terima',
     lead: 'Tiket masuk sudah siap. Simpan atau kirim ke WhatsApp sebelum hari acara.',
-    withSummary: 'Kami tunggu {nama anak} dan {jumlah hadir} orang di open house.',
+    withSummary:
+      'Total {jumlah hadir} orang, termasuk {nama anak}, kami tunggu di open house.',
     withoutSummary: 'Kami tunggu Ayah dan Bunda di open house.',
     ticket: {
       label: 'Tiket masuk',
@@ -416,7 +393,7 @@ export const content = {
       copy: 'Salin',
       copied: 'Tersalin',
       child: 'Calon siswa',
-      attendees: 'Jumlah hadir',
+      attendees: 'Jumlah orang hadir',
       personUnit: 'orang',
       instruction: 'Tunjukkan QR code ini ke panitia di meja registrasi. Tidak perlu dicetak.',
       download: 'Simpan gambar tiket',
@@ -485,7 +462,7 @@ export const content = {
       'Nama anak',
       'Nomor HP orang tua',
       'Nama orang tua bila diisi',
-      'Jumlah yang hadir',
+      'Jumlah orang yang hadir',
       'Asal kota',
       'Asal sekolah',
       'Minat jurusan bila diisi',

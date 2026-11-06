@@ -17,6 +17,8 @@ export interface GroupRoute {
   stops: readonly string[];
   /** Lokasi yang dikunjungi setelah sesi ketiga, bila ada. */
   returnStop: string | null;
+  /** Label tebal untuk langkah terakhir, misalnya "Tetap di Gedung Sekolah". */
+  returnLabel: string | null;
   note: string;
 }
 
@@ -32,20 +34,23 @@ export const groupRoutes: readonly GroupRoute[] = [
     label: 'Kelompok A',
     stops: ['Gedung Sekolah', 'Laboratorium', 'Asrama'],
     returnStop: 'Gedung Sekolah',
+    returnLabel: 'Kembali ke Gedung Sekolah',
     note: 'Kembali ke Gedung Sekolah sebagai titik kumpul.',
   },
   {
     code: 'B',
     label: 'Kelompok B',
-    stops: ['Laboratorium', 'Asrama', 'Gedung Sekolah'],
-    returnStop: null,
-    note: 'Gedung Sekolah menjadi titik akhir tour sekaligus titik kumpul.',
+    stops: ['Laboratorium', 'Asrama'],
+    returnStop: 'Gedung Sekolah',
+    returnLabel: 'Tetap di Gedung Sekolah',
+    note: 'Gedung Sekolah adalah titik akhir tour sekaligus titik kumpul.',
   },
   {
     code: 'C',
     label: 'Kelompok C',
     stops: ['Asrama', 'Gedung Sekolah', 'Laboratorium'],
     returnStop: 'Gedung Sekolah',
+    returnLabel: 'Kembali ke Gedung Sekolah',
     note: 'Khusus pendaftar manual di hari acara. Kembali ke Gedung Sekolah sebagai titik kumpul.',
   },
 ];

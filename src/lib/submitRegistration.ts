@@ -22,7 +22,7 @@ export async function sendRegistrationWhatsApp(notification: RegistrationNotific
     'Pendaftaran Open House SMKIT As-Syifa berhasil kami terima.',
     '',
     `1. 👤 Calon siswa: ${notification.childName}`,
-    `2. 👥 Jumlah peserta: ${notification.attendeeCount} orang`,
+    `2. 👥 Total orang yang hadir: ${notification.attendeeCount} orang, termasuk calon siswa`,
     `3. 🎟️ Kode tiket: ${notification.ticketCode}`,
     '',
     'Mohon simpan pesan dan gambar tiket ini. Tunjukkan QR Code kepada panitia saat registrasi di lokasi.',

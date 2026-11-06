@@ -200,7 +200,7 @@ export default function ListScreen({ setScreen }: ListScreenProps) {
                   window.history.replaceState(null, '', '#dashboard');
                 }}
               >
-                Daftar Peserta
+                Daftar Pendaftar
                 <span className="admin-tab__count">{rows.length}</span>
               </button>
               <button
@@ -253,31 +253,31 @@ export default function ListScreen({ setScreen }: ListScreenProps) {
           <section className="admin-summary">
             {/* Kartu Utama (Tema Donezo) */}
             <div className="admin-stat admin-stat--primary">
-              <div className="admin-stat__header">Total Keluarga</div>
+              <div className="admin-stat__header">Total Pendaftar</div>
               <div className="admin-stat__num">{totalRegisteredFamilies}</div>
               <div className="admin-stat__footer">
                 {cancelledCount > 0
-                  ? `Terdaftar aktif, ${cancelledCount} tidak jadi dikecualikan`
-                  : 'Terdaftar dalam sistem'}
+                  ? `${cancelledCount} pendaftar tidak jadi tidak dihitung`
+                  : 'Pendaftar aktif'}
               </div>
             </div>
             
             <div className="admin-stat">
-              <div className="admin-stat__header">Peserta Hadir</div>
+              <div className="admin-stat__header">Pendaftar Hadir</div>
               <div className="admin-stat__num text-emerald">{totalAttendedFamilies}</div>
-              <div className="admin-stat__footer">Hadir: {totalAttendedIndividuals} Individu</div>
+              <div className="admin-stat__footer">{totalAttendedIndividuals} orang hadir</div>
             </div>
             
             <div className="admin-stat">
-              <div className="admin-stat__header">Belum Hadir</div>
+              <div className="admin-stat__header">Pendaftar Belum Hadir</div>
               <div className="admin-stat__num text-amber">{totalAbsentFamilies}</div>
-              <div className="admin-stat__footer">Keluarga belum check-in</div>
+              <div className="admin-stat__footer">Belum check-in</div>
             </div>
             
             <div className="admin-stat">
-              <div className="admin-stat__header">Estimasi Hadirin</div>
+              <div className="admin-stat__header">Perkiraan Jumlah Orang</div>
               <div className="admin-stat__num text-slate">{totalExpectedIndividuals}</div>
-              <div className="admin-stat__footer">Total target individu</div>
+              <div className="admin-stat__footer">Total orang dari pendaftar aktif</div>
             </div>
           </section>
 
@@ -302,8 +302,8 @@ export default function ListScreen({ setScreen }: ListScreenProps) {
                 onChange={(e) => setFilterAttendance(e.target.value as 'all' | 'attended' | 'absent')}
               >
                 <option value="all">Semua Presensi</option>
-                <option value="attended">Sudah Hadir ({totalAttendedFamilies})</option>
-                <option value="absent">Belum Hadir ({totalAbsentFamilies})</option>
+                <option value="attended">Sudah Hadir ({totalAttendedFamilies} pendaftar)</option>
+                <option value="absent">Belum Hadir ({totalAbsentFamilies} pendaftar)</option>
               </select>
               <select
                 className="admin-select"
@@ -360,7 +360,7 @@ export default function ListScreen({ setScreen }: ListScreenProps) {
                     <th>Nama Pendaftar</th>
                     <th>Asal Kota</th>
                     <th>Asal Sekolah</th>
-                    <th>Rombongan</th>
+                    <th>Jumlah Hadir</th>
                     <th>Status Tindak Lanjut</th>
                   </tr>
                 </thead>
@@ -405,7 +405,7 @@ export default function ListScreen({ setScreen }: ListScreenProps) {
                       </td>
                       <td>{r.city}</td>
                       <td>{r.school}</td>
-                      <td>{r.attendee_count} Org</td>
+                      <td>{r.attendee_count} orang</td>
                       <td>
                         <div className="admin-cell-status">
                           <span className="admin-status-text">{STATUS_LABELS[r.followup_status] ?? r.followup_status}</span>

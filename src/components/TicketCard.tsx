@@ -69,7 +69,7 @@ export default function TicketCard() {
       'Pendaftaran Open House SMKIT As-Syifa berhasil kami terima.',
       '',
       `1. Calon siswa: ${child}`,
-      `2. Jumlah peserta: ${count} orang`,
+      `2. Total orang yang hadir: ${count} orang, termasuk calon siswa`,
       `3. Kode tiket: ${ticketCode}`,
       '',
       'Mohon simpan pesan dan gambar tiket ini. Tunjukkan QR Code kepada panitia saat registrasi di lokasi.',
@@ -117,7 +117,7 @@ export default function TicketCard() {
     context.fillText(child, 76, 732);
     context.font = "400 26px 'DM Sans', Arial";
     context.fillStyle = '#64748B';
-    context.fillText(`${count} peserta`, 76, 778);
+    context.fillText(`${count} orang`, 76, 778);
     context.fillStyle = '#0F172A';
     context.font = "700 40px 'DM Mono', monospace";
     context.fillText(ticketCode, 76, 902);

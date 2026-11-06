@@ -91,7 +91,7 @@ Langkah satu
 Tombol: Lanjut
 
 Langkah dua
-1. Label: Jumlah yang akan hadir. Bantuan: Hitung termasuk anak.
+1. Label: Jumlah orang yang akan hadir. Bantuan: Total orang yang datang, termasuk calon siswa.
 2. Label: Asal kota atau kabupaten. Contoh isi: Subang.
 3. Label: Asal sekolah. Contoh isi: SMP Negeri 1 Subang.
 4. Label: Minat jurusan. Pilihan: RPL, DKV, Belum tahu. Bantuan: Boleh dikosongkan.
@@ -104,7 +104,7 @@ Pesan kesalahan
 1. Kosong: Bagian ini perlu diisi.
 2. Nama terlalu pendek: Nama minimal 2 huruf.
 3. Nomor tidak valid: Nomor HP belum sesuai. Contoh yang benar: 081234567890.
-4. Jumlah hadir: Pilih jumlah antara 1 dan 10.
+4. Jumlah orang yang hadir: Pilih antara 1 dan 10 orang.
 5. Persetujuan: Centang dulu persetujuan agar kami boleh menghubungi.
 6. Kegagalan Turnstile: Pemeriksaan keamanan belum selesai. Coba lagi sebentar.
 7. Kegagalan server: Pendaftaran belum terkirim. Silakan coba lagi, atau hubungi admisi lewat WhatsApp.
@@ -145,7 +145,7 @@ Assalamualaikum Bapak/Ibu.
 Pendaftaran Open House SMKIT As-Syifa berhasil kami terima.
 
 👤 Calon siswa: {nama anak}
-👥 Jumlah peserta: {jumlah hadir} orang
+👥 Total orang yang hadir: {jumlah hadir} orang, termasuk calon siswa
 🎟️ Kode tiket: {kode tiket}
 
 Mohon simpan pesan dan gambar tiket ini. Tunjukkan QR Code kepada panitia saat registrasi di lokasi.
@@ -178,6 +178,7 @@ Catatan: Panitia akan menghubungi lewat WhatsApp untuk memastikan kehadiran.
 7. Statistik kehadiran: Total Pendaftar, Sudah Hadir, Belum Hadir.
 8. Tab Tambah Manual: formulir untuk pendaftar dari kertas atau walk-in. Field wajib: nama anak, asal sekolah, asal kota, jumlah hadir, dan waktu daftar. Field opsional: nama orang tua, nomor HP, PIC, dan catatan.
 9. Setelah disimpan, tampilkan nomor tiket dan tombol untuk membuka tiket. Pendaftar manual masuk Kelompok C.
+10. Semua angka utama dihitung per pendaftar atau satu keluarga. Jumlah orang ditampilkan terpisah dengan satuan orang, bukan rombongan.
 
 ## Halaman privasi
 
@@ -198,7 +199,7 @@ Judul: Kebijakan Privasi
 Kalimat pembuka: Kami hanya mencatat data yang dibutuhkan untuk menyiapkan open house dan menghubungi Bapak atau Ibu. Halaman ini menjelaskan data apa saja yang kami simpan dan cara meminta penghapusannya.
 Keterangan berlaku: Berlaku untuk pendaftaran Open House 07 November 2026.
 
-Kartu "Data yang kami catat": Saat mendaftar, kami mencatat data berikut: Nama anak, Nomor HP orang tua, Nama orang tua bila diisi, Jumlah yang hadir, Asal kota, Asal sekolah, Minat jurusan bila diisi, Sumber kunjungan.
+Kartu "Data yang kami catat": Saat mendaftar, kami mencatat data berikut: Nama anak, Nomor HP orang tua, Nama orang tua bila diisi, Jumlah orang yang hadir, Asal kota, Asal sekolah, Minat jurusan bila diisi, Sumber kunjungan.
 
 Kartu "Penggunaan dan akses":
 - Tujuan: Informasi dan komunikasi open house serta pendaftaran.

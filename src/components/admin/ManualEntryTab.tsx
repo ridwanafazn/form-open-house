@@ -297,7 +297,7 @@ export default function ManualEntryTab({ onCreated }: ManualEntryTabProps) {
         <p className="admin-kicker">Input manual</p>
         <h2>Tambah Pendaftar Manual</h2>
         <p>
-          Catat pendaftar dari kertas atau walk-in agar daftar peserta, presensi, dan rekap acara
+          Catat pendaftar dari kertas atau walk-in agar daftar pendaftar, presensi, dan rekap acara
           tetap sinkron. Pendaftar manual otomatis masuk Kelompok C.
         </p>
       </header>
@@ -361,7 +361,7 @@ export default function ManualEntryTab({ onCreated }: ManualEntryTabProps) {
               </div>
 
               <div className="manual-field">
-                <label htmlFor="manual-count">Jumlah yang hadir</label>
+                <label htmlFor="manual-count">Jumlah orang yang hadir</label>
                 <input
                   id="manual-count"
                   className="admin-input"
@@ -371,6 +371,7 @@ export default function ManualEntryTab({ onCreated }: ManualEntryTabProps) {
                   value={attendeeCount}
                   onChange={(event) => setAttendeeCount(Number(event.target.value))}
                 />
+                <p className="manual-hint">Total orang yang datang, termasuk anak.</p>
                 {errors.attendee_count && (
                   <p className="manual-error">Pilih jumlah antara 1 dan 10.</p>
                 )}

@@ -230,7 +230,7 @@ export default function DetailScreen({ registration: initial, onBack, onUpdateRo
             </div>
 
             <div className="admin-data-group">
-              <div className="admin-data-title">Data Keluarga</div>
+              <div className="admin-data-title">Data Pendaftar</div>
               <div className="admin-data-list admin-data-list--split">
                 <div className="admin-data-item">
                   <div className="admin-data-label">Nama Calon Siswa</div>
@@ -247,8 +247,8 @@ export default function DetailScreen({ registration: initial, onBack, onUpdateRo
                   </div>
                 </div>
                 <div className="admin-data-item">
-                  <div className="admin-data-label">Total Rombongan</div>
-                  <div className="admin-data-value">{reg.attendee_count} Orang</div>
+                  <div className="admin-data-label">Jumlah Hadir</div>
+                  <div className="admin-data-value">{reg.attendee_count} orang</div>
                 </div>
               </div>
             </div>

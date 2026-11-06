@@ -4,7 +4,6 @@ import Hero from '../components/Hero.astro';
 import StorySection from '../components/StorySection';
 import GuestHouse from '../components/GuestHouse.astro';
 import VisitorGuide from '../components/VisitorGuide.astro';
-import TourGuide from '../components/TourGuide.astro';
 import AddCalendar from '../components/AddCalendar';
 // Form kini tanpa pemeriksaan CAPTCHA (Turnstile). Jebakan bot tetap ada di
 // form lewat isian tersembunyi (honeypot), ditangani di sisi server.
@@ -169,7 +168,6 @@ const dateOnly = dateParts.join(', ');
             ))}
           </div>
         </div>
-        <TourGuide />
       </div>
     </section>
 

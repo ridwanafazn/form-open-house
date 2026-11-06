@@ -46,7 +46,6 @@ src/
     content.ts      SEMUA teks yang tampil (Bahasa Indonesia)
   components/
     Hero.astro, StorySection.tsx, GuestHouse.astro, VisitorGuide.astro
-    TourGuide.astro         matriks rotasi dan rute kelompok tour kampus
     GroupDirectory.tsx      daftar kelompok publik + pencarian dan cetak
     RegisterForm.tsx        form 2 langkah + countdown + honeypot
     TicketCard.tsx          tiket di /terima-kasih (baca sessionStorage)

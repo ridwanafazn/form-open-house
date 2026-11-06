@@ -23,7 +23,7 @@ export const CSV_HEADERS = [
   'Nama anak',
   'Nomor',
   'Nama orang tua',
-  'Jumlah hadir',
+  'Jumlah orang hadir',
   'Kota',
   'Sekolah',
   'Minat jurusan',

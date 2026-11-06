@@ -85,7 +85,7 @@ export default function PublicTicket({ ticket: initialTicket, code }: Props) {
     context.fillText(ticket.child_name, 76, 732);
     context.font = "400 26px 'DM Sans', Arial";
     context.fillStyle = '#5B6068';
-    context.fillText(`${ticket.attendee_count} peserta · ${ticket.school}`, 76, 778);
+    context.fillText(`${ticket.attendee_count} orang · ${ticket.school}`, 76, 778);
     context.fillText(ticket.city, 76, 818);
     context.fillStyle = '#22262A';
     context.font = "700 40px 'DM Mono', monospace";
@@ -136,7 +136,7 @@ export default function PublicTicket({ ticket: initialTicket, code }: Props) {
             <dd>{ticket.child_name}</dd>
           </div>
           <div className="pt__fact">
-            <dt>Jumlah hadir</dt>
+            <dt>Jumlah orang hadir</dt>
             <dd>{ticket.attendee_count} orang</dd>
           </div>
           <div className="pt__fact">

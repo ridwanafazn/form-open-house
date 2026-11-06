@@ -99,25 +99,26 @@ export default function RecapTab({ rows, onSelectRegistration }: RecapTabProps) 
         <h2>Ringkasan kehadiran Open House</h2>
         <p>
           Data dihitung dari status tindak lanjut dan presensi. Pendaftar berstatus Tidak jadi tidak
-          dihitung sebagai peserta aktif.
+          dihitung sebagai pendaftar aktif. Angka utama dihitung per pendaftar atau satu keluarga,
+          sedangkan jumlah orang ditampilkan terpisah.
         </p>
       </header>
 
       <div className="recap__stats">
         <article className="recap-stat">
-          <span className="recap-stat__label">Pendaftar</span>
+          <span className="recap-stat__label">Total Pendaftar</span>
           <strong className="recap-stat__value">{rows.length}</strong>
-          <span className="recap-stat__hint">Seluruh data masuk</span>
+          <span className="recap-stat__hint">Satu baris satu pendaftar</span>
         </article>
         <article className="recap-stat recap-stat--green">
-          <span className="recap-stat__label">Hadir</span>
+          <span className="recap-stat__label">Pendaftar Hadir</span>
           <strong className="recap-stat__value">{attendedRows.length}</strong>
-          <span className="recap-stat__hint">{attendedIndividuals} individu</span>
+          <span className="recap-stat__hint">{attendedIndividuals} orang</span>
         </article>
         <article className="recap-stat recap-stat--amber">
-          <span className="recap-stat__label">Belum hadir</span>
+          <span className="recap-stat__label">Pendaftar Belum Hadir</span>
           <strong className="recap-stat__value">{absentRows.length}</strong>
-          <span className="recap-stat__hint">Peserta aktif</span>
+          <span className="recap-stat__hint">Pendaftar aktif</span>
         </article>
         <article className="recap-stat recap-stat--red">
           <span className="recap-stat__label">Tidak jadi</span>
@@ -127,7 +128,7 @@ export default function RecapTab({ rows, onSelectRegistration }: RecapTabProps) 
         <article className="recap-stat recap-stat--teal">
           <span className="recap-stat__label">Sudah daftar PMB</span>
           <strong className="recap-stat__value">{pmbRows.length}</strong>
-          <span className="recap-stat__hint">{pmbAttended.length} sudah hadir</span>
+          <span className="recap-stat__hint">{pmbAttended.length} pendaftar sudah hadir</span>
         </article>
       </div>
 
@@ -142,7 +143,7 @@ export default function RecapTab({ rows, onSelectRegistration }: RecapTabProps) 
               className="recap-donut"
               style={{ background: donutBackground }}
               role="img"
-              aria-label={`Hadir ${attendedRows.length}, belum hadir ${absentRows.length}, tidak jadi ${cancelledRows.length}`}
+              aria-label={`Hadir ${attendedRows.length} pendaftar, belum hadir ${absentRows.length} pendaftar, tidak jadi ${cancelledRows.length} pendaftar`}
             >
               <div className="recap-donut__hole">
                 <strong>{attendanceRate}%</strong>
@@ -169,15 +170,15 @@ export default function RecapTab({ rows, onSelectRegistration }: RecapTabProps) 
           </div>
           <dl className="recap-summary-list">
             <div>
-              <dt>Total rombongan terdaftar</dt>
+              <dt>Total orang terdaftar</dt>
               <dd>{rows.reduce((sum, r) => sum + r.attendee_count, 0)} orang</dd>
             </div>
             <div>
-              <dt>Rombongan aktif</dt>
+              <dt>Total orang dari pendaftar aktif</dt>
               <dd>{totalIndividuals} orang</dd>
             </div>
             <div>
-              <dt>Rombongan sudah hadir</dt>
+              <dt>Total orang sudah hadir</dt>
               <dd>{attendedIndividuals} orang</dd>
             </div>
           </dl>
@@ -209,6 +210,7 @@ export default function RecapTab({ rows, onSelectRegistration }: RecapTabProps) 
           </div>
           <p className="recap-note">
             Kategori Sudah daftar PMB mengikuti status tindak lanjut yang tercatat di sistem.
+            Semua angka grafik dihitung per pendaftar atau satu keluarga, bukan per orang.
           </p>
         </article>
       </div>
@@ -239,7 +241,7 @@ export default function RecapTab({ rows, onSelectRegistration }: RecapTabProps) 
             <thead>
               <tr>
                 <th>Nama</th>
-                <th>Rombongan</th>
+                <th>Jumlah Hadir</th>
                 <th>Kehadiran</th>
                 <th>Status</th>
               </tr>
@@ -268,7 +270,7 @@ export default function RecapTab({ rows, onSelectRegistration }: RecapTabProps) 
                       <span>{r.school}</span>
                     </div>
                   </td>
-                  <td data-label="Rombongan">{r.attendee_count} orang</td>
+                  <td data-label="Jumlah Hadir">{r.attendee_count} orang</td>
                   <td data-label="Kehadiran">
                     {r.followup_status === 'tidak_jadi' ? (
                       <span className="badge badge--neutral">Tidak dihitung</span>

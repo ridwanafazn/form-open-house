@@ -137,7 +137,7 @@ Gunakan `LazyMotion` dengan `domAnimation` dan komponen `m`. Hanya `transform` d
 3. Dua langkah. Di atas form ada daftar tugas dengan dua butir yang dicentang saat selesai.
 4. Langkah satu: nama anak, nomor HP orang tua atau wali, nama orang tua atau wali.
 5. Langkah dua: jumlah yang hadir, asal kota atau kabupaten, asal sekolah, minat jurusan, persetujuan.
-6. Jumlah yang hadir memakai tombol kurang dan tambah dengan angka di tengah, bawaan 2.
+6. Jumlah orang yang hadir memakai tombol kurang dan tambah dengan angka di tengah, bawaan 2.
 7. Minat jurusan memakai tiga chip: RPL, DKV, Belum tahu.
 8. Tinggi area sentuh minimal 44 piksel. Nomor HP memakai `inputmode="tel"` dan `autocomplete="tel"`.
 9. Pesan kesalahan muncul dekat isian, singkat, dan fokus pindah ke isian pertama yang salah.
