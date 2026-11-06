@@ -14,7 +14,7 @@ Larangan di semua teks yang tampil:
 4. Tidak memakai pola kalimat khas mesin, seperti bukan sekadar ini tetapi itu, tiga kata sifat berderet, atau ajakan bombastis.
 5. Tidak ada klaim yang tidak bisa dibuktikan, seperti terbaik atau pasti lulus.
 6. Nama sekolah ditulis SMKIT As-Syifa Boarding School. "SMKIT" ditulis tanpa strip dan tanpa spasi; "As-Syifa" selalu memakai strip.
-7. Jam ditulis 08.00 sampai 15.00 WIB.
+7. Jam ditulis 08.00 sampai 14.30 WIB.
 
 Pengecualian teknis: alamat web, nomor telepon, dan kode tidak termasuk aturan ini.
 
@@ -22,7 +22,7 @@ Pengecualian teknis: alamat web, nomor telepon, dan kode tidak termasuk aturan i
 
 1. Sekolah khusus putra, di Jalancagak, Subang.
 2. Jurusan yang ditonjolkan: RPL dan DKV.
-3. Awal November 2026, jam 08.00 sampai 15.00 WIB, di sekolah, gratis.
+3. Awal November 2026, jam 08.00 sampai 14.30 WIB, di sekolah, gratis.
 4. Isi acara: pemaparan jurusan RPL dan DKV di aula, melihat kelas, melihat lab dan mencoba langsung, tour asrama, konsultasi. Konsumsi berupa air minum, tersedia booth jajan, ada suvenir.
 5. Biaya pendaftaran seleksi normal Rp500 ribu. Mendaftar langsung saat open house Rp100 ribu. Hadir tetapi mendaftar belakangan Rp300 ribu. Perlu persetujuan sekolah sebelum tayang.
 
@@ -33,7 +33,7 @@ Fakta lain dari situs sekolah seperti rutinitas harian, fasilitas, testimoni, da
 Hero
 Judul: Open House SMKIT As-Syifa
 Kalimat pendukung: Datang, lihat langsung, dan coba sendiri.
-Info singkat: Sabtu, 07 November 2026, 08.00 sampai 15.00 WIB, Jalancagak, Subang. Gratis.
+Info singkat: Sabtu, 07 November 2026, 08.00 sampai 14.30 WIB, Jalancagak, Subang. Gratis.
 Tombol hero: Daftar Sekarang!
 Tombol menempel di HP: Daftar Hadir Open House
 
@@ -64,6 +64,23 @@ Kalimat pendukung: Isi form untuk bisa mendapatkan E-Ticket dan bergabung ke gru
 Penutup
 Teks: Ada pertanyaan sebelum datang? Hubungi admisi lewat WhatsApp.
 Tombol: Chat admisi
+
+## Halaman pembagian kelompok
+
+Halaman publik tanpa login, tidak diindeks mesin pencari.
+
+1. Label: Tour kampus.
+2. Judul: Pembagian Kelompok.
+3. Kalimat pembuka: Kelompok A diisi pendaftar paling awal, kelompok B diisi pendaftar setelahnya. Cari nama Anda, lalu lihat urutan kunjungan saat tour kampus.
+4. Pencarian: Cari nama atau sekolah.
+5. Peringatan privasi: Nama ditampilkan disamarkan. Nomor HP, nama orang tua, kota, dan jumlah orang tidak ditampilkan.
+6. Pendaftar online dibagi ke dua kelompok, A dan B, secara berurutan berdasarkan waktu mendaftar. Pendaftar paling awal masuk A, pendaftar setelahnya masuk B.
+7. Pendaftar manual di hari acara langsung masuk kelompok C. Kelompok C hanya tampil bila ada pendaftar manual.
+8. Setiap kelompok menampilkan rute kunjungan, jadwal tiga sesi, dan daftar nama anak beserta asal sekolah.
+9. Nama peserta ditampilkan dalam format nama depan dan inisial, misalnya Ahmad F.
+10. Tidak ada ringkasan jumlah keluarga, peserta, atau kelompok. Jumlah orang, kota, nomor HP, dan nama orang tua tidak ditampilkan.
+11. Tombol: Cetak daftar.
+12. Tautan: Kembali ke rundown.
 
 ## Form
 
@@ -159,6 +176,8 @@ Catatan: Panitia akan menghubungi lewat WhatsApp untuk memastikan kehadiran.
    - Hadir (warna hijau / aksen tegas doff): menampilkan waktu check-in.
    - Belum Hadir (warna netral soft): untuk peserta yang belum melakukan scan.
 7. Statistik kehadiran: Total Pendaftar, Sudah Hadir, Belum Hadir.
+8. Tab Tambah Manual: formulir untuk pendaftar dari kertas atau walk-in. Field wajib: nama anak, asal sekolah, asal kota, jumlah hadir, dan waktu daftar. Field opsional: nama orang tua, nomor HP, PIC, dan catatan.
+9. Setelah disimpan, tampilkan nomor tiket dan tombol untuk membuka tiket. Pendaftar manual masuk Kelompok C.
 
 ## Halaman privasi
 

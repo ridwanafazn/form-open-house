@@ -78,8 +78,8 @@ describe('buildCsv', () => {
     expect(firstLine).toBe(CSV_HEADERS.join(','));
   });
 
-  it('jumlah kolom header sama dengan 13', () => {
-    expect(CSV_HEADERS.length).toBe(13);
+  it('jumlah kolom header sama dengan 14', () => {
+    expect(CSV_HEADERS.length).toBe(14);
   });
 
   it('satu baris data menghasilkan dua baris (header + data)', () => {
@@ -94,6 +94,7 @@ describe('buildCsv', () => {
       interest_major: 'RPL',
       utm_source: 'instagram',
       utm_campaign: 'openhouse',
+      source: 'online',
       followup_status: 'belum_dihubungi',
       assigned_to: null,
       followup_note: null,
@@ -116,6 +117,7 @@ describe('buildCsv', () => {
       interest_major: null,
       utm_source: null,
       utm_campaign: null,
+      source: null,
       followup_status: null,
       assigned_to: null,
       followup_note: null,
@@ -129,7 +131,7 @@ describe('buildCsv', () => {
     const makeRow = (name: string): CsvRow => ({
       created_at: null, child_name: name, parent_phone: null,
       parent_name: null, attendee_count: null, city: null, school: null,
-      interest_major: null, utm_source: null, utm_campaign: null,
+      interest_major: null, utm_source: null, utm_campaign: null, source: null,
       followup_status: null, assigned_to: null, followup_note: null,
     });
     const lines = buildCsv([makeRow('A'), makeRow('B'), makeRow('C')]).split('\r\n');

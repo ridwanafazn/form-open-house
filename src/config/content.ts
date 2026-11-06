@@ -13,7 +13,7 @@ export const content = {
     hero: {
       title: 'Open House SMKIT As-Syifa',
       tagline: 'Datang, lihat langsung, dan coba sendiri.',
-      info: 'Sabtu, 07 November 2026, 08.00 sampai 15.00 WIB, Jalancagak, Subang. Gratis.',
+      info: 'Sabtu, 07 November 2026, 08.00 sampai 14.30 WIB, Jalancagak, Subang. Gratis.',
       cta: 'Daftar Hadir Open House',
       heroCta: 'Daftar Sekarang!',
     },
@@ -78,16 +78,36 @@ export const content = {
         {
           title: 'Registrasi dan Pembukaan',
           short: 'Registrasi',
-          range: '08.00–09.35',
+          range: '08.00–09.45',
           items: [
             {
-              time: '08.00–08.30',
+              time: '08.00–08.25',
               title: 'Registrasi dan penyambutan',
               location: 'Lobi Sekolah',
             },
             {
-              time: '08.30–09.00',
-              title: 'Pembukaan, sambutan, dan profil sekolah',
+              time: '08.25–08.30',
+              title: 'Peserta diarahkan ke aula',
+              location: 'Aula SMK',
+            },
+            {
+              time: '08.30–08.35',
+              title: 'Pembukaan',
+              location: 'Aula SMK',
+            },
+            {
+              time: '08.35–08.40',
+              title: 'Pembacaan ayat suci Al-Qur\u2019an',
+              location: 'Aula SMK',
+            },
+            {
+              time: '08.40–08.45',
+              title: 'Sambutan kepala sekolah',
+              location: 'Aula SMK',
+            },
+            {
+              time: '08.45–09.00',
+              title: 'Profil sekolah',
               location: 'Aula SMK',
             },
             {
@@ -96,8 +116,8 @@ export const content = {
               location: 'Aula SMK',
             },
             {
-              time: '09.30–09.35',
-              title: 'Pengarahan tur kampus',
+              time: '09.30–09.45',
+              title: 'Pengarahan tour dan pembagian kelompok',
               location: 'Aula SMK',
             },
           ],
@@ -105,37 +125,37 @@ export const content = {
         {
           title: 'Tour Kampus',
           short: 'Tour',
-          range: '09.35–11.30',
+          range: '09.45–11.15',
           items: [
             {
-              time: '09.35–09.45',
-              title: 'Pembagian kelompok',
-              location: 'Aula SMK',
-            },
-            {
               time: '09.45–10.15',
-              title: 'Kunjungan ruang kelas',
-              location: 'Area Sekolah',
+              title: 'Sesi 1 tour kampus',
+              location: 'Sesuai kelompok',
             },
             {
               time: '10.15–10.45',
-              title: 'Kunjungan lab RPL dan DKV',
-              location: 'Area Sekolah',
+              title: 'Sesi 2 tour kampus',
+              location: 'Sesuai kelompok',
             },
             {
               time: '10.45–11.15',
-              title: 'Kunjungan asrama',
-              location: 'Area Sekolah',
+              title: 'Sesi 3 tour kampus',
+              location: 'Sesuai kelompok',
+            },
+            {
+              time: '11.15–11.30',
+              title: 'Menuju titik kumpul di gedung sekolah',
+              location: 'Gedung Sekolah',
             },
           ],
         },
         {
           title: 'Ishoma',
           short: 'Ishoma',
-          range: '11.15–13.00',
+          range: '11.30–13.00',
           items: [
             {
-              time: '11.15–11.40',
+              time: '11.30–11.40',
               title: 'Menuju masjid',
               location: 'Masjid',
             },
@@ -146,7 +166,7 @@ export const content = {
             },
             {
               time: '12.15–13.00',
-              title: 'Istirahat dan persiapan',
+              title: 'Istirahat',
               location: 'Area Kampus 4',
             },
           ],
@@ -154,48 +174,64 @@ export const content = {
         {
           title: 'Konsultasi dan Pendaftaran',
           short: 'Konsultasi',
-          range: '13.00–14.30',
+          range: '13.00–14.25',
           items: [
             {
-              time: '13.00–13.30',
+              time: '13.00–13.10',
+              title: 'Pembukaan layanan PMB',
+              location: 'Lobi Sekolah',
+            },
+            {
+              time: '13.10–13.30',
               title: 'Sosialisasi PMB',
-              location: 'Lobi / Aula',
+              location: 'Aula SMK',
             },
             {
-              time: '13.30–13.50',
-              title: 'Penjelasan program pendidikan',
-              location: 'Lobi / Aula',
-            },
-            {
-              time: '13.50–14.15',
+              time: '13.30–14.15',
               title: 'Konsultasi individual',
-              location: 'Lobi / Aula',
+              location: 'Aula dan Lobi',
             },
             {
-              time: '14.15–14.30',
+              time: '14.15–14.25',
               title: 'Pendaftaran awal',
-              location: 'Lobi / Aula',
+              location: 'Aula dan Lobi',
             },
           ],
         },
         {
           title: 'Penutupan',
           short: 'Penutupan',
-          range: '14.30–15.00',
+          range: '14.25–14.30',
           items: [
             {
-              time: '14.30–14.45',
-              title: 'Ucapan terima kasih dan doa penutup',
-              location: 'Aula SMK',
-            },
-            {
-              time: '14.45–15.00',
-              title: 'Cendera mata, foto bersama, dan pengantaran',
+              time: '14.25–14.30',
+              title: 'Ucapan terima kasih dan penutupan',
               location: 'Aula SMK',
             },
           ],
         },
       ],
+      tour: {
+        heading: 'Alur Tour Kampus',
+        tagline: 'Tiga sesi, tiga lokasi, setiap kelompok berputar dengan urutan berbeda.',
+        durationLabel: '90 menit',
+        durationText: '3 sesi x 30 menit',
+        sessionsHeading: 'Jadwal rotasi',
+        routesHeading: 'Rute tiap kelompok',
+        finalHeading: 'Titik kumpul akhir',
+        finalText:
+          'Semua kelompok kembali ke Gedung Sekolah pada 11.15 sebagai titik kumpul.',
+        notesHeading: 'Saat mengikuti tour',
+        notes: [
+          'Setiap lokasi dikunjungi 30 menit.',
+          'Ikuti pemandu kelompok dan tetap bersama rombongan.',
+          'Jangan berpindah lokasi tanpa arahan panitia.',
+        ],
+        manualNote:
+          'Kelompok A dan B untuk pendaftar online. Pendaftar manual di hari acara masuk Kelompok C.',
+        groupLinkLabel: 'Lihat pembagian kelompok',
+        groupLinkNote: 'Cari nama Anda dan lihat rute kelompok.',
+      },
     },
 
     panduan: {
@@ -269,6 +305,33 @@ export const content = {
       text: 'Ada pertanyaan sebelum datang? Hubungi admisi lewat WhatsApp.',
       cta: 'Chat admisi',
     },
+  },
+
+  groupPage: {
+    kicker: 'Tour kampus',
+    title: 'Pembagian Kelompok',
+    lead: 'Kelompok A diisi pendaftar paling awal, kelompok B diisi pendaftar setelahnya. Cari nama Anda, lalu lihat urutan kunjungan saat tour kampus.',
+    searchLabel: 'Cari nama atau sekolah',
+    searchPlaceholder: 'Contoh: Ahmad atau SMP Negeri 1 Subang',
+    searchHint: 'Nama ditampilkan disamarkan untuk menjaga privasi.',
+    resultsLabel: '{count} peserta cocok',
+    updatedLabel: 'Diperbarui',
+    routeLabel: 'Rute kunjungan',
+    sessionsLabel: 'Jadwal sesi',
+    membersLabel: 'Peserta',
+    emptyTitle: 'Belum ada peserta',
+    emptyText:
+      'Daftar kelompok akan tampil setelah ada pendaftar. Hubungi panitia di meja registrasi bila nama Anda belum muncul.',
+    noMatchTitle: 'Nama tidak ditemukan',
+    noMatchText:
+      'Periksa ejaan nama atau asal sekolah. Bila tetap tidak ditemukan, tanyakan kepada panitia di meja registrasi.',
+    loadErrorTitle: 'Data kelompok belum bisa dimuat',
+    loadErrorText:
+      'Periksa koneksi internet lalu muat ulang halaman. Bila masih gagal, tanyakan kepada panitia di meja registrasi.',
+    privacyNote:
+      'Halaman ini hanya menampilkan nama yang disamarkan dan asal sekolah. Nomor HP, nama orang tua, kota, dan jumlah orang tidak ditampilkan.',
+    print: 'Cetak daftar',
+    backToRundown: 'Kembali ke rundown',
   },
 
   form: {

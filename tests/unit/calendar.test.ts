@@ -43,7 +43,7 @@ describe('buildCalendar', () => {
     expect(ics).toContain('END:VCALENDAR');
     expect(ics).toContain('BEGIN:VEVENT');
     expect(ics).toContain('DTSTART:20261107T080000');
-    expect(ics).toContain('DTEND:20261107T150000');
+    expect(ics).toContain('DTEND:20261107T143000');
     expect(ics).toContain('SUMMARY:Open House SMKIT As-Syifa');
   });
 });

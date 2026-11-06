@@ -13,7 +13,11 @@ membuat atau mengubah akun serta proyek layanan tanpa perintah langsung pemilik.
 
 1. Buka SQL Editor di dasbor proyek.
 2. Jalankan seluruh isi `supabase/migrations/0001_init.sql`.
-3. Skema tabel `registrations` dan `admins` dibuat, RLS diaktifkan untuk
+3. Jalankan `supabase/migrations/0002_attendance.sql` untuk kolom tiket dan presensi.
+4. Jalankan `supabase/migrations/0003_manual_entry.sql` untuk input pendaftar manual.
+   Migrasi ini menambah `source`, membuat nomor HP boleh kosong, dan memberi
+   izin insert hanya kepada admin yang sudah login.
+5. Skema tabel `registrations` dan `admins` dibuat, RLS diaktifkan untuk
    keduanya, dan peran anon tidak punya izin apa pun.
 
 ## 3. Matikan pendaftaran akun Auth
@@ -35,7 +39,7 @@ Di SQL Editor, jalankan dengan `id` dari langkah 4:
 insert into public.admins (user_id) values ('ISI_ID_PENGGUNA');
 ```
 
-## 6. Tigauji kebijakan akses
+## 6. Tiga uji kebijakan akses
 
 Buktikan tiga hal berikut di proyek:
 

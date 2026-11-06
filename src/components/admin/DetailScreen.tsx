@@ -96,6 +96,7 @@ export default function DetailScreen({ registration: initial, onBack, onUpdateRo
   }
 
   function handleChatWa() {
+    if (!reg.parent_phone) return;
     const nomor = reg.parent_phone.replace('+', '');
     const pesan = encodeURIComponent(buildWaMessage());
     window.open(`https://wa.me/${nomor}?text=${pesan}`, '_blank', 'noopener');
@@ -241,7 +242,9 @@ export default function DetailScreen({ registration: initial, onBack, onUpdateRo
                 </div>
                 <div className="admin-data-item">
                   <div className="admin-data-label">Nomor WhatsApp</div>
-                  <div className="admin-data-value">{reg.parent_phone}</div>
+                  <div className="admin-data-value">
+                    {reg.parent_phone || 'Tidak dicatat'}
+                  </div>
                 </div>
                 <div className="admin-data-item">
                   <div className="admin-data-label">Total Rombongan</div>
@@ -275,6 +278,12 @@ export default function DetailScreen({ registration: initial, onBack, onUpdateRo
                   <div className="admin-data-label">Waktu Pendaftaran</div>
                   <div className="admin-data-value">
                     {new Date(reg.created_at).toLocaleString('id-ID', { dateStyle: 'long', timeStyle: 'short' })}
+                  </div>
+                </div>
+                <div className="admin-data-item">
+                  <div className="admin-data-label">Jalur Input</div>
+                  <div className="admin-data-value">
+                    {reg.source === 'manual' ? 'Input manual panitia' : 'Pendaftaran online'}
                   </div>
                 </div>
                 <div className="admin-data-item">
@@ -356,10 +365,12 @@ export default function DetailScreen({ registration: initial, onBack, onUpdateRo
               </button>
               <button 
                 className="admin-btn" 
-                style={{ backgroundColor: '#16A34A', color: '#FFF' }} 
+                style={{ backgroundColor: '#16A34A', color: '#FFF' }}
                 onClick={handleChatWa}
+                disabled={!reg.parent_phone}
+                title={reg.parent_phone ? undefined : 'Nomor WhatsApp tidak dicatat'}
               >
-                Hubungi Lewat WhatsApp
+                {reg.parent_phone ? 'Hubungi Lewat WhatsApp' : 'Nomor HP tidak tersedia'}
               </button>
             </div>
             

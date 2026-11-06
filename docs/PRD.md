@@ -10,7 +10,7 @@ Pengunjung datang dari postingan Instagram, iklan Meta, dan tautan di bio akun s
 
 ## Fakta acara
 
-1. Waktu: awal November 2026, tanggal pasti belum final. Jam 08.00 sampai 15.00 WIB.
+1. Waktu: awal November 2026, tanggal pasti belum final. Jam 08.00 sampai 14.30 WIB.
 2. Tempat: di sekolah, offline saja. Gratis. Diadakan satu kali.
 3. Rangkaian: pemaparan jurusan RPL dan DKV di aula, melihat kelas dan lab, mencoba langsung di lab atau kelas, tour asrama, dan konsultasi. Rundown lengkap belum ada.
 4. Target hadir: sekitar 50 calon siswa, ditambah orang tua dan saudara.

@@ -7,7 +7,7 @@ describe('original copywriting is preserved', () => {
   it('hero uses the original tagline, info line, and CTA', () => {
     expect(content.home.hero.tagline).toBe('Datang, lihat langsung, dan coba sendiri.');
     expect(content.home.hero.info).toBe(
-      'Sabtu, 07 November 2026, 08.00 sampai 15.00 WIB, Jalancagak, Subang. Gratis.',
+      'Sabtu, 07 November 2026, 08.00 sampai 14.30 WIB, Jalancagak, Subang. Gratis.',
     );
     expect(content.home.hero.cta).toBe('Daftar Hadir Open House');
     expect(content.home.hero.heroCta).toBe('Daftar Sekarang!');

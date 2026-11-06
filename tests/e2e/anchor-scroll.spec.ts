@@ -9,7 +9,7 @@ for (const [label, id] of [
 ] as const) {
   test(`nav "${label}" lands its heading below the nav, not far down`, async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     await page.evaluate(() =>
       window.scrollTo({ top: window.innerHeight * 0.75, behavior: 'instant' }),

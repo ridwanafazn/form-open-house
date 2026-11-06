@@ -10,7 +10,7 @@ export interface Registration {
   id: string;
   created_at: string;
   child_name: string;
-  parent_phone: string;
+  parent_phone: string | null;
   parent_name: string | null;
   attendee_count: number;
   city: string;
@@ -29,10 +29,11 @@ export interface Registration {
   followup_note: string | null;
   ticket_code: string | null;
   attended_at: string | null;
+  source: 'online' | 'manual';
 }
 
 export type Screen = 'login' | 'checking' | 'list' | 'detail';
-export type Tab = 'list' | 'scan' | 'recap';
+export type Tab = 'list' | 'scan' | 'recap' | 'manual';
 
 export interface RegistrationStatus {
   open: boolean;

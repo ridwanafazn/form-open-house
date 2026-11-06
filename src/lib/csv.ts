@@ -12,6 +12,7 @@ export interface CsvRow {
   interest_major: string | null;
   utm_source: string | null;
   utm_campaign: string | null;
+  source: string | null;
   followup_status: string | null;
   assigned_to: string | null;
   followup_note: string | null;
@@ -28,6 +29,7 @@ export const CSV_HEADERS = [
   'Minat jurusan',
   'Sumber',
   'Kampanye',
+  'Jalur input',
   'Status',
   'Penanggung jawab',
   'Catatan',
@@ -75,6 +77,7 @@ export function buildCsv(rows: CsvRow[]): string {
       r.interest_major,
       r.utm_source,
       r.utm_campaign,
+      r.source,
       r.followup_status,
       r.assigned_to,
       r.followup_note,

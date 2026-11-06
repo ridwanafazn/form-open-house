@@ -49,7 +49,7 @@ export default function ScannerTab({ rows, onCheckInSuccess, onSelectRegistratio
       (r) =>
         (r.ticket_code && r.ticket_code.toLowerCase() === cleanCode.toLowerCase()) ||
         r.id === cleanCode ||
-        r.parent_phone.includes(cleanCode),
+        (r.parent_phone?.includes(cleanCode) ?? false),
     );
 
     if (!target && supabase) {
@@ -120,7 +120,13 @@ export default function ScannerTab({ rows, onCheckInSuccess, onSelectRegistratio
       }
       await scannerRef.current.start(
         { facingMode: 'environment' },
-        { fps: 10, qrbox: { width: 250, height: 250 } },
+        {
+          fps: 10,
+          qrbox: (viewfinderWidth, viewfinderHeight) => {
+            const edge = Math.floor(Math.min(viewfinderWidth, viewfinderHeight) * 0.7);
+            return { width: edge, height: edge };
+          },
+        },
         (decodedText) => handleProcessCode(decodedText),
         () => {}
       );
@@ -156,105 +162,79 @@ export default function ScannerTab({ rows, onCheckInSuccess, onSelectRegistratio
     .sort((a, b) => (b.attended_at! > a.attended_at! ? 1 : -1))
     .slice(0, activityLimit === -1 ? rows.length : activityLimit);
 
+  const scanResultTitle = scanResult
+    ? {
+        success: 'Berhasil check-in',
+        duplicate: 'Sudah pernah check-in',
+        cancelled: 'Pendaftar berstatus tidak jadi',
+        error: 'Kode tidak ditemukan',
+      }[scanResult.type]
+    : '';
+
   return (
     <>
-      {/* CSS Injeksi Khusus untuk Scanner & Modal Pop-up */}
       <style>{`
-        /* Modal Overlay */
-        .oh-modal-overlay {
-          position: fixed; inset: 0; z-index: 9999;
-          background-color: rgba(15, 23, 42, 0.4);
-          backdrop-filter: blur(4px);
-          display: flex; align-items: center; justify-content: center;
-          padding: 16px;
-          animation: ohFadeIn 0.2s ease;
-        }
-        .oh-modal-card {
-          background: #FFFFFF; width: 100%; max-width: 420px;
-          border-radius: 20px; padding: 32px 24px; text-align: center;
-          position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-          animation: ohSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .oh-modal-close {
-          position: absolute; top: 16px; right: 16px;
-          background: #F1F5F9; border: none; width: 32px; height: 32px;
-          border-radius: 50%; font-size: 1.1rem; display: flex;
-          align-items: center; justify-content: center;
-          color: #64748B; cursor: pointer; transition: all 0.2s;
-        }
-        .oh-modal-close:hover { background: #E2E8F0; color: #0F172A; }
-        
-        /* Ikon Modal */
-        .oh-modal-icon {
-          width: 72px; height: 72px; border-radius: 50%;
-          margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;
-          font-size: 2.2rem; font-weight: bold;
-        }
-        .oh-modal--success .oh-modal-icon { background: #DCFCE7; color: #166534; }
-        .oh-modal--duplicate .oh-modal-icon { background: #FFFBEB; color: #92400E; }
-        .oh-modal--cancelled .oh-modal-icon { background: #FEE2E2; color: #991B1B; }
-        .oh-modal--error .oh-modal-icon { background: #FEF2F2; color: #991B1B; }
-        
-        /* Teks & Tombol Modal */
-        .oh-modal-body h3 { font-family: 'Space Grotesk', sans-serif; margin: 0 0 8px; color: #0F172A; font-size: 1.5rem; }
-        .oh-modal-body p { color: #475569; font-size: 0.95rem; margin: 0 0 24px; line-height: 1.5; }
-        .oh-modal-action { width: 100%; padding: 14px; font-size: 1rem; border-radius: 12px; }
-
         /* Area Scroll Aktivitas */
         .admin-activity-scroll {
-          max-height: 440px; /* Pas untuk 5 item tanpa scroll */
+          max-height: 440px;
           overflow-y: auto;
           padding-right: 8px;
         }
-        
+
         /* Kustomisasi Scrollbar Minimalis */
         .admin-activity-scroll::-webkit-scrollbar { width: 6px; }
         .admin-activity-scroll::-webkit-scrollbar-track { background: #F1F5F9; border-radius: 10px; }
         .admin-activity-scroll::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
         .admin-activity-scroll::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
 
-        @keyframes ohFadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes ohSlideUp { from { opacity: 0; transform: translateY(20px); scale: 0.95; } to { opacity: 1; transform: translateY(0); scale: 1; } }
+        /* Hasil scan tampil inline agar petugas bisa scan berulang tanpa menutup modal. */
+        .admin-scan-result {
+          display: grid;
+          gap: 8px;
+          margin-top: 16px;
+          padding: 12px 14px;
+          border: 1px solid var(--admin-border);
+          border-left: 4px solid #64748B;
+          border-radius: 10px;
+          background: #F8FAFC;
+        }
+        .admin-scan-result--success { border-left-color: #059669; background: #F0FDF4; }
+        .admin-scan-result--duplicate { border-left-color: #D97706; background: #FFFBEB; }
+        .admin-scan-result--cancelled,
+        .admin-scan-result--error { border-left-color: #DC2626; background: #FEF2F2; }
+        .admin-scan-result__head {
+          display: flex;
+          align-items: flex-start;
+          justify-content: space-between;
+          gap: 12px;
+        }
+        .admin-scan-result__head strong {
+          color: var(--admin-primary);
+          font-family: 'Space Grotesk', sans-serif;
+          font-size: 0.95rem;
+        }
+        .admin-scan-result p {
+          margin: 0;
+          color: var(--admin-text-main);
+          font-size: 0.86rem;
+          line-height: 1.5;
+        }
+        .admin-scan-result__close {
+          flex: none;
+          padding: 2px 4px;
+          border: 0;
+          background: transparent;
+          color: var(--admin-text-muted);
+          font-family: 'DM Sans', sans-serif;
+          font-size: 0.78rem;
+          font-weight: 700;
+          cursor: pointer;
+        }
+        .admin-scan-result__action {
+          justify-self: start;
+          margin-top: 4px;
+        }
       `}</style>
-
-      {/* MODAL POP-UP (Hanya dirender jika ada hasil scan) */}
-      {scanResult && (
-        <div className="oh-modal-overlay" onClick={() => setScanResult(null)}>
-          <div 
-            className={`oh-modal-card oh-modal--${scanResult.type}`} 
-            onClick={(e) => e.stopPropagation()} /* Mencegah modal tertutup jika klik bagian dalam card */
-          >
-            <button className="oh-modal-close" onClick={() => setScanResult(null)}>✕</button>
-            <div className="oh-modal-icon">
-              {scanResult.type === 'success' && '✓'}
-              {scanResult.type === 'duplicate' && '!'}
-              {scanResult.type === 'cancelled' && '!'}
-              {scanResult.type === 'error' && '✕'}
-            </div>
-            <div className="oh-modal-body">
-              <h3>
-                {scanResult.type === 'success' && 'Presensi Berhasil'}
-                {scanResult.type === 'duplicate' && 'Sudah Pernah Hadir'}
-                {scanResult.type === 'cancelled' && 'Pendaftaran Tidak Jadi'}
-                {scanResult.type === 'error' && 'Tiket Tidak Valid'}
-              </h3>
-              <p>{scanResult.message}</p>
-              {scanResult.item && (
-                <button
-                  type="button"
-                  className="admin-btn admin-btn--primary oh-modal-action"
-                  onClick={() => {
-                    setScanResult(null);
-                    onSelectRegistration(scanResult.item!);
-                  }}
-                >
-                  Buka Detail Pendaftar →
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
 
       <section className="admin-scanner-tab" id="scan">
         <div className="admin-scanner-grid">
@@ -299,15 +279,49 @@ export default function ScannerTab({ rows, onCheckInSuccess, onSelectRegistratio
                   id="manual-ticket-input"
                   type="text"
                   className="admin-input"
-                  placeholder="Ketikan Kode Tiket (OH-...) / No HP"
+                  placeholder="Ketik kode tiket (OH-...) atau nomor HP"
                   value={manualCode}
                   onChange={(e) => setManualCode(e.target.value)}
+                  aria-label="Kode tiket atau nomor HP"
                 />
                 <button type="submit" className="admin-btn admin-btn--primary" disabled={processing || !manualCode.trim()}>
                   Check-in
                 </button>
               </div>
             </form>
+
+            {scanResult && (
+              <div
+                className={`admin-scan-result admin-scan-result--${scanResult.type}`}
+                role="status"
+                aria-live="polite"
+              >
+                <div className="admin-scan-result__head">
+                  <strong>{scanResultTitle}</strong>
+                  <button
+                    type="button"
+                    className="admin-scan-result__close"
+                    onClick={() => setScanResult(null)}
+                  >
+                    Tutup
+                  </button>
+                </div>
+                <p>{scanResult.message}</p>
+                {scanResult.item && (
+                  <button
+                    type="button"
+                    className="admin-btn admin-btn--outline admin-scan-result__action"
+                    onClick={() => {
+                      const item = scanResult.item!;
+                      setScanResult(null);
+                      onSelectRegistration(item);
+                    }}
+                  >
+                    Buka detail pendaftar
+                  </button>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Kolom Kanan: Aktivitas Presensi (Bisa Di-Scroll & Diatur Limitnya) */}

@@ -72,7 +72,7 @@ export const GET: APIRoute = async ({ url }) => {
   <text x="68" y="610" fill="#526363" font-family="Arial,sans-serif" font-size="23">${ticket.attendee_count} peserta · ${school}</text>
   <text x="68" y="646" fill="#526363" font-family="Arial,sans-serif" font-size="23">${city}</text>
   <text x="68" y="732" fill="#1d2c2b" font-family="monospace" font-size="32" font-weight="700">${ticketCode}</text>
-  <text x="68" y="798" fill="#526363" font-family="Arial,sans-serif" font-size="22">Sabtu, 07 November 2026 · 08.00–15.00 WIB</text>
+  <text x="68" y="798" fill="#526363" font-family="Arial,sans-serif" font-size="22">Sabtu, 07 November 2026 · 08.00–14.30 WIB</text>
   <text x="68" y="838" fill="#526363" font-family="Arial,sans-serif" font-size="22">SMKIT As-Syifa Boarding School, Jalancagak, Subang</text>
   <text x="68" y="908" fill="#526363" font-family="Arial,sans-serif" font-size="22">Tunjukkan tiket ini kepada panitia saat registrasi.</text>
 </svg>`;

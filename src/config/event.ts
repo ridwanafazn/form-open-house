@@ -3,7 +3,7 @@ export const eventConfig = {
   dateText: 'Sabtu, 07 November 2026',
   dateISO: '2026-11-07',
   startTime: '08:00',
-  endTime: '15:00',
+  endTime: '14:30',
   timezone: 'Asia/Jakarta',
   locationName: 'SMKIT As-Syifa Boarding School, Jalancagak, Subang',
   locationAddress:

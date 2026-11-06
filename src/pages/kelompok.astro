@@ -1,0 +1,189 @@
+---
+import Base from '../layouts/Base.astro';
+import GroupDirectory from '../components/GroupDirectory';
+import { content } from '../config/content';
+import { GROUP_CODES, MANUAL_GROUP_CODE, getGroupRoute } from '../config/groups';
+import { assignGroups, maskChildName } from '../lib/groups';
+import { formatWib } from '../lib/deadline';
+import { env as workerEnv } from 'cloudflare:workers';
+
+export const prerender = false;
+
+interface RegistrationRow {
+  id: string;
+  created_at: string;
+  child_name: string;
+  attendee_count: number;
+  city: string;
+  school: string;
+  followup_status: string | null;
+  source?: string | null;
+}
+
+const copy = content.groupPage;
+
+const runtimeEnv = (workerEnv ?? {}) as Record<string, string | undefined>;
+const supabaseUrl = runtimeEnv.SUPABASE_URL || import.meta.env.SUPABASE_URL;
+const serviceRoleKey =
+  runtimeEnv.SUPABASE_SERVICE_ROLE_KEY || import.meta.env.SUPABASE_SERVICE_ROLE_KEY;
+
+let rows: RegistrationRow[] = [];
+let loadError = '';
+
+if (!supabaseUrl || !serviceRoleKey) {
+  loadError = 'config';
+} else {
+  try {
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/registrations?select=*&order=created_at.asc,id.asc`,
+      {
+        headers: {
+          apikey: serviceRoleKey,
+          Authorization: `Bearer ${serviceRoleKey}`,
+        },
+      },
+    );
+
+    if (!response.ok) throw new Error('group_fetch_failed');
+    rows = (await response.json()) as RegistrationRow[];
+  } catch {
+    loadError = 'server';
+  }
+}
+
+const assigned = assignGroups(rows);
+
+const publicGroups = GROUP_CODES.map((code) => {
+  const route = getGroupRoute(code);
+  const members = assigned
+    .filter(
+      (item) =>
+        item.group_code === code && item.registration.followup_status !== 'tidak_jadi',
+    )
+    .map((item) => ({
+      name: maskChildName(item.registration.child_name),
+      school: item.registration.school,
+    }));
+
+  return {
+    code,
+    label: route.label,
+    stops: route.stops,
+    returnStop: route.returnStop,
+    note: route.note,
+    members,
+  };
+}).filter((group) => group.code !== MANUAL_GROUP_CODE || group.members.length > 0);
+
+const updatedAt = formatWib(new Date().toISOString());
+
+Astro.response.headers.set('Cache-Control', 'no-store');
+---
+
+<Base
+  title={copy.title}
+  description="Pembagian kelompok dan rute tour kampus Open House SMKIT As-Syifa."
+>
+  <meta slot="head" name="robots" content="noindex" />
+  <main class="group-page">
+    <div class="container">
+      <header class="group-hero">
+        <p class="group-kicker">{copy.kicker}</p>
+        <h1>{copy.title}</h1>
+        <p class="group-lead">{copy.lead}</p>
+        <p class="group-back">
+          <a href="/#rundown">{copy.backToRundown}</a>
+        </p>
+      </header>
+
+      <GroupDirectory
+        client:load
+        groups={publicGroups}
+        updatedAt={updatedAt}
+        loadError={loadError}
+      />
+    </div>
+  </main>
+</Base>
+
+<style>
+  .group-page {
+    padding-block: var(--space-8) var(--space-16);
+  }
+
+  .group-hero {
+    max-width: 680px;
+    margin: 0 auto var(--space-6);
+  }
+
+  .group-kicker {
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+    padding: 3px 8px;
+    border: 1px solid var(--teal-dark);
+    border-radius: 4px;
+    background: var(--teal-pale);
+    color: var(--teal-dark);
+    font-family: var(--font-tech);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1.7;
+    text-transform: uppercase;
+  }
+
+  .group-hero h1 {
+    margin-top: var(--space-4);
+    color: var(--ink);
+    font-family: var(--font-heading);
+    font-size: clamp(1.8rem, 4.6vw, 2.6rem);
+    font-weight: 700;
+    line-height: 1.15;
+  }
+
+  .group-lead {
+    max-width: 56ch;
+    margin-top: var(--space-3);
+    color: var(--ink-soft);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .group-back {
+    margin-top: var(--space-3);
+    font-size: 0.85rem;
+  }
+
+  .group-back a {
+    color: var(--ink-soft);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .group-back a:hover {
+    color: var(--ink);
+    text-decoration: underline;
+  }
+
+  @media print {
+    .group-page {
+      padding: 0;
+    }
+
+    .group-hero {
+      max-width: none;
+      margin-bottom: 16px;
+    }
+
+    .group-kicker,
+    .group-back {
+      display: none;
+    }
+
+    :global(.floating-nav),
+    :global(.sticky-cta) {
+      display: none !important;
+    }
+  }
+</style>

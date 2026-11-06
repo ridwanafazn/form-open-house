@@ -152,3 +152,45 @@ alter table public.registrations
 create index if not exists registrations_attended_at_idx on public.registrations (attended_at);
 create index if not exists registrations_ticket_code_idx on public.registrations (ticket_code);
 ```
+
+## Migrasi tambahan (0003_manual_entry.sql)
+
+Untuk pendaftar yang dicatat panitia dari kertas atau walk-in:
+
+```sql
+alter table public.registrations
+  add column if not exists source text not null default 'online';
+
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_constraint
+    where conname = 'registrations_source_check'
+      and conrelid = 'public.registrations'::regclass
+  ) then
+    alter table public.registrations
+      add constraint registrations_source_check
+      check (source in ('online', 'manual'));
+  end if;
+end;
+$$;
+
+alter table public.registrations
+  alter column parent_phone drop not null;
+
+create index if not exists registrations_source_idx
+  on public.registrations (source);
+
+drop policy if exists admins_insert_registrations on public.registrations;
+
+create policy admins_insert_registrations on public.registrations
+  for insert to authenticated
+  with check (public.is_admin());
+```
+
+Catatan:
+- Baris lama otomatis menjadi `source = 'online'`.
+- Admin yang sudah login boleh menambah baris manual langsung dari browser; RLS tetap membatasi lewat `public.is_admin()`.
+- `parent_phone` boleh kosong untuk pendaftar manual yang nomornya tidak tercatat.
+- Pendaftar manual otomatis masuk Kelompok C di halaman `/kelompok`.

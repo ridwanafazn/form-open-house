@@ -52,7 +52,15 @@ async function fillStepTwo(page: Page) {
 // Navigasi ke halaman utama dan scroll ke form
 // ---------------------------------------------------------------------------
 async function gotoForm(page: Page) {
-  await page.goto('/');
+  // Uji alur form tidak bergantung pada status pendaftaran di database.
+  await page.route('**/api/registration-status', (route: Route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ open: true, message: null }),
+    }),
+  );
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
   // Scroll ke section form agar client:visible trigger hydration
   await page.locator('#form').scrollIntoViewIfNeeded();
   // Tambah scroll manual untuk memastikan threshold IntersectionObserver terpenuhi
@@ -135,7 +143,7 @@ test('form dua langkah valid dikirim dan berpindah ke halaman terima kasih', asy
 
   // Harus pindah ke halaman terima kasih
   await expect(page).toHaveURL(/terima-kasih/, { timeout: 10000 });
-  await expect(page.locator('h1')).toContainText(/terima kasih/i);
+  await expect(page.locator('#ty-title')).toContainText(/terima kasih/i);
 });
 
 // ===========================================================================
@@ -213,9 +221,9 @@ test('gagal server menampilkan pesan error dan tidak berpindah halaman', async (
 test('halaman terima kasih tampil tanpa ringkasan sessionStorage', async ({ page }) => {
   // Buka langsung tanpa melalui form
   await page.goto('/terima-kasih');
-  await expect(page.locator('h1')).toContainText(/terima kasih/i);
+  await expect(page.locator('#ty-title')).toContainText(/terima kasih/i);
   // Teks fallback muncul (tanpa nama anak)
-  await expect(page.locator('.ty-summary')).toContainText(/Kami tunggu Bapak dan Ibu/i, {
+  await expect(page.locator('.ty-summary')).toContainText(/Kami tunggu Ayah dan Bunda/i, {
     timeout: 5000,
   });
 });

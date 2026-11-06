@@ -7,6 +7,7 @@ import { STATUS_LABELS } from './types';
 import type { Registration, FollowupStatus, Screen, Tab } from './types';
 import ScannerTab from './ScannerTab';
 import RecapTab from './RecapTab';
+import ManualEntryTab from './ManualEntryTab';
 import DetailScreen from './DetailScreen';
 
 interface ListScreenProps {
@@ -18,6 +19,7 @@ export default function ListScreen({ setScreen }: ListScreenProps) {
     if (typeof window === 'undefined') return 'list';
     if (window.location.hash === '#scan') return 'scan';
     if (window.location.hash === '#recap') return 'recap';
+    if (window.location.hash === '#tambah') return 'manual';
     return 'list';
   });
   const [rows, setRows] = useState<Registration[]>([]);
@@ -27,6 +29,7 @@ export default function ListScreen({ setScreen }: ListScreenProps) {
   const [filterStatus, setFilterStatus] = useState('');
   const [filterAttendance, setFilterAttendance] = useState<'all' | 'attended' | 'absent'>('all');
   const [filterAssigned, setFilterAssigned] = useState('');
+  const [filterSource, setFilterSource] = useState<'all' | 'online' | 'manual'>('all');
   const [selected, setSelected] = useState<Registration | null>(null);
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 10;
@@ -55,7 +58,15 @@ export default function ListScreen({ setScreen }: ListScreenProps) {
   useEffect(() => {
     const syncHash = () => {
       const hash = window.location.hash;
-      setActiveTab(hash === '#scan' ? 'scan' : hash === '#recap' ? 'recap' : 'list');
+      setActiveTab(
+        hash === '#scan'
+          ? 'scan'
+          : hash === '#recap'
+            ? 'recap'
+            : hash === '#tambah'
+              ? 'manual'
+              : 'list',
+      );
     };
     window.addEventListener('hashchange', syncHash);
     syncHash();
@@ -65,7 +76,7 @@ export default function ListScreen({ setScreen }: ListScreenProps) {
   // Kembali ke halaman pertama setiap kali filter/pencarian berubah
   useEffect(() => {
     setPage(1);
-  }, [search, filterStatus, filterAttendance, filterAssigned]);
+  }, [search, filterStatus, filterAttendance, filterAssigned, filterSource]);
 
   const assignees = Array.from(new Set(rows.map((r) => r.assigned_to).filter(Boolean))) as string[];
 
@@ -74,10 +85,11 @@ export default function ListScreen({ setScreen }: ListScreenProps) {
     const matchSearch =
       !q ||
       r.child_name.toLowerCase().includes(q) ||
-      r.parent_phone.includes(q) ||
+      (r.parent_phone?.includes(q) ?? false) ||
       (r.ticket_code && r.ticket_code.toLowerCase().includes(q));
     const matchStatus = !filterStatus || r.followup_status === filterStatus;
     const matchAssigned = !filterAssigned || r.assigned_to === filterAssigned;
+    const matchSource = filterSource === 'all' || r.source === filterSource;
     const matchAttendance =
       filterAttendance === 'all'
         ? true
@@ -85,7 +97,7 @@ export default function ListScreen({ setScreen }: ListScreenProps) {
           ? !!r.attended_at
           : !r.attended_at && r.followup_status !== 'tidak_jadi';
 
-    return matchSearch && matchStatus && matchAssigned && matchAttendance;
+    return matchSearch && matchStatus && matchAssigned && matchAttendance && matchSource;
   });
 
   // Pagination 10 data per halaman, urutan tetap terbaru dulu (created_at DESC di query).
@@ -125,6 +137,7 @@ export default function ListScreen({ setScreen }: ListScreenProps) {
       interest_major: r.interest_major,
       utm_source: r.utm_source,
       utm_campaign: r.utm_campaign,
+      source: r.source,
       followup_status: r.followup_status,
       assigned_to: r.assigned_to,
       followup_note: r.followup_note,
@@ -147,6 +160,13 @@ export default function ListScreen({ setScreen }: ListScreenProps) {
     );
   }
 
+  function handleManualCreated(row: Registration) {
+    setRows((prev) => {
+      const next = [row, ...prev.filter((item) => item.id !== row.id)];
+      return next.sort((a, b) => b.created_at.localeCompare(a.created_at));
+    });
+  }
+
   if (selected) {
     return (
       <DetailScreen
@@ -167,7 +187,7 @@ export default function ListScreen({ setScreen }: ListScreenProps) {
           <div className="admin-header__title">
             <p className="admin-kicker">Ruang Kerja Panitia</p>
             <h1>Dasbor Open House</h1>
-            <p className="admin-header__hint">Pantau pendaftar, tindak lanjuti keluarga, dan catat kehadiran dari satu tempat.</p>
+            <p className="admin-header__hint">Pantau pendaftar, catat kehadiran, dan tambahkan data manual dari satu tempat.</p>
           </div>
           
           <div className="admin-tabs-wrapper">
@@ -203,6 +223,16 @@ export default function ListScreen({ setScreen }: ListScreenProps) {
               >
                 Rekap Acara
               </button>
+              <button
+                type="button"
+                className={`admin-tab ${activeTab === 'manual' ? 'admin-tab--active' : ''}`}
+                onClick={() => {
+                  setActiveTab('manual');
+                  window.history.replaceState(null, '', '#tambah');
+                }}
+              >
+                Tambah Manual
+              </button>
             </div>
           </div>
         </div>
@@ -216,6 +246,8 @@ export default function ListScreen({ setScreen }: ListScreenProps) {
         />
       ) : activeTab === 'recap' ? (
         <RecapTab rows={rows} onSelectRegistration={handleSelect} />
+      ) : activeTab === 'manual' ? (
+        <ManualEntryTab onCreated={handleManualCreated} />
       ) : (
         <>
           <section className="admin-summary">
@@ -272,6 +304,15 @@ export default function ListScreen({ setScreen }: ListScreenProps) {
                 <option value="all">Semua Presensi</option>
                 <option value="attended">Sudah Hadir ({totalAttendedFamilies})</option>
                 <option value="absent">Belum Hadir ({totalAbsentFamilies})</option>
+              </select>
+              <select
+                className="admin-select"
+                value={filterSource}
+                onChange={(e) => setFilterSource(e.target.value as 'all' | 'online' | 'manual')}
+              >
+                <option value="all">Semua Jalur</option>
+                <option value="online">Online</option>
+                <option value="manual">Manual</option>
               </select>
               <select
                 className="admin-select"
@@ -356,7 +397,10 @@ export default function ListScreen({ setScreen }: ListScreenProps) {
                       <td>
                         <div className="admin-cell-user">
                           <strong>{r.child_name}</strong>
-                          <span>{r.parent_phone}</span>
+                          <span>{r.parent_phone || 'Tanpa nomor HP'}</span>
+                          {r.source === 'manual' && (
+                            <span className="admin-source-chip">Manual</span>
+                          )}
                         </div>
                       </td>
                       <td>{r.city}</td>

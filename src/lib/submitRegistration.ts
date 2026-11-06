@@ -1,6 +1,7 @@
 import { validateRegistration } from './validate';
 import { sendWhatsAppViaFonnte } from './fonnte';
 import { getRegistrationStatus } from './settings';
+import { generateTicketCode } from './ticketCode';
 
 export interface RegistrationNotification {
   parentPhone: string;
@@ -66,19 +67,6 @@ export type SubmitResult =
 export interface SubmitInput {
   rawBody: string;
   parsed: Record<string, unknown>;
-}
-
-/**
- * Buat kode tiket ringkas unik 8 karakter (misal: OH-7K9W2B).
- * Menggunakan huruf dan angka yang tidak ambigu (tanpa 0, O, 1, I).
- */
-export function generateTicketCode(): string {
-  const chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
-  let rand = '';
-  for (let i = 0; i < 6; i++) {
-    rand += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return `OH-${rand}`;
 }
 
 // Logika endpoint /api/register. Dapat diuji dengan env dan fetch tiruan.
