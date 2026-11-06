@@ -51,6 +51,11 @@ export default function GroupDirectory({ groups, loadError }: GroupDirectoryProp
     [filteredGroups],
   );
 
+  const maxMemberCount = useMemo(
+    () => groups.reduce((max, group) => Math.max(max, group.members.length), 0),
+    [groups],
+  );
+
   const hasAnyMember = groups.some((group) => group.members.length > 0);
 
   return (
@@ -269,10 +274,20 @@ export default function GroupDirectory({ groups, loadError }: GroupDirectoryProp
           align-items: flex-start;
           justify-content: space-between;
           gap: 10px;
+          min-height: 58px;
           padding: 8px 10px;
           border: 1px solid var(--paper-grid);
           border-radius: 6px;
           background: var(--paper-card);
+        }
+        .group-member--placeholder {
+          border-style: dashed;
+          background-color: var(--paper-card);
+          background-image: repeating-linear-gradient(
+            135deg,
+            rgba(120, 100, 70, 0.08) 0 6px,
+            transparent 6px 12px
+          );
         }
         .group-member__identity {
           display: flex;
@@ -397,7 +412,12 @@ export default function GroupDirectory({ groups, loadError }: GroupDirectoryProp
 
           {hasAnyMember && (
             <div className="group-cards">
-              {filteredGroups.map(({ group, members }) => (
+              {filteredGroups.map(({ group, members }) => {
+                const placeholderCount = normalizedQuery
+                  ? 0
+                  : Math.max(0, maxMemberCount - members.length);
+
+                return (
                 <article className="group-card" key={group.code}>
                   <header className="group-card__head">
                     <div className="group-card__identity">
@@ -440,7 +460,7 @@ export default function GroupDirectory({ groups, loadError }: GroupDirectoryProp
 
                     <div className="group-block">
                       <h3>{copy.membersLabel}</h3>
-                      {members.length === 0 ? (
+                      {members.length === 0 && placeholderCount === 0 ? (
                         <p className="group-route__note">{copy.emptyText}</p>
                       ) : (
                         <ul className="group-members">
@@ -455,12 +475,20 @@ export default function GroupDirectory({ groups, loadError }: GroupDirectoryProp
                               </div>
                             </li>
                           ))}
+                          {Array.from({ length: placeholderCount }).map((_, index) => (
+                            <li
+                              className="group-member group-member--placeholder"
+                              aria-hidden="true"
+                              key={`${group.code}-placeholder-${index}`}
+                            />
+                          ))}
                         </ul>
                       )}
                     </div>
                   </div>
                 </article>
-              ))}
+                );
+              })}
             </div>
           )}
 

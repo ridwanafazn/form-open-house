@@ -40,7 +40,7 @@ export const groupRoutes: readonly GroupRoute[] = [
   {
     code: 'B',
     label: 'Kelompok B',
-    stops: ['Laboratorium', 'Asrama'],
+    stops: ['Laboratorium', 'Asrama', 'Gedung Sekolah'],
     returnStop: 'Gedung Sekolah',
     returnLabel: 'Tetap di Gedung Sekolah',
     note: 'Gedung Sekolah adalah titik akhir tour sekaligus titik kumpul.',
