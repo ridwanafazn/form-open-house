@@ -17,6 +17,8 @@ membuat atau mengubah akun serta proyek layanan tanpa perintah langsung pemilik.
 4. Jalankan `supabase/migrations/0003_manual_entry.sql` untuk input pendaftar manual.
    Migrasi ini menambah `source`, membuat nomor HP boleh kosong, dan memberi
    izin insert hanya kepada admin yang sudah login.
+   **Status 2026-11-07: migrasi 0001, 0002, dan 0003 sudah dijalankan di
+   produksi.** Tab Tambah Manual di admin sudah bisa menulis ke database.
 5. Skema tabel `registrations` dan `admins` dibuat, RLS diaktifkan untuk
    keduanya, dan peran anon tidak punya izin apa pun.
 
