@@ -68,9 +68,75 @@ body {
 .admin-wrap {
   max-width: 1200px;
   margin-inline: auto;
-  padding: 32px 24px calc(88px + env(safe-area-inset-bottom, 0px));
+  /* 140px = offset navbar (108px, kini ditanggung di sini karena body admin
+     tidak lagi memakai padding-top) + padding 32px agar tampil sama persis
+     seperti sebelumnya. */
+  padding: 140px 24px calc(88px + env(safe-area-inset-bottom, 0px));
   font-family: 'DM Sans', sans-serif;
   color: var(--admin-text-main);
+}
+
+/* --- Skeleton login yang dirender server (admin.astro) ---
+   Tampil pada paint pertama sebelum React mount agar LCP (judul
+   "Portal Panitia") tidak menunggu bundle AdminApp. `position: fixed`
+   membuat elemen ini di luar alur dokumen, jadi penghapusannya tidak
+   pernah menggeser konten lain (CLS nol). */
+.admin-skeleton {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  background-color: #ffffff;
+  font-family: 'DM Sans', sans-serif;
+  color: #0f172a;
+}
+
+.admin-skeleton__inner {
+  width: 100%;
+  max-width: 380px;
+}
+
+.admin-skeleton__logo {
+  height: 56px;
+  width: auto;
+  margin: 0 0 32px;
+  object-fit: contain;
+}
+
+.admin-skeleton__title {
+  margin: 0 0 8px;
+  font-family: 'Space Grotesk', sans-serif;
+  /* Sengaja lebih besar dari judul login (2.8rem) agar skeleton inilah yang
+     tetap menjadi kandidat LCP terbesar setelah React menggantikannya. */
+  font-size: 3.2rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  color: #0f172a;
+}
+
+.admin-skeleton__sub {
+  margin: 0 0 32px;
+  font-size: 1.05rem;
+  color: #64748b;
+}
+
+.admin-skeleton__field {
+  height: 52px;
+  margin-bottom: 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background-color: #ffffff;
+}
+
+.admin-skeleton__btn {
+  height: 54px;
+  margin-top: 32px;
+  border-radius: 12px;
+  background-color: #0f172a;
 }
 
 /* --- Header & Tabs (Segmented Control style) --- */

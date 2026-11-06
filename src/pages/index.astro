@@ -36,14 +36,17 @@ const dateOnly = dateParts.join(', ');
     <section class="campus-band" aria-labelledby="campus-band-title">
       <div class="container">
         <figure class="campus-band__figure">
-          <img
-            src="/images/hero/upacara.jpg"
-            alt="Upacara bendera di halaman sekolah"
-            width="1200"
-            height="675"
-            loading="lazy"
-            decoding="async"
-          />
+          <picture>
+            <source type="image/webp" srcset="/images/hero/upacara.webp" />
+            <img
+              src="/images/hero/upacara.jpg"
+              alt="Upacara bendera di halaman sekolah"
+              width="1200"
+              height="675"
+              loading="lazy"
+              decoding="async"
+            />
+          </picture>
           <figcaption class="campus-band__caption">
             <h2 class="campus-band__kicker" id="campus-band-title">{content.home.campusBand.kicker}</h2>
             <p class="campus-band__text">{content.home.campusBand.text}</p>
@@ -187,7 +190,7 @@ const dateOnly = dateParts.join(', ');
       <div class="container">
         <div class="site-footer__grid">
           <div class="site-footer__brand">
-            <img class="site-footer__logo" src="/images/logo.png" alt="Logo SMKIT As-Syifa" width="40" height="40" />
+            <img class="site-footer__logo" src="/images/logo-128.png" alt="Logo SMKIT As-Syifa" width="40" height="40" />
             <div>
               <p class="site-footer__eyebrow">SMKIT As-Syifa Boarding School</p>
               <p class="site-footer__text">{content.home.footer.text}</p>

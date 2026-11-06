@@ -32,24 +32,35 @@ const finalDescription = pageDescription ?? description;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{finalTitle}</title>
     <meta name="description" content={finalDescription} />
-    <link rel="icon" type="image/png" href="/images/logo.png" />
+    <link rel="icon" type="image/png" href="/images/logo-32.png" />
     <meta name="og:title" content={title} />
     <meta name="og:description" content={finalDescription} />
     <meta name="og:type" content="website" />
     <slot name="head" />
 
-<!-- Meta Pixel Code -->
+<!-- Meta Pixel Code. Stub + antrean event dibuat segera, tetapi fbevents.js
+     (±421 KB gzip beserta sinyalnya) hanya diinjeksi setelah halaman `load`
+     dan idle, agar tidak memperebutkan bandwidth dengan aset kritis.
+     Perintah fbq() yang dipanggil di sini menunggu di antrean dan diulang
+     otomatis oleh fbevents.js begitu skripnya siap. -->
   <script is:inline>
     !function(f,b,e,v,n,t,s)
     {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
     n.callMethod.apply(n,arguments):n.queue.push(arguments)};
     if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '1683289080083380');
+    n.queue=[];fbq('init', '1683289080083380');
     fbq('track', 'PageView');
+    var inject=function(){t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)};
+    var defer=function(){
+      if(f.requestIdleCallback)f.requestIdleCallback(inject,{timeout:4000});
+      else f.setTimeout(inject,1500);
+    };
+    if(b.readyState==='complete')defer();
+    else f.addEventListener('load',defer);
+    }(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
   </script>
   <noscript>
     <img height="1" width="1" style="display:none"
@@ -58,7 +69,10 @@ const finalDescription = pageDescription ?? description;
   <!-- End Meta Pixel Code -->
   
   </head>
-  <body class:list={[{ 'admin-page': adminMode, 'landing-page': landing }]}>
+  <body
+    class:list={[
+      { 'admin-page': adminMode, 'admin-login': adminMode, 'landing-page': landing },
+    ]}>
     <FloatingNav adminMode={adminMode} variant={landing ? 'landing' : 'default'} />
     <slot />
     <script is:inline>

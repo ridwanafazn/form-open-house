@@ -1,5 +1,5 @@
 // src/components/AdminApp.tsx
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import type { Screen } from './admin/types';
 import AdminErrorBoundary from './admin/AdminErrorBoundary';
@@ -75,6 +75,15 @@ function AdminAppInner() {
   const [configError, setConfigError] = useState('');
   const [settingsOpen, setSettingsOpen] = useState(false);
   const authCheckRunning = useRef(false);
+
+  // Kelas `admin-login` pada body (dipasang server) menyembunyikan navbar dan
+  // menjaga offset login tetap nol lewat CSS. Dipakai useLayoutEffect agar
+  // pergantian layar login <-> dasbor terjadi sebelum paint berikutnya,
+  // tanpa memindahkan elemen yang sudah tampil (CLS nol).
+  useLayoutEffect(() => {
+    const authed = screen === 'list' || screen === 'detail';
+    document.body.classList.toggle('admin-login', !authed);
+  }, [screen]);
 
   useEffect(() => {
     if (!supabase) {

@@ -199,6 +199,17 @@ body {
 body.admin-page {
   background-color: #eef4f5;
   background-image: none;
+  /* Offset nav 108px dari `body` di atas hanya untuk halaman publik.
+     Layar admin mengelola jaraknya sendiri lewat `.admin-wrap`; memakai
+     padding body di sini membuat login React bergeser (CLS 0.128). */
+  padding-top: 0;
+}
+
+/* Selama belum masuk, navbar admin disembunyikan lewat kelas ini (dipasang
+   server di Base.astro dan dilepas AdminApp setelah sesi terverifikasi),
+   sehingga tidak ada kedipan navbar saat React baru dimuat. */
+body.admin-login .floating-nav {
+  display: none !important;
 }
 
 /* Landing page: hero menempel ke tepi atas layar. Bagian setelah hero tetap
@@ -212,6 +223,12 @@ svg {
   display: block;
   max-width: 100%;
   height: auto;
+}
+
+/* Bungkusan <picture> ikut dibuat blok agar tidak menambah baris kosong
+   (inline) di bawah gambar yang dikandungnya. */
+picture {
+  display: block;
 }
 
 button,

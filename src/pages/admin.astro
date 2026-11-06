@@ -5,5 +5,65 @@ import AdminApp from '../components/AdminApp';
 
 <Base title="Admin" description="Halaman admin open house." adminMode>
   <meta slot="head" name="robots" content="noindex" />
+  <!-- Font judul skeleton/login dan latar visual login (≥900px) dipreas
+       supaya tampil pada paint pertama tanpa menunggu giliran unduhan. -->
+  <link
+    slot="head"
+    rel="preload"
+    href="/fonts/space-grotesk-latin.woff2"
+    as="font"
+    type="font/woff2"
+    crossorigin
+  />
+  <link
+    slot="head"
+    rel="preload"
+    href="/images/hero/masjid-960.webp"
+    as="image"
+    media="(min-width: 900px)"
+  />
+
+  <!-- Skeleton login yang dirender server: menutupi layar sejak paint pertama
+       sehingga LCP tidak menunggu bundle AdminApp (±648 KB) dimuat. Dihapus
+       oleh skrip di bawah begitu React menampilkan layar aslinya. -->
+  <div id="admin-skeleton" class="admin-skeleton" aria-hidden="true">
+    <div class="admin-skeleton__inner">
+      <img
+        class="admin-skeleton__logo"
+        src="/images/logo-128.png"
+        alt=""
+        width="56"
+        height="56"
+      />
+      <h1 class="admin-skeleton__title">Portal Panitia</h1>
+      <p class="admin-skeleton__sub">Sistem Informasi Manajemen Open House</p>
+      <div class="admin-skeleton__field"></div>
+      <div class="admin-skeleton__field"></div>
+      <div class="admin-skeleton__btn"></div>
+    </div>
+  </div>
+
   <AdminApp client:only="react" />
+
+  <script is:inline>
+    // Hapus skeleton begitu layar React asli muncul. MutationObserver berjalan
+    // sebagai mikrotask pada frame yang sama, sehingga tidak ada frame yang
+    // menampilkan keduanya dan tidak ada layout shift (skeleton berada di
+    // luar alur dokumen). Kalau React gagal dimuat, skeleton tetap tampil.
+    (function () {
+      var sk = document.getElementById('admin-skeleton');
+      if (!sk || !window.MutationObserver) return;
+      var mo = new MutationObserver(function () {
+        if (
+          document.querySelector(
+            '.login-layout, .admin-wrap, .admin-center, .admin-error-card'
+          )
+        ) {
+          mo.disconnect();
+          sk.parentNode && sk.parentNode.removeChild(sk);
+        }
+      });
+      mo.observe(document.body, { childList: true, subtree: true });
+    })();
+  </script>
 </Base>

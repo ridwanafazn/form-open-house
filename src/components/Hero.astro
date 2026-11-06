@@ -50,18 +50,26 @@ const pillars = [
   class="hero relative isolate flex h-[100svh] min-h-[650px] flex-col justify-end overflow-hidden bg-ink text-paper"
 >
   <!-- Foto masjid sebagai latar utama. Lapisan gelap datar menjaga teks tetap
-       terbaca tanpa gradien, blur, atau bayangan. -->
-  <img
-    class="hero__photo"
-    src="/images/hero/masjid.jpg"
-    srcset="/images/hero/masjid-960.jpg 960w, /images/hero/masjid.jpg 1920w"
-    sizes="100vw"
-    alt=""
-    width="1920"
-    height="1080"
-    fetchpriority="high"
-    decoding="async"
-  />
+       terbaca tanpa gradien, blur, atau bayangan. Varian WebP diprioritaskan;
+       JPEG tetap menjadi cadangan untuk browser lama. -->
+  <picture>
+    <source
+      type="image/webp"
+      srcset="/images/hero/masjid-960.webp 960w, /images/hero/masjid.webp 1920w"
+      sizes="100vw"
+    />
+    <img
+      class="hero__photo"
+      src="/images/hero/masjid.jpg"
+      srcset="/images/hero/masjid-960.jpg 960w, /images/hero/masjid.jpg 1920w"
+      sizes="100vw"
+      alt=""
+      width="1920"
+      height="1080"
+      fetchpriority="high"
+      decoding="async"
+    />
+  </picture>
   <div class="hero__overlay" aria-hidden="true"></div>
 
   <!-- Header statis: hanya logo dan teks kecil. Tidak ada tautan navigasi. -->
@@ -69,7 +77,7 @@ const pillars = [
     <a class="hero__brand flex items-start gap-3" href="/" aria-label="Beranda Open House SMKIT As-Syifa">
       <img
         class="h-9 w-9 rounded-full bg-paper object-contain p-1 md:h-10 md:w-10"
-        src="/images/logo.png"
+        src="/images/logo-128.png"
         alt="Logo SMKIT As-Syifa"
         width="40"
         height="40"
@@ -127,15 +135,18 @@ const pillars = [
             `pillar--${pillar.tone}`,
           ]}
         >
-          <img
-            class="pillar__image"
-            src={pillar.image}
-            alt=""
-            width="1200"
-            height="675"
-            loading="lazy"
-            decoding="async"
-          />
+          <picture>
+            <source type="image/webp" srcset={pillar.image.replace(/\.jpg$/, '.webp')} />
+            <img
+              class="pillar__image"
+              src={pillar.image}
+              alt=""
+              width="1200"
+              height="675"
+              loading="lazy"
+              decoding="async"
+            />
+          </picture>
           <span class="pillar__scrim" aria-hidden="true" />
           <CornerBrackets />
           <h3 class:list={['pillar__label', `pillar__label--${pillar.tone}`]}>

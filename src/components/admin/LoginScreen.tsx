@@ -1,5 +1,5 @@
 // src/components/admin/LoginScreen.tsx
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 interface LoginScreenProps {
   onLogin: (email: string, pass: string) => void;
@@ -11,17 +11,10 @@ export default function LoginScreen({ onLogin, error }: LoginScreenProps) {
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  // Sembunyikan top navbar dan hapus padding-top body khusus di halaman login
-  useEffect(() => {
-    const nav = document.querySelector('.floating-nav') as HTMLElement;
-    if (nav) nav.style.display = 'none';
-    document.body.style.paddingTop = '0px';
-
-    return () => {
-      if (nav) nav.style.display = '';
-      document.body.style.paddingTop = '';
-    };
-  }, []);
+  // Navbar admin disembunyikan lewat kelas `admin-login` pada body (dipasang
+  // server di Base.astro) dan padding-top body admin kini nol lewat CSS.
+  // Tidak ada manipulasi DOM di effect: perubahan itu yang menyebabkan
+  // `.login-layout` bergeser dari y=108 ke y=0 saat React mount (CLS).
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -77,7 +70,10 @@ export default function LoginScreen({ onLogin, error }: LoginScreenProps) {
           height: 100%;
           border-radius: 32px;
           background-color: #F8FAFC;
-          background-image: url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1000&auto=format&fit=crop');
+          /* Gambar lokal (bukan Unsplash): domain eksternal itu diblokir CSP
+             img-src sehingga latar desktop selalu gagal dimuat, dan varian
+             WebP jauh lebih ringan daripada JPEG hero. */
+          background-image: url('/images/hero/masjid-960.webp');
           background-size: cover;
           background-position: center;
           overflow: hidden;
@@ -250,7 +246,7 @@ export default function LoginScreen({ onLogin, error }: LoginScreenProps) {
             </a>
 
             <img 
-              src="/images/logo.png" 
+              src="/images/logo-128.png" 
               alt="Logo SMKIT As-Syifa" 
               className="login-logo" 
               onError={(e) => { e.currentTarget.style.display = 'none'; }} 
